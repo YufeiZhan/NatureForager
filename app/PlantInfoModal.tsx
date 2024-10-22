@@ -89,6 +89,8 @@ export default function PlantInfoModal() {
     return (
       <ThemedView>
         <ThemedText>No plant information found.</ThemedText>
+        {/* Close Button */}
+        <ThemedButton title="Close" onPress={() => router.back()}/>
       </ThemedView>
     );
   }

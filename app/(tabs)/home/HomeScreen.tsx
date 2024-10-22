@@ -251,7 +251,7 @@ export default function HomeScreen() {
 
       <ThemedButton
         title="Go to Details"
-        onPress={() => router.push("/PlantInfoModal")}
+        onPress={() => router.push("/PlantInfoModal?iNaturalistID=47602")}
       />
 
     </ThemedView>
