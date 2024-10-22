@@ -122,16 +122,9 @@ export default function PlantInfoModal() {
 }
 
 const styles = StyleSheet.create({
-  imageContainer: {
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  image: {
-    width: 300,
-    height: 200,
-    borderRadius: 10,
-  },
-  detailsContainer: {
-    padding: 20,
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });

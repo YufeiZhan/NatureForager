@@ -3,9 +3,6 @@
     "name": "Plant-Forager",
     "slug": "Plant-Forager",
     "version": "1.0.0",
-    "assetBundlePatterns": [
-      "assets/**/*.csv"
-    ],
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "scheme": "Plant-Forager",
@@ -26,9 +23,6 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    },
-    "plugins": [
-      "expo-asset"
-    ]
+    }
   }
 }
