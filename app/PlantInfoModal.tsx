@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { Image, StyleSheet } from 'react-native';
-import { ThemedScrollView, ThemedView, ThemedText } from '../components/Themed';  // Assuming you have custom themed components
-import { useLocalSearchParams } from 'expo-router';  // To capture iNaturalistID from the URL
-import { parse } from 'papaparse';  // CSV parsing library
+import { Image, StyleSheet, Button } from 'react-native';
+import { ThemedScrollView, ThemedView, ThemedText, ThemedButton } from '../components/Themed';
+import { useLocalSearchParams, useRouter } from 'expo-router';  // To capture iNaturalistID and for navigation
+import { parse } from 'papaparse';
 
 interface Plant {
   "iNaturalist ID": string;
@@ -13,8 +13,7 @@ interface Plant {
   Notes?: string;
 }
 
-
-// Your CSV data as a string
+// CSV data as a string
 const csvData = `
 iNaturalist ID,Scientific Name,Common Name,Type,Month Ripe,Notes
 133686,Morchella angusticeps,Black Morel,mushroom,April,
@@ -55,30 +54,27 @@ iNaturalist ID,Scientific Name,Common Name,Type,Month Ripe,Notes
 48686,Typha,Cattail,pollen,April,
 `;
 
-// Modal component to display plant information
 export default function PlantInfoModal() {
-  const { iNaturalistID } = useLocalSearchParams();  // Get the iNaturalistID passed as a parameter
-  const [plantInfo, setPlantInfo] = useState<Plant | null>(null);  // Store plant information
-  const [loading, setLoading] = useState(true);  // Loading state
+  const { iNaturalistID } = useLocalSearchParams();
+  const [plantInfo, setPlantInfo] = useState<Plant | null>(null);
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();  // Router for navigation control
 
   useEffect(() => {
-    // Parse the CSV data using PapaParse
     const result = parse<Plant>(csvData, {
-      header: true,  // Use the first row as the keys for the objects
-      skipEmptyLines: true,  // Skip any empty lines
+      header: true,
+      skipEmptyLines: true,
     });
 
-    // Find the plant that matches the passed iNaturalistID
     const matchedPlant = result.data.find(
       (plant) => plant["iNaturalist ID"] === iNaturalistID
     );
 
-    // Update state with the found plant info or set loading to false
     if (matchedPlant) {
       setPlantInfo(matchedPlant);
     }
     console.log(matchedPlant);
-    setLoading(false);  // Stop loading
+    setLoading(false);
   }, [iNaturalistID]);
 
   if (loading) {
@@ -98,24 +94,30 @@ export default function PlantInfoModal() {
   }
 
   return (
-    <ThemedScrollView>
-      <ThemedView style={styles.imageContainer}>
-        {/* You can replace the source with the actual plant image later */}
-        <Image
-          source={{ uri: 'https://via.placeholder.com/300x200.png?text=Plant+Image' }} // Placeholder image
-          style={styles.image}
-          resizeMode="cover"
-        />
-      </ThemedView>
+    <ThemedView style={{ flex: 1 }}>
+      <ThemedScrollView>
+        {/* Plant Image */}
+        <ThemedView style={styles.imageContainer}>
+          <Image
+            source={{ uri: 'https://via.placeholder.com/300x200.png?text=Plant+Image' }}
+            style={styles.image}
+            resizeMode="cover"
+          />
+        </ThemedView>
 
-      <ThemedView>
-        <ThemedText>Common Name: {plantInfo["Common Name"]}</ThemedText>
-        <ThemedText>Scientific Name: {plantInfo["Scientific Name"]}</ThemedText>
-        <ThemedText>Type: {plantInfo.Type}</ThemedText>
-        <ThemedText>Month Ripe: {plantInfo["Month Ripe"]}</ThemedText>
-        {plantInfo.Notes && <ThemedText>Notes: {plantInfo.Notes}</ThemedText>}
-      </ThemedView>
-    </ThemedScrollView>
+        {/* Plant Details */}
+        <ThemedView>
+          <ThemedText>Common Name: {plantInfo["Common Name"]}</ThemedText>
+          <ThemedText>Scientific Name: {plantInfo["Scientific Name"]}</ThemedText>
+          <ThemedText>Type: {plantInfo.Type}</ThemedText>
+          <ThemedText>Month Ripe: {plantInfo["Month Ripe"]}</ThemedText>
+          {plantInfo.Notes && <ThemedText>Notes: {plantInfo.Notes}</ThemedText>}
+        </ThemedView>
+      </ThemedScrollView>
+      
+      {/* Close Button */}
+      <ThemedButton title="Close" onPress={() => router.back()}/>
+    </ThemedView>
   );
 }
 
