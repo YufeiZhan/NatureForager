@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import { View, StyleSheet } from "react-native";
 import MapView, { UrlTile } from "react-native-maps";
 
@@ -8,21 +9,39 @@ interface MapProps {
 }
 
 export default function Map({ iNaturalistTaxonId, lat, lon }: MapProps) {
-  let initialRegion = {
+  const [region, setRegion] = useState({
     // default map center is Duke Chapel
-    latitude: 36.001687,
-    longitude: -78.939824,
+    latitude: lat || 36.001687,
+    longitude: lon || -78.939824,
     latitudeDelta: 0.05,
     longitudeDelta: 0.05,
+  });
+
+  const map = useRef<MapView>(null);
+
+  const onMapReady = () => {
+    map.current?.getMapBoundaries().then((bounds) => {
+      console.log("hi");
+      console.log(bounds);
+    });
   };
-  if (lat && lon) {
-    initialRegion.latitude = lat;
-    initialRegion.longitude = lon;
-  }
+
+  useEffect(() => {
+    if (iNaturalistTaxonId === undefined) return;
+    const fetchINaturalistData = async () => {
+      const url = `https://api.inaturalist.org/v1/observations?taxon_id=83435&`;
+    };
+    fetchINaturalistData();
+  }, [iNaturalistTaxonId]);
 
   return (
     <View style={{ flex: 1 }}>
-      <MapView style={styles.map} initialRegion={initialRegion}>
+      <MapView
+        style={styles.map}
+        initialRegion={region}
+        ref={map}
+        onMapReady={onMapReady}
+      >
         {/* <UrlTile
           urlTemplate="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
           maximumZ={19}

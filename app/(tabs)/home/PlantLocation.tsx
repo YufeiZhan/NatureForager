@@ -1,13 +1,10 @@
 // app/(tabs)/profile/ProfileScreen.tsx
 import { ThemedText, ThemedView } from "@/components/Themed";
 import { StyleSheet } from "react-native";
+import Map from "@/components/Map";
 
 export default function PlantLocation() {
-  return (
-    <ThemedView style={styles.container}>
-      <ThemedText>This is the Plant Location Screen</ThemedText>
-    </ThemedView>
-  );
+  return <Map iNaturalistTaxonId={83435}></Map>;
 }
 
 const styles = StyleSheet.create({
