@@ -1,47 +1,101 @@
 import { useEffect, useRef, useState } from "react";
 import { View, StyleSheet } from "react-native";
-import MapView, { UrlTile } from "react-native-maps";
+import MapView, {
+  UrlTile,
+  BoundingBox,
+  LatLng,
+  Marker,
+} from "react-native-maps";
+import { ObservationsResponse } from "@/iNaturalistTypes";
 
 interface MapProps {
   iNaturalistTaxonId?: number;
-  lat?: number;
-  lon?: number;
+  initialLat?: number;
+  initialLng?: number;
+}
+interface MarkerInfo {
+  key: number;
+  coordinate: LatLng;
 }
 
-export default function Map({ iNaturalistTaxonId, lat, lon }: MapProps) {
-  const [region, setRegion] = useState({
-    // default map center is Duke Chapel
-    latitude: lat || 36.001687,
-    longitude: lon || -78.939824,
-    latitudeDelta: 0.05,
-    longitudeDelta: 0.05,
-  });
-
+export default function Map({
+  iNaturalistTaxonId,
+  initialLat,
+  initialLng,
+}: MapProps) {
   const map = useRef<MapView>(null);
 
-  const onMapReady = () => {
+  // region is the area to include within the map, but the map will probably
+  // show more, depending on the aspect ratio
+  const initialRegion = {
+    // default map center is Duke Chapel
+    latitude: initialLat || 36.001687,
+    longitude: initialLng || -78.939824,
+    latitudeDelta: 0.05,
+    longitudeDelta: 0.05,
+  };
+  // map bounds are the actual rendered bounds, we will update these as the user moves the map
+  const [mapBounds, setMapBounds] = useState<BoundingBox | undefined>(
+    undefined
+  );
+  const updateMapBounds = () => {
     map.current?.getMapBoundaries().then((bounds) => {
-      console.log("hi");
-      console.log(bounds);
+      setMapBounds(bounds);
     });
   };
 
+  // list of map markers
+  const [markers, setMarkers] = useState<MarkerInfo[]>([]);
+
+  // fetch iNaturalist observations whenever the taxon id changes or map bounds change
   useEffect(() => {
-    if (iNaturalistTaxonId === undefined) return;
+    if (iNaturalistTaxonId === undefined || mapBounds === undefined) return;
     const fetchINaturalistData = async () => {
-      const url = `https://api.inaturalist.org/v1/observations?taxon_id=83435&`;
+      console.log("fetching iNaturalist data");
+      const params = [
+        "taxon_id=" + 83435,
+        "quality_grade=research",
+        "geoprivacy=open",
+        "licensed=true",
+        "per_page=200",
+        "nelat=" + mapBounds.northEast.latitude,
+        "nelng=" + mapBounds.northEast.longitude,
+        "swlat=" + mapBounds.southWest.latitude,
+        "swlng=" + mapBounds.southWest.longitude,
+      ];
+      const url =
+        "https://api.inaturalist.org/v1/observations?" + params.join("&");
+      const data: ObservationsResponse = await (await fetch(url)).json();
+
+      // update marker list
+      const newMarkers: MarkerInfo[] = [];
+      data.results.forEach((observation) => {
+        // location is stored in observation.location as the string "lat,lng"
+        const latlng = observation.location?.split(",").map((x) => Number(x));
+        if (latlng === undefined) return;
+        newMarkers.push({
+          key: observation.id || 0,
+          coordinate: { latitude: latlng[0], longitude: latlng[1] },
+        });
+      });
+      setMarkers(newMarkers);
     };
     fetchINaturalistData();
-  }, [iNaturalistTaxonId]);
+  }, [iNaturalistTaxonId, mapBounds]);
 
   return (
     <View style={{ flex: 1 }}>
       <MapView
         style={styles.map}
-        initialRegion={region}
+        initialRegion={initialRegion}
         ref={map}
-        onMapReady={onMapReady}
+        onMapReady={updateMapBounds}
+        onRegionChangeComplete={updateMapBounds}
       >
+        {markers.map((m) => (
+          <Marker {...m}></Marker>
+        ))}
+        {/* uncomment to use open street map tiles */}
         {/* <UrlTile
           urlTemplate="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
           maximumZ={19}
