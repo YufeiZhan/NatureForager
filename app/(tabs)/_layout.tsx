@@ -9,6 +9,7 @@ export default function TabLayout() {
         name="home"
         options={{
           tabBarLabel: "Home",
+          headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="home" color={color} size={size} />
           ),
@@ -18,6 +19,7 @@ export default function TabLayout() {
         name="profile"
         options={{
           tabBarLabel: "Profile",
+          headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="person" color={color} size={size} />
           ),
@@ -27,6 +29,7 @@ export default function TabLayout() {
         name="recognition/ImageRecognitionScreen"
         options={{
           tabBarLabel: "Recognition",
+          headerShown: false,
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="camera" color={color} size={size} />
           ),
