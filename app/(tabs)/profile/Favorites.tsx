@@ -1,11 +1,12 @@
 // app/(tabs)/profile/Favorites.tsx
-import { View, Text, StyleSheet } from "react-native";
+import { ThemedText, ThemedView } from "@/components/Themed";
+import { StyleSheet } from "react-native";
 
 export default function Favorites() {
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>This is the Favorites Screen</Text>
-    </View>
+    <ThemedView style={styles.container}>
+      <ThemedText style={styles.text}>This is the Favorites Screen</ThemedText>
+    </ThemedView>
   );
 }
 
