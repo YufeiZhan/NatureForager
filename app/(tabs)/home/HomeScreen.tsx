@@ -5,6 +5,7 @@ import { SetStateAction, useEffect, useState, useMemo } from "react";
 import * as Location from "expo-location";
 import { Picker } from "@react-native-picker/picker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { TextInput } from "react-native";
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -22,6 +23,8 @@ export default function HomeScreen() {
   };
   
   const filteredSpecies = useMemo(() => speciesData[selectedMonth] || {}, [selectedMonth]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [allObservations, setAllObservations] = useState<{ [key: number]: any[] }>({});
 
   useEffect(() => {
     (async () => {
@@ -40,9 +43,28 @@ export default function HomeScreen() {
       const storedData = await loadStoredObservations(Object.keys(filteredSpecies).map(Number));
       if (storedData) {
         setObservations(storedData);
+        setAllObservations(storedData);
       }
     })();
   }, [filteredSpecies]);
+
+  const filteredObservations = useMemo(() => {
+    if (!searchQuery) return allObservations;
+    
+    const filtered = Object.keys(allObservations).reduce((acc, taxonId) => {
+      const name = (typeof filteredSpecies === "object" && !Array.isArray(filteredSpecies))
+        ? filteredSpecies[Number(taxonId) as keyof typeof filteredSpecies]
+        : undefined;
+  
+      if (name && name.toLowerCase().includes(searchQuery.toLowerCase())) {
+        acc[Number(taxonId)] = allObservations[Number(taxonId)];
+      }
+      return acc;
+    }, {} as { [key: number]: any[] });
+  
+    return filtered;
+  }, [searchQuery, allObservations, filteredSpecies]);
+  
 
   const loadStoredObservations = async (taxonIds: number[]) => {
     try {
@@ -83,7 +105,7 @@ export default function HomeScreen() {
       const contentType = response.headers.get("content-type");
       if (contentType && contentType.includes("application/json")) {
         const data = await response.json();
-        console.log(data.results)
+        // console.log(data.results)
         return data.results || [];
       } else {
         console.error(`Error fetching observations for taxon ID ${taxonId}: Received non-JSON response`);
@@ -173,6 +195,12 @@ export default function HomeScreen() {
       style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
     >
       <ThemedText>Welcome to the Home Screen</ThemedText>
+      <TextInput
+        style={{ width: "90%", padding: 10, margin: 10, backgroundColor: "#f0f0f0", borderRadius: 5 }}
+        placeholder="Search for species..."
+        value={searchQuery}
+        onChangeText={(text) => setSearchQuery(text)}
+      />
 
       <Picker
         selectedValue={selectedMonth}
@@ -185,7 +213,7 @@ export default function HomeScreen() {
       </Picker>
 
       <ThemedFlatList
-        data={Object.entries(observations)}
+        data={Object.entries(filteredObservations)}
         keyExtractor={(item) => item[0].toString()}
         renderItem={({ item }) => {
           const taxonId = Number(item[0]);
@@ -226,7 +254,6 @@ export default function HomeScreen() {
         onPress={() => router.push("/PlantInfoModal")}
       />
 
-      {/* <Link href="./PlantLocation"> Go to Plant Location </Link> */}
     </ThemedView>
   );
 }
