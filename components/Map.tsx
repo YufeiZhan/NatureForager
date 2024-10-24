@@ -9,7 +9,7 @@ import MapView, {
 import { ObservationsResponse } from "@/iNaturalistTypes";
 
 interface MapProps {
-  iNaturalistTaxonId?: number;
+  iNaturalistTaxonId?: string;
   initialLat?: number;
   initialLng?: number;
 }
@@ -51,10 +51,9 @@ export default function Map({
   useEffect(() => {
     if (iNaturalistTaxonId === undefined || mapBounds === undefined) return;
     const fetchINaturalistData = async () => {
-      console.log("fetching iNaturalist data");
       const params = [
-        "taxon_id=" + 83435,
-        "quality_grade=research",
+        "taxon_id=" + iNaturalistTaxonId,
+        "quality_grade=needs_id,research",
         "geoprivacy=open",
         "licensed=true",
         "per_page=200",
