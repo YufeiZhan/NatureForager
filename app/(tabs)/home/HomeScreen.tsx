@@ -204,7 +204,12 @@ export default function HomeScreen() {
             onTouchEnd={() => {
               router.push({
                 pathname: "./PlantLocation",
-                params: { taxonId: taxonId, speciesName: speciesName, lat: location?.latitude, long: location?.longitude },
+                params: { 
+                  iNaturalistTaxonId: taxonId, 
+                  commonName: speciesName, 
+                  lat: location?.latitude, 
+                  long: location?.longitude,
+                },
               });
             }}>
               <ThemedText>
@@ -221,7 +226,7 @@ export default function HomeScreen() {
         onPress={() => router.push("/PlantInfoModal")}
       />
 
-      <Link href="./PlantLocation"> Go to Plant Location </Link>
+      {/* <Link href="./PlantLocation"> Go to Plant Location </Link> */}
     </ThemedView>
   );
 }
