@@ -14,7 +14,12 @@ export default function HomeScreen() {
         onPress={() => router.push("/PlantInfoModal")}
       />
 
-      <Link href="./PlantLocation"> Go to Plant Location </Link>
+      <Link href="./PlantLocation?iNaturalistTaxonId=54504&commonName=Black%20Walnut">
+        Black Walnut
+      </Link>
+      <Link href="./PlantLocation?iNaturalistTaxonId=83435&commonName=American Persimmon">
+        Persimmon
+      </Link>
     </ThemedView>
   );
 }
