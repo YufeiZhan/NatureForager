@@ -1,5 +1,5 @@
 import { Stack } from "expo-router";
-function RootLayoutNav() {
+export default function RootLayoutNav() {
   return (
     <Stack>
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
