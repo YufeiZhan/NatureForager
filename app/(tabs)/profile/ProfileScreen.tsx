@@ -7,8 +7,8 @@ export default function ProfileScreen() {
   return (
     <ThemedView style={styles.container}>
       <ThemedText>This is the Profile Screen</ThemedText>
-      <Link href="./profile/Favorites"> Go to Favorites </Link>
-      <Link href="./SaveForLater"> Go to Save for Later </Link>
+      <Link href="/profile/Favorites"> Go to Favorites </Link>
+      <Link href="/profile/SaveForLater"> Go to Save for Later </Link>
     </ThemedView>
   );
 }
