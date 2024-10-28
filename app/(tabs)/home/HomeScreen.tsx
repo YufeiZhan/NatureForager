@@ -14,10 +14,14 @@ import { TextInput } from "react-native";
 
 export default function HomeScreen() {
   const router = useRouter();
-  type Month = "April" | "May" | "June";
+  type Month = "January" | "February" | "March" | "April" | "May" | "June" | "July" | "August" | "September" | "October" | "November" | "December";
+  const allMonths: Month[] = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  const jsonData = require("@/data/edible_plants.json");
 
-  // todo: should be changed to default current month
-  const [selectedMonth, setSelectedMonth] = useState<Month>("April");
+  const currentMonthIndex = new Date().getMonth();
+  const currentMonth = allMonths[currentMonthIndex];
+
+  const [selectedMonth, setSelectedMonth] = useState<Month>(currentMonth);
   const [location, setLocation] = useState<{
     latitude: number;
     longitude: number;
@@ -26,11 +30,7 @@ export default function HomeScreen() {
     {}
   );
   const [loading, setLoading] = useState(false);
-  const speciesData = {
-    April: { 133686: "Black Morel", 48502: "Redbud" },
-    May: ["placeholder 1"],
-    June: ["placeholder 2"],
-  };
+  const [speciesData, setSpeciesData] = useState<{ [key in Month]?: { [taxonId: number]: string } }>({});
 
   const filteredSpecies = useMemo(
     () => speciesData[selectedMonth] || {},
@@ -40,6 +40,28 @@ export default function HomeScreen() {
   const [allObservations, setAllObservations] = useState<{
     [key: number]: any[];
   }>({});
+
+  useEffect(() => {
+    const organizeSpeciesData = () => {
+      const organizedData: { [key in Month]?: { [taxonId: number]: string } } = {};
+      jsonData.forEach((record: { "iNaturalist ID": string; "Common Name": string; "Month Ripe": Month }) => {
+        const month = record["Month Ripe"];
+        const taxonId = parseInt(record["iNaturalist ID"], 10);
+        const commonName = record["Common Name"];
+
+        if (month && !isNaN(taxonId)) {
+          if (!organizedData[month]) {
+            organizedData[month] = {};
+          }
+          organizedData[month]![taxonId] = commonName;
+        }
+      });
+
+      setSpeciesData(organizedData);
+    };
+
+    organizeSpeciesData();
+  }, []);
 
   useEffect(() => {
     (async () => {
@@ -149,66 +171,66 @@ export default function HomeScreen() {
     }
   };
 
-  const fetchAllObservations = async (
-    species: { [key: number]: string },
-    lat: number,
-    lng: number
-  ) => {
-    let radius = 2;
-    let allObservations: { [key: number]: any[] } = {};
-    setLoading(true);
+  // const fetchAllObservations = async (
+  //   species: { [key: number]: string },
+  //   lat: number,
+  //   lng: number
+  // ) => {
+  //   let radius = 2;
+  //   let allObservations: { [key: number]: any[] } = {};
+  //   setLoading(true);
 
-    try {
-      for (const id of Object.keys(species).map(Number)) {
-        let observationsForId: any[] = [];
-        radius = 2;
+  //   try {
+  //     for (const id of Object.keys(species).map(Number)) {
+  //       let observationsForId: any[] = [];
+  //       radius = 2;
 
-        while (radius <= 32 && observationsForId.length < 200) {
-          const results = await fetchObservationsForId(id, lat, lng, radius);
-          observationsForId = observationsForId.concat(results);
-          radius *= 2;
-        }
+  //       while (radius <= 32 && observationsForId.length < 1) {
+  //         const results = await fetchObservationsForId(id, lat, lng, radius);
+  //         observationsForId = observationsForId.concat(results);
+  //         radius *= 2;
+  //       }
 
-        allObservations[id] = observationsForId.slice(0, 200);
-        await saveObservations(id, observationsForId);
-      }
+  //       allObservations[id] = observationsForId.slice(0, 200);
+  //       await saveObservations(id, observationsForId);
+  //     }
 
-      setObservations(allObservations);
-    } catch (error) {
-      console.error("Error fetching all observations:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  //     setObservations(allObservations);
+  //   } catch (error) {
+  //     console.error("Error fetching all observations:", error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
-  const parseLocation = (locationString: string): [number, number] => {
-    const [latitude, longitude] = locationString.split(",").map(Number);
-    return [latitude, longitude];
-  };
+  // const parseLocation = (locationString: string): [number, number] => {
+  //   const [latitude, longitude] = locationString.split(",").map(Number);
+  //   return [latitude, longitude];
+  // };
 
-  const findNearestObservation = (taxonId: number) => {
-    if (!location || !observations[taxonId]) return null;
+  // const findNearestObservation = (taxonId: number) => {
+  //   if (!location || !observations[taxonId]) return null;
 
-    let nearestObservation = null;
-    let minDistance = 33;
+  //   let nearestObservation = null;
+  //   let minDistance = 33;
 
-    for (const obs of observations[taxonId]) {
-      if (!obs.location) continue;
-      const [obsLat, obsLng] = parseLocation(obs.location);
-      const distance = calculateDistance(
-        location.latitude,
-        location.longitude,
-        obsLat,
-        obsLng
-      );
-      if (distance < minDistance) {
-        minDistance = distance;
-        nearestObservation = obs;
-      }
-    }
+  //   for (const obs of observations[taxonId]) {
+  //     if (!obs.location) continue;
+  //     const [obsLat, obsLng] = parseLocation(obs.location);
+  //     const distance = calculateDistance(
+  //       location.latitude,
+  //       location.longitude,
+  //       obsLat,
+  //       obsLng
+  //     );
+  //     if (distance < minDistance) {
+  //       minDistance = distance;
+  //       nearestObservation = obs;
+  //     }
+  //   }
 
-    return nearestObservation;
-  };
+  //   return nearestObservation;
+  // };
 
   const calculateDistance = (
     lat1: number,
@@ -232,15 +254,15 @@ export default function HomeScreen() {
     return R * c;
   };
 
-  useEffect(() => {
-    if (location && Object.keys(filteredSpecies).length > 0) {
-      fetchAllObservations(
-        filteredSpecies,
-        location.latitude,
-        location.longitude
-      );
-    }
-  }, [location, filteredSpecies]);
+  // useEffect(() => {
+  //   if (location && Object.keys(filteredSpecies).length > 0) {
+  //     fetchAllObservations(
+  //       filteredSpecies,
+  //       location.latitude,
+  //       location.longitude
+  //     );
+  //   }
+  // }, [location, filteredSpecies]);
 
   return (
     <ThemedView
@@ -275,14 +297,14 @@ export default function HomeScreen() {
         keyExtractor={(item) => item[0].toString()}
         renderItem={({ item }) => {
           const taxonId = Number(item[0]);
-          const nearest = findNearestObservation(taxonId);
-          const distance = nearest
-            ? calculateDistance(
-                location!.latitude,
-                location!.longitude,
-                ...parseLocation(nearest.location)
-              ).toFixed(2)
-            : null;
+          // const nearest = findNearestObservation(taxonId);
+          // const distance = nearest
+          //   ? calculateDistance(
+          //       location!.latitude,
+          //       location!.longitude,
+          //       ...parseLocation(nearest.location)
+          //     ).toFixed(2)
+          //   : null;
           const speciesName = (filteredSpecies as Record<number, string>)[
             taxonId
           ];
@@ -303,9 +325,9 @@ export default function HomeScreen() {
             >
               <ThemedText>
                 {speciesName} -
-                {distance
+                {/* {distance
                   ? ` Closest Distance: ${distance} km`
-                  : " No observations found near you"}
+                  : " No observations found near you"} */}
               </ThemedText>
             </ThemedView>
           );
