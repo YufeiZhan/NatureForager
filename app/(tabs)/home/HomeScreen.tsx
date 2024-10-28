@@ -6,10 +6,11 @@ import {
   ThemedView,
 } from "@/components/Themed";
 import { useRouter } from "expo-router";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useContext } from "react";
 import * as Location from "expo-location";
 import { Picker } from "@react-native-picker/picker";
 import { TextInput, ActivityIndicator } from "react-native";
+import { LocationContext } from "@/hooks/LocationContext";
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -21,19 +22,36 @@ export default function HomeScreen() {
   const currentMonth = allMonths[currentMonthIndex];
 
   const [selectedMonth, setSelectedMonth] = useState<Month>(currentMonth);
-  const [location, setLocation] = useState<{
-    latitude: number;
-    longitude: number;
-  } | null>(null);
+  // const [location, setLocation] = useState<{
+  //   latitude: number;
+  //   longitude: number;
+  // } | null>(null);
+  const { location, setLocation  } = useContext(LocationContext);
   const [loading, setLoading] = useState(false);
   const [speciesDistances, setSpeciesDistances] = useState<{ [key: number]: number | null }>({});
   const [speciesData, setSpeciesData] = useState<{ [key in Month]?: { [taxonId: number]: string } }>({});
-
   const filteredSpecies = useMemo(
     () => speciesData[selectedMonth] || {},
     [selectedMonth, speciesData]
   );
   const [searchQuery, setSearchQuery] = useState("");
+  
+  // useEffect(() => {
+  //   const getLocation = async () => {
+  //     let { status } = await Location.requestForegroundPermissionsAsync();
+  //     if (status !== "granted") {
+  //       setLocation({ latitude: 36.0014, longitude: -78.9382 });
+  //       return;
+  //     }
+
+  //     let { coords } = await Location.getCurrentPositionAsync({});
+  //     console.log(location)
+  //     setLocation({ latitude: coords.latitude, longitude: coords.longitude });
+  //   };
+
+  //   getLocation();
+  // }, []);
+
   useEffect(() => {
     const organizeSpeciesData = () => {
       const organizedData: { [key in Month]?: { [taxonId: number]: string } } = {};
@@ -53,22 +71,22 @@ export default function HomeScreen() {
       setSpeciesData(organizedData);
     };
 
-    const getLocation = async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        setLocation({
-          latitude: 36.0014,
-          longitude: -78.9382,
-        });
-        return;
-      }
+    // const getLocation = async () => {
+    //   let { status } = await Location.requestForegroundPermissionsAsync();
+    //   if (status !== "granted") {
+    //     setLocation({
+    //       latitude: 36.0014,
+    //       longitude: -78.9382,
+    //     });
+    //     return;
+    //   }
 
-      let { coords } = await Location.getCurrentPositionAsync({});
-      setLocation({
-        latitude: coords.latitude,
-        longitude: coords.longitude,
-      });
-    };
+    //   let { coords } = await Location.getCurrentPositionAsync({});
+    //   setLocation({
+    //     latitude: coords.latitude,
+    //     longitude: coords.longitude,
+    //   });
+    // };
 
     const fetchDistances = async () => {
       if (location && Object.keys(filteredSpecies).length > 0) {
@@ -80,9 +98,7 @@ export default function HomeScreen() {
     
     
     organizeSpeciesData();
-    getLocation();
     fetchDistances();
-    
   }, []);
 
   useEffect(() => {
