@@ -5,12 +5,11 @@ import {
   ThemedText,
   ThemedView,
 } from "@/components/Themed";
-import { Link, useRouter } from "expo-router";
-import { SetStateAction, useEffect, useState, useMemo } from "react";
+import { useRouter } from "expo-router";
+import { useEffect, useState, useMemo } from "react";
 import * as Location from "expo-location";
 import { Picker } from "@react-native-picker/picker";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { TextInput } from "react-native";
+import { TextInput, ActivityIndicator } from "react-native";
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -26,10 +25,8 @@ export default function HomeScreen() {
     latitude: number;
     longitude: number;
   } | null>(null);
-  const [observations, setObservations] = useState<{ [key: number]: any[] }>(
-    {}
-  );
   const [loading, setLoading] = useState(false);
+  const [speciesDistances, setSpeciesDistances] = useState<{ [key: number]: number | null }>({});
   const [speciesData, setSpeciesData] = useState<{ [key in Month]?: { [taxonId: number]: string } }>({});
 
   const filteredSpecies = useMemo(
@@ -37,10 +34,6 @@ export default function HomeScreen() {
     [selectedMonth]
   );
   const [searchQuery, setSearchQuery] = useState("");
-  const [allObservations, setAllObservations] = useState<{
-    [key: number]: any[];
-  }>({});
-
   useEffect(() => {
     const organizeSpeciesData = () => {
       const organizedData: { [key in Month]?: { [taxonId: number]: string } } = {};
@@ -60,11 +53,7 @@ export default function HomeScreen() {
       setSpeciesData(organizedData);
     };
 
-    organizeSpeciesData();
-  }, []);
-
-  useEffect(() => {
-    (async () => {
+    const getLocation = async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
         // todo: location permission disabled fallback
@@ -76,161 +65,114 @@ export default function HomeScreen() {
         latitude: coords.latitude,
         longitude: coords.longitude,
       });
+    };
 
-      const storedData = await loadStoredObservations(
-        Object.keys(filteredSpecies).map(Number)
-      );
-      if (storedData) {
-        setObservations(storedData);
-        setAllObservations(storedData);
+    const fetchDistances = async () => {
+      if (location && Object.keys(filteredSpecies).length > 0) {
+        await fetchMinimumDistancesForSpecies(filteredSpecies, location.latitude, location.longitude);
       }
-    })();
-  }, [filteredSpecies]);
+    };
+    
+    setLoading(true);
+    organizeSpeciesData();
+    getLocation();
+    fetchDistances();
+    setLoading(false);
+  }, []);
 
-  const filteredObservations = useMemo(() => {
-    if (!searchQuery) return allObservations;
-
-    const filtered = Object.keys(allObservations).reduce((acc, taxonId) => {
-      const name =
-        typeof filteredSpecies === "object" && !Array.isArray(filteredSpecies)
-          ? filteredSpecies[Number(taxonId) as keyof typeof filteredSpecies]
-          : undefined;
-
-      if (name && name.toLowerCase().includes(searchQuery.toLowerCase())) {
-        acc[Number(taxonId)] = allObservations[Number(taxonId)];
+  useEffect(() => {
+    const fetchDistances = async () => {
+      if (location && Object.keys(filteredSpecies).length > 0) {
+        setLoading(true);
+        await fetchMinimumDistancesForSpecies(filteredSpecies, location.latitude, location.longitude);
+        setLoading(false);
       }
-      return acc;
-    }, {} as { [key: number]: any[] });
+    };
+  
+    fetchDistances();
+  }, [location, filteredSpecies]);
 
-    return filtered;
-  }, [searchQuery, allObservations, filteredSpecies]);
+  const fetchMinimumDistancesForSpecies = async (
+    species: { [key: number]: string },
+    lat: number,
+    lng: number
+  ) => {
+    let radius = 2;
+    let speciesMinDistances: { [key: number]: number | null } = {};
+    let remainingIds = Object.keys(species).map(Number);
 
-  const loadStoredObservations = async (taxonIds: number[]) => {
     try {
-      const allObservations: { [key: number]: any[] } = {};
-      for (const id of taxonIds) {
-        const jsonData = await AsyncStorage.getItem(id.toString());
-        if (jsonData) {
-          allObservations[id] = JSON.parse(jsonData);
+      while (remainingIds.length > 0 && radius <= 32) {
+        const taxonIdsString = remainingIds.join("%2C");
+
+        const url = `https://api.inaturalist.org/v1/observations?taxon_id=${taxonIdsString}&geoprivacy=open&quality_grade=research&per_page=200&order=desc&order_by=observed_on&lat=${lat}&lng=${lng}&radius=${radius}`;
+        const response = await fetch(url);
+
+        if (!response.ok) {
+          console.error(`Error fetching observations: ${response.status} ${response.statusText}`);
+          break;
+        }
+
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          const data = await response.json();
+          console.log(data.results)
+          const { foundIds, nextRemainingIds } = processObservationsWithRadius(
+            data.results,
+            remainingIds,
+            lat,
+            lng
+          );
+          for (const [taxonId, distance] of Object.entries(foundIds)) {
+            speciesMinDistances[Number(taxonId)] = distance;
+          }
+
+          remainingIds = nextRemainingIds;
+        } else {
+          console.error(`Error fetching observations: Received non-JSON response`);
+          break;
+        }
+        radius *= 2;
+      }
+
+      for (const id of Object.keys(species).map(Number)) {
+        if (!speciesMinDistances[id]) {
+          speciesMinDistances[id] = null;
         }
       }
-      return allObservations;
-    } catch (error) {
-      console.error("Error loading stored observations:", error);
-    }
-    return null;
-  };
 
-  const saveObservations = async (taxonId: number, data: any[]) => {
-    try {
-      const jsonData = JSON.stringify(data);
-      await AsyncStorage.setItem(taxonId.toString(), jsonData);
+      setSpeciesDistances(speciesMinDistances);
     } catch (error) {
-      console.error(
-        `Error saving observations for taxon ID ${taxonId}:`,
-        error
-      );
+      console.error("Error fetching minimum distances:", error);
     }
   };
 
-  // todo: optimization
-  const fetchObservationsForId = async (
-    taxonId: number,
-    lat: number,
-    lng: number,
-    radius: number
-  ) => {
-    const url = `https://api.inaturalist.org/v1/observations?taxon_id=${taxonId}&geoprivacy=open&quality_grade=research&per_page=200&order=desc&order_by=observed_on&lat=${lat}&lng=${lng}&radius=${radius}`;
-    try {
-      const response = await fetch(url);
+  const processObservationsWithRadius = (observations: any, taxonIds: string | any[], userLat: number, userLng: number) => {
+    const foundIds: { [taxonId: number]: number } = {};
+    const nextRemainingIds = [];
 
-      if (!response.ok) {
-        console.error(
-          `Error fetching observations for taxon ID ${taxonId}: ${response.status} ${response.statusText}`
-        );
-        return [];
+    for (const observation of observations) {
+      const taxonId = observation.taxon?.id;
+      const locationString = observation.location;
+
+      if (!taxonId || !locationString || !taxonIds.includes(taxonId)) continue;
+
+      const [obsLat, obsLng] = locationString.split(",").map(Number);
+      const distance = calculateDistance(userLat, userLng, obsLat, obsLng);
+
+      if (!foundIds[taxonId] || distance < foundIds[taxonId]) {
+        foundIds[taxonId] = distance;
       }
-
-      const contentType = response.headers.get("content-type");
-      if (contentType && contentType.includes("application/json")) {
-        const data = await response.json();
-        // console.log(data.results)
-        return data.results || [];
-      } else {
-        console.error(
-          `Error fetching observations for taxon ID ${taxonId}: Received non-JSON response`
-        );
-        return [];
-      }
-    } catch (error) {
-      console.error(
-        `Error fetching observations for taxon ID ${taxonId}:`,
-        error
-      );
-      return [];
     }
+
+    for (const id of taxonIds) {
+      if (!foundIds[id]) {
+        nextRemainingIds.push(id);
+      }
+    }
+
+    return { foundIds, nextRemainingIds };
   };
-
-  // const fetchAllObservations = async (
-  //   species: { [key: number]: string },
-  //   lat: number,
-  //   lng: number
-  // ) => {
-  //   let radius = 2;
-  //   let allObservations: { [key: number]: any[] } = {};
-  //   setLoading(true);
-
-  //   try {
-  //     for (const id of Object.keys(species).map(Number)) {
-  //       let observationsForId: any[] = [];
-  //       radius = 2;
-
-  //       while (radius <= 32 && observationsForId.length < 1) {
-  //         const results = await fetchObservationsForId(id, lat, lng, radius);
-  //         observationsForId = observationsForId.concat(results);
-  //         radius *= 2;
-  //       }
-
-  //       allObservations[id] = observationsForId.slice(0, 200);
-  //       await saveObservations(id, observationsForId);
-  //     }
-
-  //     setObservations(allObservations);
-  //   } catch (error) {
-  //     console.error("Error fetching all observations:", error);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
-  // const parseLocation = (locationString: string): [number, number] => {
-  //   const [latitude, longitude] = locationString.split(",").map(Number);
-  //   return [latitude, longitude];
-  // };
-
-  // const findNearestObservation = (taxonId: number) => {
-  //   if (!location || !observations[taxonId]) return null;
-
-  //   let nearestObservation = null;
-  //   let minDistance = 33;
-
-  //   for (const obs of observations[taxonId]) {
-  //     if (!obs.location) continue;
-  //     const [obsLat, obsLng] = parseLocation(obs.location);
-  //     const distance = calculateDistance(
-  //       location.latitude,
-  //       location.longitude,
-  //       obsLat,
-  //       obsLng
-  //     );
-  //     if (distance < minDistance) {
-  //       minDistance = distance;
-  //       nearestObservation = obs;
-  //     }
-  //   }
-
-  //   return nearestObservation;
-  // };
 
   const calculateDistance = (
     lat1: number,
@@ -254,21 +196,32 @@ export default function HomeScreen() {
     return R * c;
   };
 
-  // useEffect(() => {
-  //   if (location && Object.keys(filteredSpecies).length > 0) {
-  //     fetchAllObservations(
-  //       filteredSpecies,
-  //       location.latitude,
-  //       location.longitude
-  //     );
-  //   }
-  // }, [location, filteredSpecies]);
+  const filteredSpeciesQuery = useMemo(() => {
+    if (!searchQuery) {
+      return Object.keys(filteredSpecies).map((taxonId) => ({
+        taxonId: Number(taxonId),
+        name: filteredSpecies[Number(taxonId)],
+        distance: speciesDistances[Number(taxonId)],
+      }));
+    }
+
+    return Object.keys(filteredSpecies)
+      .filter((taxonId) =>
+        filteredSpecies[Number(taxonId)]
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase())
+      )
+      .map((taxonId) => ({
+        taxonId: Number(taxonId),
+        name: filteredSpecies[Number(taxonId)],
+        distance: speciesDistances[Number(taxonId)],
+      }));
+  }, [searchQuery, filteredSpecies, speciesDistances]);
 
   return (
     <ThemedView
       style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
     >
-      <ThemedText>Welcome to the Home Screen</ThemedText>
       <TextInput
         style={{
           width: "90%",
@@ -291,32 +244,20 @@ export default function HomeScreen() {
           <Picker.Item key={month} label={month} value={month} />
         ))}
       </Picker>
-
-      <ThemedFlatList
-        data={Object.entries(filteredObservations)}
-        keyExtractor={(item) => item[0].toString()}
-        renderItem={({ item }) => {
-          const taxonId = Number(item[0]);
-          // const nearest = findNearestObservation(taxonId);
-          // const distance = nearest
-          //   ? calculateDistance(
-          //       location!.latitude,
-          //       location!.longitude,
-          //       ...parseLocation(nearest.location)
-          //     ).toFixed(2)
-          //   : null;
-          const speciesName = (filteredSpecies as Record<number, string>)[
-            taxonId
-          ];
-
-          return (
+      {loading ? (
+        <ActivityIndicator size="large"/>
+      ) : (
+        <ThemedFlatList
+          data={filteredSpeciesQuery}
+          keyExtractor={(item) => item.taxonId.toString()}
+          renderItem={({ item }) => (
             <ThemedView
               onTouchEnd={() => {
                 router.push({
                   pathname: "/home/PlantLocation",
                   params: {
-                    iNaturalistTaxonId: taxonId,
-                    commonName: speciesName,
+                    iNaturalistTaxonId: item.taxonId,
+                    commonName: item.name,
                     lat: location?.latitude,
                     lng: location?.longitude,
                   },
@@ -324,20 +265,15 @@ export default function HomeScreen() {
               }}
             >
               <ThemedText>
-                {speciesName} -
-                {/* {distance
-                  ? ` Closest Distance: ${distance} km`
-                  : " No observations found near you"} */}
+                {item.name} -{" "}
+                {item.distance !== null
+                  ? `Closest Distance: ${Number(item.distance).toFixed(2)} km`
+                  : "No observations found near you"}
               </ThemedText>
             </ThemedView>
-          );
-        }}
-      />
-
-      <ThemedButton
-        title="Go to Details"
-        onPress={() => router.push("/PlantInfoModal")}
-      />
+          )}
+        />
+      )}
     </ThemedView>
   );
 }
