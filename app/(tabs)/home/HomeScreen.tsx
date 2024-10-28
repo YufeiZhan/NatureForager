@@ -8,8 +8,14 @@ import {
 import { useRouter } from "expo-router";
 import { useEffect, useState, useMemo, useContext } from "react";
 import { Picker } from "@react-native-picker/picker";
-import { TextInput, ActivityIndicator, Pressable } from "react-native";
+import {
+  TextInput,
+  ActivityIndicator,
+  Pressable,
+  StyleSheet,
+} from "react-native";
 import { LocationContext } from "@/hooks/LocationContext";
+import HomeListItem from "@/components/HomeListItem";
 import jsonData from "@/data/edible_plants.json";
 
 const allMonths = [
@@ -238,17 +244,9 @@ export default function HomeScreen() {
   }, [searchQuery, filteredSpecies, speciesDistances]);
 
   return (
-    <ThemedView
-      style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-    >
+    <ThemedView style={styles.mainContainer}>
       <TextInput
-        style={{
-          width: "90%",
-          padding: 10,
-          margin: 10,
-          backgroundColor: "#f0f0f0",
-          borderRadius: 5,
-        }}
+        style={styles.searchBar}
         placeholder="Search for species..."
         value={searchQuery}
         onChangeText={(text) => setSearchQuery(text)}
@@ -263,38 +261,31 @@ export default function HomeScreen() {
           <Picker.Item key={month} label={month} value={month} />
         ))}
       </Picker>
-      {loading ? (
-        <ActivityIndicator size="large" />
-      ) : (
+
+      {loading && <ActivityIndicator size="large" />}
+
+      {!loading && (
         <ThemedFlatList
           data={filteredSpeciesQuery}
           keyExtractor={(item) => item.taxonId.toString()}
-          renderItem={({ item }) => (
-            <Pressable
-              onPress={() => {
-                router.push({
-                  pathname: "/home/PlantLocation",
-                  params: {
-                    iNaturalistTaxonId: item.taxonId,
-                    commonName: item.name,
-                    lat: location?.latitude,
-                    lng: location?.longitude,
-                  },
-                });
-              }}
-            >
-              <ThemedView>
-                <ThemedText>
-                  {item.name} -{" "}
-                  {item.distance !== null
-                    ? `Closest Distance: ${Number(item.distance).toFixed(2)} km`
-                    : "No observations found near you"}
-                </ThemedText>
-              </ThemedView>
-            </Pressable>
-          )}
+          renderItem={({ item }) => <HomeListItem {...item}></HomeListItem>}
         />
       )}
     </ThemedView>
   );
 }
+
+const styles = StyleSheet.create({
+  mainContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  searchBar: {
+    width: "90%",
+    padding: 10,
+    margin: 10,
+    backgroundColor: "#f0f0f0",
+    borderRadius: 5,
+  },
+});
