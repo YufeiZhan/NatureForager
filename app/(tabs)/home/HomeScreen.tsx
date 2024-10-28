@@ -48,48 +48,28 @@ export default function HomeScreen() {
     [key: number]: number | null;
   }>({});
   const [speciesData, setSpeciesData] = useState<TaxaByMonth>({});
-  const filteredSpecies = useMemo(
-    () => speciesData[selectedMonth] || {},
-    [selectedMonth, speciesData]
-  );
   const [searchQuery, setSearchQuery] = useState("");
+  const filteredSpecies = speciesData[selectedMonth] || {};
 
+  // read in the json data
   useEffect(() => {
-    const organizeSpeciesData = () => {
-      const organizedData: TaxaByMonth = {};
-      jsonData.forEach((record) => {
-        const month = record["Month Ripe"] as Month;
-        const taxonId = record["iNaturalist ID"];
-        const commonName = record["Common Name"];
+    const organizedData: TaxaByMonth = {};
+    jsonData.forEach((record) => {
+      const month = record["Month Ripe"] as Month;
+      const taxonId = record["iNaturalist ID"];
+      const commonName = record["Common Name"];
 
-        if (month && !isNaN(taxonId)) {
-          if (!organizedData[month]) {
-            organizedData[month] = {};
-          }
-          organizedData[month]![taxonId] = commonName;
+      if (month && !isNaN(taxonId)) {
+        if (!organizedData[month]) {
+          organizedData[month] = {};
         }
-      });
-
-      setSpeciesData(organizedData);
-    };
-
-    const fetchDistances = async () => {
-      if (location && Object.keys(filteredSpecies).length > 0) {
-        setLoading(true);
-        const newSpeciesDistances = await fetchMinimumDistancesForSpecies(
-          filteredSpecies,
-          location.latitude,
-          location.longitude
-        );
-        setSpeciesDistances(newSpeciesDistances);
-        setLoading(false);
+        organizedData[month][taxonId] = commonName;
       }
-    };
-
-    organizeSpeciesData();
-    fetchDistances();
+    });
+    setSpeciesData(organizedData);
   }, []);
 
+  // get distances to nearest observation of each species
   useEffect(() => {
     const fetchDistances = async () => {
       if (location && Object.keys(filteredSpecies).length > 0) {
@@ -103,7 +83,6 @@ export default function HomeScreen() {
         setLoading(false);
       }
     };
-
     fetchDistances();
   }, [location, filteredSpecies]);
 
