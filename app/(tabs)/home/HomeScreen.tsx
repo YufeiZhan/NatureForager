@@ -10,21 +10,42 @@ import { useEffect, useState, useMemo, useContext } from "react";
 import { Picker } from "@react-native-picker/picker";
 import { TextInput, ActivityIndicator } from "react-native";
 import { LocationContext } from "@/hooks/LocationContext";
+import jsonData from "@/data/edible_plants.json";
+
+const allMonths = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+] as const;
+
+type Month = (typeof allMonths)[number];
+
+type TaxaByMonth = {
+  [key in Month]?: { [taxonId: number]: string };
+};
 
 export default function HomeScreen() {
   const router = useRouter();
-  type Month = "January" | "February" | "March" | "April" | "May" | "June" | "July" | "August" | "September" | "October" | "November" | "December";
-  const allMonths: Month[] = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-  const jsonData = require("@/data/edible_plants.json");
 
   const currentMonthIndex = new Date().getMonth();
   const currentMonth = allMonths[currentMonthIndex];
 
   const [selectedMonth, setSelectedMonth] = useState<Month>(currentMonth);
-  const { location, setLocation  } = useContext(LocationContext);
+  const { location, setLocation } = useContext(LocationContext);
   const [loading, setLoading] = useState(false);
-  const [speciesDistances, setSpeciesDistances] = useState<{ [key: number]: number | null }>({});
-  const [speciesData, setSpeciesData] = useState<{ [key in Month]?: { [taxonId: number]: string } }>({});
+  const [speciesDistances, setSpeciesDistances] = useState<{
+    [key: number]: number | null;
+  }>({});
+  const [speciesData, setSpeciesData] = useState<TaxaByMonth>({});
   const filteredSpecies = useMemo(
     () => speciesData[selectedMonth] || {},
     [selectedMonth, speciesData]
@@ -33,10 +54,10 @@ export default function HomeScreen() {
 
   useEffect(() => {
     const organizeSpeciesData = () => {
-      const organizedData: { [key in Month]?: { [taxonId: number]: string } } = {};
-      jsonData.forEach((record: { "iNaturalist ID": string; "Common Name": string; "Month Ripe": Month }) => {
-        const month = record["Month Ripe"];
-        const taxonId = parseInt(record["iNaturalist ID"], 10);
+      const organizedData: TaxaByMonth = {};
+      jsonData.forEach((record) => {
+        const month = record["Month Ripe"] as Month;
+        const taxonId = record["iNaturalist ID"];
         const commonName = record["Common Name"];
 
         if (month && !isNaN(taxonId)) {
@@ -53,12 +74,15 @@ export default function HomeScreen() {
     const fetchDistances = async () => {
       if (location && Object.keys(filteredSpecies).length > 0) {
         setLoading(true);
-        await fetchMinimumDistancesForSpecies(filteredSpecies, location.latitude, location.longitude);
+        await fetchMinimumDistancesForSpecies(
+          filteredSpecies,
+          location.latitude,
+          location.longitude
+        );
         setLoading(false);
       }
     };
-    
-    
+
     organizeSpeciesData();
     fetchDistances();
   }, []);
@@ -67,11 +91,15 @@ export default function HomeScreen() {
     const fetchDistances = async () => {
       if (location && Object.keys(filteredSpecies).length > 0) {
         setLoading(true);
-        await fetchMinimumDistancesForSpecies(filteredSpecies, location.latitude, location.longitude);
+        await fetchMinimumDistancesForSpecies(
+          filteredSpecies,
+          location.latitude,
+          location.longitude
+        );
         setLoading(false);
       }
     };
-  
+
     fetchDistances();
   }, [location, filteredSpecies]);
 
@@ -92,7 +120,9 @@ export default function HomeScreen() {
         const response = await fetch(url);
 
         if (!response.ok) {
-          console.error(`Error fetching observations: ${response.status} ${response.statusText}`);
+          console.error(
+            `Error fetching observations: ${response.status} ${response.statusText}`
+          );
           break;
         }
 
@@ -111,7 +141,9 @@ export default function HomeScreen() {
 
           remainingIds = nextRemainingIds;
         } else {
-          console.error(`Error fetching observations: Received non-JSON response`);
+          console.error(
+            `Error fetching observations: Received non-JSON response`
+          );
           break;
         }
         radius *= 2;
@@ -129,7 +161,12 @@ export default function HomeScreen() {
     }
   };
 
-  const processObservationsWithRadius = (observations: any, taxonIds: string | any[], userLat: number, userLng: number) => {
+  const processObservationsWithRadius = (
+    observations: any,
+    taxonIds: string | any[],
+    userLat: number,
+    userLng: number
+  ) => {
     const foundIds: { [taxonId: number]: number } = {};
     const nextRemainingIds = [];
 
@@ -227,7 +264,7 @@ export default function HomeScreen() {
         ))}
       </Picker>
       {loading ? (
-        <ActivityIndicator size="large"/>
+        <ActivityIndicator size="large" />
       ) : (
         <ThemedFlatList
           data={filteredSpeciesQuery}
