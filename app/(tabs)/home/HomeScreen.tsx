@@ -31,7 +31,7 @@ export default function HomeScreen() {
 
   const filteredSpecies = useMemo(
     () => speciesData[selectedMonth] || {},
-    [selectedMonth]
+    [selectedMonth, speciesData]
   );
   const [searchQuery, setSearchQuery] = useState("");
   useEffect(() => {
@@ -56,7 +56,10 @@ export default function HomeScreen() {
     const getLocation = async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
-        // todo: location permission disabled fallback
+        setLocation({
+          latitude: 36.0014,
+          longitude: -78.9382,
+        });
         return;
       }
 
@@ -69,15 +72,17 @@ export default function HomeScreen() {
 
     const fetchDistances = async () => {
       if (location && Object.keys(filteredSpecies).length > 0) {
+        setLoading(true);
         await fetchMinimumDistancesForSpecies(filteredSpecies, location.latitude, location.longitude);
+        setLoading(false);
       }
     };
     
-    setLoading(true);
+    
     organizeSpeciesData();
     getLocation();
     fetchDistances();
-    setLoading(false);
+    
   }, []);
 
   useEffect(() => {
@@ -116,7 +121,6 @@ export default function HomeScreen() {
         const contentType = response.headers.get("content-type");
         if (contentType && contentType.includes("application/json")) {
           const data = await response.json();
-          console.log(data.results)
           const { foundIds, nextRemainingIds } = processObservationsWithRadius(
             data.results,
             remainingIds,
