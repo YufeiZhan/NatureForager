@@ -1,12 +1,17 @@
 // app/home/_layout.tsx
 import { Stack } from 'expo-router';
+import globalStyles from '@/styles/globalStyles';
 
 export default function ProfileStack() {
   return (
-    <Stack>
+    <Stack
+      screenOptions ={{
+        headerTitleStyle: { ...globalStyles.headerTitleStyle}
+      }}
+    >
       <Stack.Screen
         name="ProfileScreen"
-        options={{ title: 'User Profile' }}
+        options={{ title: 'My Plants' }}
       />
       <Stack.Screen
         name="Favorites"

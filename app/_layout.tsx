@@ -3,12 +3,14 @@ import { Stack } from "expo-router";
 
 import React from "react";
 import { useColorScheme } from "react-native";
+import { getTheme } from "@/constants/Colors";
 
 export default function RootLayout(){
     const mode = useColorScheme()
+    console.log(getTheme(mode === 'dark'))
 
     return (
-        <ThemeProvider value={mode === 'dark' ? DarkTheme : DefaultTheme}>
+        <ThemeProvider value={getTheme(mode === 'dark')}>
             <Stack>
                 <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
                 <Stack.Screen name="PlantInfoModal" options={{ presentation: "modal" }} />
