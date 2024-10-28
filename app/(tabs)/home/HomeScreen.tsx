@@ -8,7 +8,7 @@ import {
 import { useRouter } from "expo-router";
 import { useEffect, useState, useMemo, useContext } from "react";
 import { Picker } from "@react-native-picker/picker";
-import { TextInput, ActivityIndicator } from "react-native";
+import { TextInput, ActivityIndicator, Pressable } from "react-native";
 import { LocationContext } from "@/hooks/LocationContext";
 import jsonData from "@/data/edible_plants.json";
 
@@ -270,8 +270,8 @@ export default function HomeScreen() {
           data={filteredSpeciesQuery}
           keyExtractor={(item) => item.taxonId.toString()}
           renderItem={({ item }) => (
-            <ThemedView
-              onTouchEnd={() => {
+            <Pressable
+              onPress={() => {
                 router.push({
                   pathname: "/home/PlantLocation",
                   params: {
@@ -283,13 +283,15 @@ export default function HomeScreen() {
                 });
               }}
             >
-              <ThemedText>
-                {item.name} -{" "}
-                {item.distance !== null
-                  ? `Closest Distance: ${Number(item.distance).toFixed(2)} km`
-                  : "No observations found near you"}
-              </ThemedText>
-            </ThemedView>
+              <ThemedView>
+                <ThemedText>
+                  {item.name} -{" "}
+                  {item.distance !== null
+                    ? `Closest Distance: ${Number(item.distance).toFixed(2)} km`
+                    : "No observations found near you"}
+                </ThemedText>
+              </ThemedView>
+            </Pressable>
           )}
         />
       )}
