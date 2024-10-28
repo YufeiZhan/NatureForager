@@ -48,34 +48,33 @@ export default function HomeScreen() {
     [key: number]: number | null;
   }>({});
   const [speciesData, setSpeciesData] = useState<TaxaByMonth>({});
+  const speciesThisMonth = speciesData[selectedMonth] || {};
   const [searchQuery, setSearchQuery] = useState("");
-  const filteredSpecies = speciesData[selectedMonth] || {};
 
   // read in the json data
   useEffect(() => {
     const organizedData: TaxaByMonth = {};
+
     jsonData.forEach((record) => {
       const month = record["Month Ripe"] as Month;
       const taxonId = record["iNaturalist ID"];
       const commonName = record["Common Name"];
-
-      if (month && !isNaN(taxonId)) {
-        if (!organizedData[month]) {
-          organizedData[month] = {};
-        }
-        organizedData[month][taxonId] = commonName;
+      if (!organizedData[month]) {
+        organizedData[month] = {};
       }
+      organizedData[month][taxonId] = commonName;
     });
+
     setSpeciesData(organizedData);
   }, []);
 
   // get distances to nearest observation of each species
   useEffect(() => {
     const fetchDistances = async () => {
-      if (location && Object.keys(filteredSpecies).length > 0) {
+      if (location && Object.keys(speciesThisMonth).length > 0) {
         setLoading(true);
         const newSpeciesDistances = await fetchMinimumDistancesForSpecies(
-          filteredSpecies,
+          speciesThisMonth,
           location.latitude,
           location.longitude
         );
@@ -84,29 +83,25 @@ export default function HomeScreen() {
       }
     };
     fetchDistances();
-  }, [location, filteredSpecies]);
+  }, [location, speciesThisMonth]);
 
-  const filteredSpeciesQuery = useMemo(() => {
-    if (!searchQuery) {
-      return Object.keys(filteredSpecies).map((taxonId) => ({
-        taxonId: Number(taxonId),
-        name: filteredSpecies[Number(taxonId)],
-        distance: speciesDistances[Number(taxonId)],
-      }));
+  const listItemsToDisplay = useMemo(() => {
+    let taxaIdsMatchingSearchQuery = Object.keys(speciesThisMonth);
+
+    if (searchQuery) {
+      taxaIdsMatchingSearchQuery = taxaIdsMatchingSearchQuery.filter(
+        (taxonId) =>
+          speciesThisMonth[Number(taxonId)]
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase())
+      );
     }
-
-    return Object.keys(filteredSpecies)
-      .filter((taxonId) =>
-        filteredSpecies[Number(taxonId)]
-          .toLowerCase()
-          .includes(searchQuery.toLowerCase())
-      )
-      .map((taxonId) => ({
-        taxonId: Number(taxonId),
-        name: filteredSpecies[Number(taxonId)],
-        distance: speciesDistances[Number(taxonId)],
-      }));
-  }, [searchQuery, filteredSpecies, speciesDistances]);
+    return taxaIdsMatchingSearchQuery.map((taxonId) => ({
+      taxonId: Number(taxonId),
+      name: speciesThisMonth[Number(taxonId)],
+      distance: speciesDistances[Number(taxonId)],
+    }));
+  }, [searchQuery, speciesThisMonth, speciesDistances]);
 
   return (
     <ThemedView style={styles.mainContainer}>
@@ -131,7 +126,7 @@ export default function HomeScreen() {
 
       {!loading && (
         <ThemedFlatList
-          data={filteredSpeciesQuery}
+          data={listItemsToDisplay}
           keyExtractor={(item) => item.taxonId.toString()}
           renderItem={({ item }) => <HomeListItem {...item}></HomeListItem>}
         />
