@@ -1,11 +1,5 @@
 // app/home/HomeScreen.tsx
-import {
-  ThemedButton,
-  ThemedFlatList,
-  ThemedText,
-  ThemedView,
-} from "@/components/Themed";
-import { useRouter } from "expo-router";
+import { ThemedFlatList, ThemedView } from "@/components/Themed";
 import { useEffect, useState, useMemo, useContext } from "react";
 import { Picker } from "@react-native-picker/picker";
 import { TextInput, ActivityIndicator, StyleSheet } from "react-native";
@@ -36,8 +30,6 @@ type TaxaByMonth = {
 };
 
 export default function HomeScreen() {
-  const router = useRouter();
-
   const currentMonthIndex = new Date().getMonth();
   const currentMonth = allMonths[currentMonthIndex];
 
