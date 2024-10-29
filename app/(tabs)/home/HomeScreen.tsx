@@ -35,7 +35,7 @@ export default function HomeScreen() {
 
   const [selectedMonth, setSelectedMonth] = useState<Month>(currentMonth);
   const { location, setLocation } = useContext(LocationContext);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [speciesDistances, setSpeciesDistances] = useState<{
     [key: number]: number | null;
   }>({});
@@ -88,11 +88,26 @@ export default function HomeScreen() {
             .includes(searchQuery.toLowerCase())
       );
     }
-    return taxaIdsMatchingSearchQuery.map((taxonId) => ({
+    // return taxaIdsMatchingSearchQuery.map((taxonId) => ({
+    //   taxonId: Number(taxonId),
+    //   name: speciesThisMonth[Number(taxonId)],
+    //   distance: speciesDistances[Number(taxonId)],
+    // }));
+    const items = taxaIdsMatchingSearchQuery.map((taxonId) => ({
       taxonId: Number(taxonId),
       name: speciesThisMonth[Number(taxonId)],
       distance: speciesDistances[Number(taxonId)],
     }));
+  
+    // Sort items based on the distance value in speciesDistances, placing null distances last
+    return items.sort((a, b) => {
+      const distanceA = speciesDistances[a.taxonId];
+      const distanceB = speciesDistances[b.taxonId];
+  
+      if (distanceA === null) return 1; // Place items with null distances at the end
+      if (distanceB === null) return -1;
+      return distanceA - distanceB; // Sort numerically by distance in ascending order
+    });
   }, [searchQuery, speciesThisMonth, speciesDistances]);
 
   return (
