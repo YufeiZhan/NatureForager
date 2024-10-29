@@ -1,37 +1,47 @@
-// app/(tabs)/_layout.tsx
 import { Tabs } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
+import { StyleSheet, Image } from "react-native";
 
-export default function TabLayout() {
+export default function AppLayout() {
   return (
-    <Tabs>
+    <Tabs
+      screenOptions={{
+        tabBarShowLabel: false,
+        headerShown: false,
+        tabBarStyle: {
+          borderRadius: 35,
+        },
+      }}
+    >
       <Tabs.Screen
         name="home"
         options={{
-          tabBarLabel: "Home",
-          headerShown: false,
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="home" color={color} size={size} />
+            <Image
+              source={require("@/assets/tab/foraging-tab-icon.png")}
+              style={styles.icon}
+            />
           ),
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
-          tabBarLabel: "Profile",
-          headerShown: false,
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="person" color={color} size={size} />
+            <Image
+              source={require("@/assets/tab/profile-tab-icon.png")}
+              style={styles.icon}
+            />
           ),
         }}
       />
       <Tabs.Screen
-        name="recognition/ImageRecognitionScreen"
+        name="recognition"
         options={{
-          tabBarLabel: "Recognition",
-          headerShown: false,
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="camera" color={color} size={size} />
+            <Image
+              source={require("@/assets/tab/camera-tab-icon.png")}
+              style={styles.icon}
+            />
           ),
         }}
       />
@@ -39,6 +49,15 @@ export default function TabLayout() {
   );
 }
 
-// export const unstable_settings = {
-//     initialRouteName: '(tabs)',
-//   };
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  icon: {
+    width: 35, // Set the width of the icon
+    height: 35, // Set the height of the icon
+    resizeMode: "contain", // Optional: controls how the image fits
+  },
+});

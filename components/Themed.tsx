@@ -1,16 +1,5 @@
-import {
-  StyleSheet,
-  View,
-  ViewProps,
-  Text,
-  TextProps,
-  Button,
-  ButtonProps,
-  ScrollView,
-  ScrollViewProps,
-  FlatList,
-  FlatListProps,
-} from "react-native";
+import {StyleSheet,View,ViewProps,Text,TextProps,Button,ButtonProps,ScrollView,ScrollViewProps,FlatList,FlatListProps,} from "react-native";
+
 
 export function ThemedView(props: ViewProps) {
   const { style, ...otherProps } = props;

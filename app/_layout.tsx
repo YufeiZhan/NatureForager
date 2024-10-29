@@ -1,9 +1,16 @@
 import { Stack } from "expo-router";
-function RootLayoutNav() {
+import { LocationContext } from "@/hooks/LocationContext"
+import { useLocation } from "@/hooks/useLocation"
+
+export default function RootLayout() {
+  const [location, setLocation] = useLocation();
+
   return (
-    <Stack>
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      <Stack.Screen name="PlantInfoModal" options={{ presentation: "modal" }} />
-    </Stack>
+    <LocationContext.Provider value={{ location, setLocation }}>
+      <Stack>
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="PlantInfoModal" options={{ presentation: "modal" }} />
+      </Stack>
+    </LocationContext.Provider>
   );
 }
