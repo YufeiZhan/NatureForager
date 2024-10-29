@@ -7,7 +7,8 @@ import { useEffect } from "react";
 import { useNonArraySearchParams } from "@/hooks/useNonArraySearchParams";
 
 export default function PlantLocation() {
-  const { iNaturalistTaxonId, commonName } = useNonArraySearchParams();
+  const { iNaturalistTaxonId, commonName, initialLat, initialLng } =
+    useNonArraySearchParams();
 
   // change screen header to match common name
   const nav = useNavigation();
@@ -15,7 +16,13 @@ export default function PlantLocation() {
     nav.setOptions({ title: commonName });
   }, [commonName]);
 
-  return <Map iNaturalistTaxonId={iNaturalistTaxonId}></Map>;
+  return (
+    <Map
+      iNaturalistTaxonId={iNaturalistTaxonId}
+      initialLat={Number(initialLat)}
+      initialLng={Number(initialLng)}
+    ></Map>
+  );
 }
 
 const styles = StyleSheet.create({

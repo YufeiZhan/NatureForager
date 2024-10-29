@@ -10,8 +10,9 @@ import { ObservationsResponse } from "@/iNaturalistTypes";
 
 interface MapProps {
   iNaturalistTaxonId?: string;
-  initialLat?: number;
-  initialLng?: number;
+  initialLat: number;
+  initialLng: number;
+  initialExtent?: number;
 }
 interface MarkerInfo {
   coordinate: LatLng;
@@ -24,17 +25,17 @@ export default function Map({
   iNaturalistTaxonId,
   initialLat,
   initialLng,
+  initialExtent = 0.05,
 }: MapProps) {
   const map = useRef<MapView>(null);
 
   // region is the area to include within the map, but the map will probably
   // show more, depending on the aspect ratio
   const initialRegion = {
-    // default map center is Duke Chapel
-    latitude: initialLat || 36.001687,
-    longitude: initialLng || -78.939824,
-    latitudeDelta: 0.05,
-    longitudeDelta: 0.05,
+    latitude: initialLat,
+    longitude: initialLng,
+    latitudeDelta: initialExtent,
+    longitudeDelta: initialExtent,
   };
   // map bounds are the actual rendered bounds, we will update these as the user moves the map
   const [mapBounds, setMapBounds] = useState<BoundingBox | undefined>(
@@ -46,7 +47,7 @@ export default function Map({
     });
   };
 
-  // list of map markers
+  // object containing map marker info
   const [markers, setMarkers] = useState<Markers>({});
 
   // fetch iNaturalist observations whenever the taxon id changes or map bounds change
