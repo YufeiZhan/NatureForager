@@ -16,6 +16,9 @@ interface MapProps {
 interface MarkerInfo {
   coordinate: LatLng;
 }
+interface Markers {
+  [id: number]: MarkerInfo;
+}
 
 export default function Map({
   iNaturalistTaxonId,
@@ -44,7 +47,7 @@ export default function Map({
   };
 
   // list of map markers
-  const [markers, setMarkers] = useState<{ [id: number]: MarkerInfo }>({});
+  const [markers, setMarkers] = useState<Markers>({});
 
   // fetch iNaturalist observations whenever the taxon id changes or map bounds change
   useEffect(() => {
@@ -60,13 +63,14 @@ export default function Map({
         "nelng=" + mapBounds.northEast.longitude,
         "swlat=" + mapBounds.southWest.latitude,
         "swlng=" + mapBounds.southWest.longitude,
+        "not_id=" + Object.keys(markers).join(","),
       ];
       const url =
         "https://api.inaturalist.org/v1/observations?" + params.join("&");
       const data: ObservationsResponse = await (await fetch(url)).json();
 
       // update marker list
-      const newMarkers: MarkerInfo[] = [];
+      const newMarkers: Markers = { ...markers };
       data.results.forEach((observation) => {
         // location is stored in observation.location as the string "lat,lng"
         const latlng = observation.location?.split(",").map(Number);
