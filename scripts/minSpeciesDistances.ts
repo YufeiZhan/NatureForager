@@ -1,7 +1,8 @@
 export async function fetchMinimumDistancesForSpecies(
   species: { [key: number]: string },
   lat: number,
-  lng: number
+  lng: number,
+  updateDistanceCallback: (taxonId: number, distance: number | null) => void
 ) {
   let radius = 2;
   const speciesMinDistances: { [key: number]: number | null } = {};
@@ -30,8 +31,13 @@ export async function fetchMinimumDistancesForSpecies(
           lat,
           lng
         );
+        
+        // Update each taxon ID's distance progressively
         for (const [taxonId, distance] of Object.entries(foundIds)) {
-          speciesMinDistances[Number(taxonId)] = distance;
+          const id = Number(taxonId);
+          speciesMinDistances[id] = distance;
+          // Call the update callback as each distance is found
+          updateDistanceCallback(id, distance);
         }
 
         remainingIds = nextRemainingIds;
@@ -44,9 +50,11 @@ export async function fetchMinimumDistancesForSpecies(
       radius *= 2;
     }
 
+    // For any species not found, set its distance to null
     for (const id of Object.keys(species).map(Number)) {
       if (!speciesMinDistances[id]) {
         speciesMinDistances[id] = null;
+        updateDistanceCallback(id, null); // Update with null distance
       }
     }
   } catch (error) {
@@ -55,6 +63,7 @@ export async function fetchMinimumDistancesForSpecies(
 
   return speciesMinDistances;
 }
+
 
 const processObservationsWithRadius = (
   observations: any,

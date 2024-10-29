@@ -68,7 +68,14 @@ export default function HomeScreen() {
         const newSpeciesDistances = await fetchMinimumDistancesForSpecies(
           speciesThisMonth,
           location.latitude,
-          location.longitude
+          location.longitude,
+          (taxonId, distance) => {
+            // Update distance progressively as it’s fetched
+            setSpeciesDistances((prev) => ({
+              ...prev,
+              [taxonId]: distance,
+            }));
+          }
         );
         setSpeciesDistances(newSpeciesDistances);
         setLoading(false);
@@ -88,25 +95,21 @@ export default function HomeScreen() {
             .includes(searchQuery.toLowerCase())
       );
     }
-    // return taxaIdsMatchingSearchQuery.map((taxonId) => ({
-    //   taxonId: Number(taxonId),
-    //   name: speciesThisMonth[Number(taxonId)],
-    //   distance: speciesDistances[Number(taxonId)],
-    // }));
     const items = taxaIdsMatchingSearchQuery.map((taxonId) => ({
       taxonId: Number(taxonId),
       name: speciesThisMonth[Number(taxonId)],
       distance: speciesDistances[Number(taxonId)],
     }));
-  
+    const filteredItems = loading ? items.filter((item) => item.distance !== undefined) : items;
+
     // Sort items based on the distance value in speciesDistances, placing null distances last
-    return items.sort((a, b) => {
+    return filteredItems.sort((a, b) => {
       const distanceA = speciesDistances[a.taxonId];
       const distanceB = speciesDistances[b.taxonId];
   
-      if (distanceA === null) return 1; // Place items with null distances at the end
+      if (distanceA === null) return 1;
       if (distanceB === null) return -1;
-      return distanceA - distanceB; // Sort numerically by distance in ascending order
+      return distanceA - distanceB;
     });
   }, [searchQuery, speciesThisMonth, speciesDistances]);
 
@@ -131,13 +134,11 @@ export default function HomeScreen() {
 
       {loading && <ActivityIndicator size="large" />}
 
-      {!loading && (
-        <ThemedFlatList
-          data={listItemsToDisplay}
-          keyExtractor={(item) => item.taxonId.toString()}
-          renderItem={({ item }) => <HomeListItem {...item}></HomeListItem>}
-        />
-      )}
+      <ThemedFlatList
+        data={listItemsToDisplay}
+        keyExtractor={(item) => item.taxonId.toString()}
+        renderItem={({ item }) => <HomeListItem {...item}></HomeListItem>}
+      />
     </ThemedView>
   );
 }
