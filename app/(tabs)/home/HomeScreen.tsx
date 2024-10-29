@@ -65,7 +65,7 @@ export default function HomeScreen() {
     const fetchDistances = async () => {
       if (location && Object.keys(speciesThisMonth).length > 0) {
         setLoading(true);
-        const newSpeciesDistances = await fetchMinimumDistancesForSpecies(
+        await fetchMinimumDistancesForSpecies(
           speciesThisMonth,
           location.latitude,
           location.longitude,
@@ -77,7 +77,6 @@ export default function HomeScreen() {
             }));
           }
         );
-        setSpeciesDistances(newSpeciesDistances);
         setLoading(false);
       }
     };
@@ -100,13 +99,15 @@ export default function HomeScreen() {
       name: speciesThisMonth[Number(taxonId)],
       distance: speciesDistances[Number(taxonId)],
     }));
-    const filteredItems = loading ? items.filter((item) => item.distance !== undefined) : items;
+    const filteredItems = loading
+      ? items.filter((item) => item.distance !== undefined)
+      : items;
 
     // Sort items based on the distance value in speciesDistances, placing null distances last
     return filteredItems.sort((a, b) => {
       const distanceA = speciesDistances[a.taxonId];
       const distanceB = speciesDistances[b.taxonId];
-  
+
       if (distanceA === null) return 1;
       if (distanceB === null) return -1;
       return distanceA - distanceB;

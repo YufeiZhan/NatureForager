@@ -60,8 +60,6 @@ export async function fetchMinimumDistancesForSpecies(
   } catch (error) {
     console.error("Error fetching minimum distances:", error);
   }
-
-  return speciesMinDistances;
 }
 
 const processObservationsWithRadius = (
