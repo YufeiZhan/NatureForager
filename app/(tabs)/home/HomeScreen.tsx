@@ -22,8 +22,9 @@ export default function HomeScreen() {
   const currentMonth = allMonths[currentMonthIndex];
 
   const [selectedMonth, setSelectedMonth] = useState<Month>(currentMonth);
-  const { location, setLocation } = useContext(LocationContext);
+  const { location } = useContext(LocationContext);
   const [loading, setLoading] = useState(true);
+  const [shown, setShown] = useState(false);
   const [speciesDistances, setSpeciesDistances] = useState<{
     [key: number]: number | null;
   }>({});
@@ -51,9 +52,11 @@ export default function HomeScreen() {
   // get distances to nearest observation of each species
   useEffect(() => {
     const fetchDistances = async () => {
+      setLoading(true);
+      setShown(false)
       if (location && Object.keys(speciesThisMonth).length > 0) {
         setLoading(true);
-        await fetchMinimumDistancesForSpecies(
+        const newSpeciesDistances = await fetchMinimumDistancesForSpecies(
           speciesThisMonth,
           location.latitude,
           location.longitude,
@@ -63,10 +66,15 @@ export default function HomeScreen() {
               ...prev,
               [taxonId]: distance,
             }));
+          },
+          () => {
+            // Set shown to true when values start returning
+            setShown(true);
           }
         );
-        setLoading(false);
+        setSpeciesDistances(newSpeciesDistances);
       }
+      setLoading(false);
     };
     fetchDistances();
   }, [location, speciesThisMonth]);
@@ -122,16 +130,16 @@ export default function HomeScreen() {
         ))}
       </Picker>
 
-      {loading && <ActivityIndicator size="large" />}
-
-      <ThemedFlatList
+      {shown && <ThemedFlatList
         data={listItemsToDisplay}
         keyExtractor={(item) => item.taxonId.toString()}
         renderItem={({ item }) => <HomeListItem {...item}></HomeListItem>}
         ListFooterComponent={() => {return <ThemedView style={{alignItems:"center"}}>
                                             <ThemedText style={{color:pureWhite}}> - end -</ThemedText>
                                            </ThemedView>}}
-      />
+      />}
+
+      {loading && <ActivityIndicator size="large" />}
     </ThemedView>
   );
 }
