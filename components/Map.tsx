@@ -14,7 +14,6 @@ interface MapProps {
   initialLng?: number;
 }
 interface MarkerInfo {
-  key: number;
   coordinate: LatLng;
 }
 
@@ -45,7 +44,7 @@ export default function Map({
   };
 
   // list of map markers
-  const [markers, setMarkers] = useState<MarkerInfo[]>([]);
+  const [markers, setMarkers] = useState<{ [id: number]: MarkerInfo }>({});
 
   // fetch iNaturalist observations whenever the taxon id changes or map bounds change
   useEffect(() => {
@@ -70,12 +69,13 @@ export default function Map({
       const newMarkers: MarkerInfo[] = [];
       data.results.forEach((observation) => {
         // location is stored in observation.location as the string "lat,lng"
-        const latlng = observation.location?.split(",").map((x) => Number(x));
+        const latlng = observation.location?.split(",").map(Number);
         if (latlng === undefined) return;
-        newMarkers.push({
-          key: observation.id || 0,
-          coordinate: { latitude: latlng[0], longitude: latlng[1] },
-        });
+        if (observation.id !== undefined) {
+          newMarkers[observation.id] = {
+            coordinate: { latitude: latlng[0], longitude: latlng[1] },
+          };
+        }
       });
       setMarkers(newMarkers);
     };
@@ -90,9 +90,10 @@ export default function Map({
         ref={map}
         onMapReady={updateMapBounds}
         onRegionChangeComplete={updateMapBounds}
+        showsUserLocation={true}
       >
-        {markers.map((m) => (
-          <Marker {...m}></Marker>
+        {Object.entries(markers).map(([id, info]) => (
+          <Marker key={id} coordinate={info.coordinate}></Marker>
         ))}
         {/* uncomment to use open street map tiles */}
         {/* <UrlTile
