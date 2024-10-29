@@ -1,6 +1,6 @@
 // app/home/_layout.tsx
 import { Stack } from 'expo-router';
-import globalStyles from '@/styles/globalStyles';
+import { globalStyles } from '@/styles/globalStyles';
 
 export default function HomeStack() {
   return (
@@ -11,7 +11,7 @@ export default function HomeStack() {
     >
       <Stack.Screen
         name="HomeScreen"
-        options={{ title: 'Plant Forager' }}
+        options={{ title: 'Nature Forager' }}
       />
       <Stack.Screen
         name="PlantLocation"

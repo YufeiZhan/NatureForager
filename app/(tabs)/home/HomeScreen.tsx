@@ -1,7 +1,7 @@
 // app/home/HomeScreen.tsx
 import { ThemedButton, ThemedFlatList, ThemedText, ThemedView } from "@/components/Themed";
-import { Link, useRouter } from "expo-router";
-import { SetStateAction, useEffect, useState, useMemo } from "react";
+import { useRouter } from "expo-router";
+import { useEffect, useState, useMemo } from "react";
 import * as Location from "expo-location";
 import { Picker } from "@react-native-picker/picker";
 import AsyncStorage from "@react-native-async-storage/async-storage";

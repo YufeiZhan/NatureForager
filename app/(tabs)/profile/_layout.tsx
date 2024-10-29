@@ -1,6 +1,6 @@
 // app/home/_layout.tsx
 import { Stack } from 'expo-router';
-import globalStyles from '@/styles/globalStyles';
+import { globalStyles } from '@/styles/globalStyles';
 
 export default function ProfileStack() {
   return (
