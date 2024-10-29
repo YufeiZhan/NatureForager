@@ -16,7 +16,8 @@ export function getTheme(dark:boolean) : Theme {
     return dark 
             ? {...DarkTheme}
             : {...DefaultTheme, colors: {...DefaultTheme.colors, 
+                                            background: oliveGreen, // screens' background
                                             card:yelloSand, // set the header/tab bg color
-                                            text:pureWhite
+                                            text:pureWhite // text for navigational elements
                                         }} 
 }

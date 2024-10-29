@@ -7,6 +7,7 @@ import { Picker } from "@react-native-picker/picker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { TextInput } from "react-native";
 import PlantList from "@/components/PlantList";
+import { oliveGreen, pureWhite } from "@/constants/Colors";
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -191,9 +192,10 @@ export default function HomeScreen() {
     }
   }, [location, filteredSpecies]);
 
+  // todo: why justifyContent here doesn't take any effects?
   return (
     <ThemedView
-      style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+      style={{ flex: 1, justifyContent: "flex-end", alignItems: "center", backgroundColor: oliveGreen}}
     >
       <TextInput
         style={{ width: "90%", padding: 10, margin: 10, backgroundColor: "#f0f0f0", borderRadius: 5 }}
@@ -230,7 +232,7 @@ export default function HomeScreen() {
           return <PlantList taxonId={taxonId} nearest={nearest} distance={distance} speciesName={speciesName} location={location} /> 
         }}
         ListFooterComponent={() => {return <ThemedView style={{alignItems:"center"}}>
-                                            <ThemedText> - end -</ThemedText>
+                                            <ThemedText style={{color:pureWhite}}> - end -</ThemedText>
                                            </ThemedView>}}
       />
 
