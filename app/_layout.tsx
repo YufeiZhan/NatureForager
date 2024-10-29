@@ -7,7 +7,6 @@ import { getTheme } from "@/constants/Colors";
 
 export default function RootLayout(){
     const mode = useColorScheme()
-    console.log(getTheme(mode === 'dark'))
 
     return (
         <ThemeProvider value={getTheme(mode === 'dark')}>

@@ -6,6 +6,7 @@ import * as Location from "expo-location";
 import { Picker } from "@react-native-picker/picker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { TextInput } from "react-native";
+import PlantList from "@/components/PlantList";
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -194,7 +195,6 @@ export default function HomeScreen() {
     <ThemedView
       style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
     >
-      <ThemedText>Welcome to the Home Screen</ThemedText>
       <TextInput
         style={{ width: "90%", padding: 10, margin: 10, backgroundColor: "#f0f0f0", borderRadius: 5 }}
         placeholder="Search for species..."
@@ -227,26 +227,11 @@ export default function HomeScreen() {
             : null;
           const speciesName = (filteredSpecies as Record<number, string>)[taxonId];
 
-          return (
-            <ThemedView
-            onTouchEnd={() => {
-              router.push({
-                pathname: "./PlantLocation",
-                params: { 
-                  iNaturalistTaxonId: taxonId, 
-                  commonName: speciesName, 
-                  lat: location?.latitude, 
-                  long: location?.longitude,
-                },
-              });
-            }}>
-              <ThemedText>
-              {speciesName} - 
-              {distance? ` Closest Distance: ${distance} km` : " No observations found near you"}
-              </ThemedText>
-            </ThemedView>
-          );
+          return <PlantList taxonId={taxonId} nearest={nearest} distance={distance} speciesName={speciesName} location={location} /> 
         }}
+        ListFooterComponent={() => {return <ThemedView style={{alignItems:"center"}}>
+                                            <ThemedText> - end -</ThemedText>
+                                           </ThemedView>}}
       />
 
       <ThemedButton
