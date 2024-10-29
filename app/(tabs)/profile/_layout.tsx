@@ -6,7 +6,8 @@ export default function ProfileStack() {
   return (
     <Stack
       screenOptions ={{
-        headerTitleStyle: { ...globalStyles.headerTitleStyle}
+        headerTitleStyle: { ...globalStyles.headerTitleStyle},
+        headerBackTitle: "Back"
       }}
     >
       <Stack.Screen
