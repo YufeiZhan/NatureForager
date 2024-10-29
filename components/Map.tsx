@@ -13,19 +13,19 @@ interface MapProps {
   initialLat: number;
   initialLng: number;
   initialExtent?: number;
+  initialMarkers?: Markers;
 }
 interface MarkerInfo {
   coordinate: LatLng;
 }
-interface Markers {
-  [id: number]: MarkerInfo;
-}
+type Markers = Record<string, MarkerInfo>;
 
 export default function Map({
   iNaturalistTaxonId,
   initialLat,
   initialLng,
   initialExtent = 0.05,
+  initialMarkers = {},
 }: MapProps) {
   const map = useRef<MapView>(null);
 
@@ -48,9 +48,14 @@ export default function Map({
   };
 
   // object containing map marker info
-  const [markers, setMarkers] = useState<Markers>({});
+  const [markers, setMarkers] = useState<Markers>(initialMarkers);
+  // when taxon id changes, reset markers
+  useEffect(() => {
+    setMarkers(initialMarkers);
+  }, [iNaturalistTaxonId]);
 
   // fetch iNaturalist observations whenever the taxon id changes or map bounds change
+  // don't fetch observations we've fetched previously
   useEffect(() => {
     if (iNaturalistTaxonId === undefined || mapBounds === undefined) return;
     const fetchINaturalistData = async () => {
