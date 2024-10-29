@@ -1,7 +1,8 @@
 // app/home/HomeScreen.tsx
 import { ThemedButton, ThemedFlatList, ThemedText, ThemedView } from "@/components/Themed";
-import { useRouter } from "expo-router";
 import { useEffect, useState, useMemo } from "react";
+import { useRouter } from "expo-router";
+
 import * as Location from "expo-location";
 import { Picker } from "@react-native-picker/picker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -11,22 +12,32 @@ import { oliveGreen, pureWhite } from "@/constants/Colors";
 
 export default function HomeScreen() {
   const router = useRouter();
-  type Month = 'April' | 'May' | 'June';
+  type Month = "April" | "May" | "June";
 
-  // todo: should be changed to default current month 
-  const [selectedMonth, setSelectedMonth] = useState<Month>('April');
-  const [location, setLocation] = useState<{ latitude: number; longitude: number } | null>(null);
-  const [observations, setObservations] = useState<{ [key: number]: any[] }>({});
+  // todo: should be changed to default current month
+  const [selectedMonth, setSelectedMonth] = useState<Month>("April");
+  const [location, setLocation] = useState<{
+    latitude: number;
+    longitude: number;
+  } | null>(null);
+  const [observations, setObservations] = useState<{ [key: number]: any[] }>(
+    {}
+  );
   const [loading, setLoading] = useState(false);
   const speciesData = {
-    April: {133686: "Black Morel", 48502: "Redbud"},
+    April: { 133686: "Black Morel", 48502: "Redbud" },
     May: ["placeholder 1"],
     June: ["placeholder 2"],
   };
-  
-  const filteredSpecies = useMemo(() => speciesData[selectedMonth] || {}, [selectedMonth]);
+
+  const filteredSpecies = useMemo(
+    () => speciesData[selectedMonth] || {},
+    [selectedMonth]
+  );
   const [searchQuery, setSearchQuery] = useState("");
-  const [allObservations, setAllObservations] = useState<{ [key: number]: any[] }>({});
+  const [allObservations, setAllObservations] = useState<{
+    [key: number]: any[];
+  }>({});
 
   useEffect(() => {
     (async () => {
@@ -42,7 +53,9 @@ export default function HomeScreen() {
         longitude: coords.longitude,
       });
 
-      const storedData = await loadStoredObservations(Object.keys(filteredSpecies).map(Number));
+      const storedData = await loadStoredObservations(
+        Object.keys(filteredSpecies).map(Number)
+      );
       if (storedData) {
         setObservations(storedData);
         setAllObservations(storedData);
@@ -52,21 +65,21 @@ export default function HomeScreen() {
 
   const filteredObservations = useMemo(() => {
     if (!searchQuery) return allObservations;
-    
+
     const filtered = Object.keys(allObservations).reduce((acc, taxonId) => {
-      const name = (typeof filteredSpecies === "object" && !Array.isArray(filteredSpecies))
-        ? filteredSpecies[Number(taxonId) as keyof typeof filteredSpecies]
-        : undefined;
-  
+      const name =
+        typeof filteredSpecies === "object" && !Array.isArray(filteredSpecies)
+          ? filteredSpecies[Number(taxonId) as keyof typeof filteredSpecies]
+          : undefined;
+
       if (name && name.toLowerCase().includes(searchQuery.toLowerCase())) {
         acc[Number(taxonId)] = allObservations[Number(taxonId)];
       }
       return acc;
     }, {} as { [key: number]: any[] });
-  
+
     return filtered;
   }, [searchQuery, allObservations, filteredSpecies]);
-  
 
   const loadStoredObservations = async (taxonIds: number[]) => {
     try {
@@ -89,37 +102,56 @@ export default function HomeScreen() {
       const jsonData = JSON.stringify(data);
       await AsyncStorage.setItem(taxonId.toString(), jsonData);
     } catch (error) {
-      console.error(`Error saving observations for taxon ID ${taxonId}:`, error);
+      console.error(
+        `Error saving observations for taxon ID ${taxonId}:`,
+        error
+      );
     }
   };
-  
+
   // todo: optimization
-  const fetchObservationsForId = async (taxonId: number, lat: number, lng: number, radius: number) => {
+  const fetchObservationsForId = async (
+    taxonId: number,
+    lat: number,
+    lng: number,
+    radius: number
+  ) => {
     const url = `https://api.inaturalist.org/v1/observations?taxon_id=${taxonId}&geoprivacy=open&quality_grade=research&per_page=200&order=desc&order_by=observed_on&lat=${lat}&lng=${lng}&radius=${radius}`;
     try {
       const response = await fetch(url);
-      
+
       if (!response.ok) {
-        console.error(`Error fetching observations for taxon ID ${taxonId}: ${response.status} ${response.statusText}`);
+        console.error(
+          `Error fetching observations for taxon ID ${taxonId}: ${response.status} ${response.statusText}`
+        );
         return [];
       }
-      
+
       const contentType = response.headers.get("content-type");
       if (contentType && contentType.includes("application/json")) {
         const data = await response.json();
         // console.log(data.results)
         return data.results || [];
       } else {
-        console.error(`Error fetching observations for taxon ID ${taxonId}: Received non-JSON response`);
+        console.error(
+          `Error fetching observations for taxon ID ${taxonId}: Received non-JSON response`
+        );
         return [];
       }
     } catch (error) {
-      console.error(`Error fetching observations for taxon ID ${taxonId}:`, error);
+      console.error(
+        `Error fetching observations for taxon ID ${taxonId}:`,
+        error
+      );
       return [];
     }
   };
 
-  const fetchAllObservations = async (species: { [key: number]: string }, lat: number, lng: number) => {
+  const fetchAllObservations = async (
+    species: { [key: number]: string },
+    lat: number,
+    lng: number
+  ) => {
     let radius = 2;
     let allObservations: { [key: number]: any[] } = {};
     setLoading(true);
@@ -161,7 +193,12 @@ export default function HomeScreen() {
     for (const obs of observations[taxonId]) {
       if (!obs.location) continue;
       const [obsLat, obsLng] = parseLocation(obs.location);
-      const distance = calculateDistance(location.latitude, location.longitude, obsLat, obsLng);
+      const distance = calculateDistance(
+        location.latitude,
+        location.longitude,
+        obsLat,
+        obsLng
+      );
       if (distance < minDistance) {
         minDistance = distance;
         nearestObservation = obs;
@@ -171,7 +208,12 @@ export default function HomeScreen() {
     return nearestObservation;
   };
 
-  const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number) => {
+  const calculateDistance = (
+    lat1: number,
+    lon1: number,
+    lat2: number,
+    lon2: number
+  ) => {
     const toRad = (value: number) => (value * Math.PI) / 180;
     const R = 6371;
 
@@ -179,8 +221,10 @@ export default function HomeScreen() {
     const dLon = toRad(lon2 - lon1);
     const a =
       Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
-      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+      Math.cos(toRad(lat1)) *
+        Math.cos(toRad(lat2)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
 
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     return R * c;
@@ -188,7 +232,11 @@ export default function HomeScreen() {
 
   useEffect(() => {
     if (location && Object.keys(filteredSpecies).length > 0) {
-      fetchAllObservations(filteredSpecies, location.latitude, location.longitude);
+      fetchAllObservations(
+        filteredSpecies,
+        location.latitude,
+        location.longitude
+      );
     }
   }, [location, filteredSpecies]);
 
@@ -198,7 +246,13 @@ export default function HomeScreen() {
       style={{ flex: 1, justifyContent: "flex-end", alignItems: "center", backgroundColor: oliveGreen}}
     >
       <TextInput
-        style={{ width: "90%", padding: 10, margin: 10, backgroundColor: "#f0f0f0", borderRadius: 5 }}
+        style={{
+          width: "90%",
+          padding: 10,
+          margin: 10,
+          backgroundColor: "#f0f0f0",
+          borderRadius: 5,
+        }}
         placeholder="Search for species..."
         value={searchQuery}
         onChangeText={(text) => setSearchQuery(text)}
@@ -227,7 +281,9 @@ export default function HomeScreen() {
                 ...parseLocation(nearest.location)
               ).toFixed(2)
             : null;
-          const speciesName = (filteredSpecies as Record<number, string>)[taxonId];
+          const speciesName = (filteredSpecies as Record<number, string>)[
+            taxonId
+          ];
 
           return <PlantList taxonId={taxonId} nearest={nearest} distance={distance} speciesName={speciesName} location={location} /> 
         }}
@@ -240,7 +296,6 @@ export default function HomeScreen() {
         title="Go to Details"
         onPress={() => router.push("/PlantInfoModal")}
       />
-
     </ThemedView>
   );
 }

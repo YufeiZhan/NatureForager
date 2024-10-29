@@ -1,9 +1,7 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { Stack } from "expo-router";
-
-import React from "react";
 import { useColorScheme } from "react-native";
 import { getTheme } from "@/constants/Colors";
+import { ThemeProvider } from "@react-navigation/native";
 
 export default function RootLayout(){
     const mode = useColorScheme()
