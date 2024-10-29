@@ -54,7 +54,7 @@ export async function fetchMinimumDistancesForSpecies(
     for (const id of Object.keys(species).map(Number)) {
       if (!speciesMinDistances[id]) {
         speciesMinDistances[id] = null;
-        updateDistanceCallback(id, null); // Update with null distance
+        updateDistanceCallback(id, null);
       }
     }
   } catch (error) {
@@ -64,31 +64,42 @@ export async function fetchMinimumDistancesForSpecies(
   return speciesMinDistances;
 }
 
-
 const processObservationsWithRadius = (
   observations: any,
-  taxonIds: string | any[],
+  taxonIds: (string | number)[],
   userLat: number,
   userLng: number
 ) => {
+  const taxonIdsAsNumbers = taxonIds.map(Number);
   const foundIds: { [taxonId: number]: number } = {};
-  const nextRemainingIds = [];
+  const nextRemainingIds: number[] = [];
 
   for (const observation of observations) {
     const taxonId = observation.taxon?.id;
+    const ancestorIds: number[] = observation.taxon?.ancestor_ids || [];
     const locationString = observation.location;
 
-    if (!taxonId || !locationString || !taxonIds.includes(taxonId)) continue;
+    // Check if either the observation's taxonId or one of its ancestors matches with the provided taxonIds
+    const matchesTaxonId = taxonId && taxonIdsAsNumbers.includes(taxonId);
+    const matchesAncestorId = ancestorIds.some((ancestorId) =>
+      taxonIdsAsNumbers.includes(ancestorId)
+    );
+
+    if (!locationString || !(matchesTaxonId || matchesAncestorId)) continue;
+
+    const matchedTaxonId = matchesTaxonId ? taxonId : ancestorIds.find((id) => taxonIdsAsNumbers.includes(id));
+
+    if (!matchedTaxonId) continue;
 
     const [obsLat, obsLng] = locationString.split(",").map(Number);
     const distance = calculateDistance(userLat, userLng, obsLat, obsLng);
 
-    if (!foundIds[taxonId] || distance < foundIds[taxonId]) {
-      foundIds[taxonId] = distance;
+    if (!foundIds[matchedTaxonId] || distance < foundIds[matchedTaxonId]) {
+      foundIds[matchedTaxonId] = distance;
     }
   }
 
-  for (const id of taxonIds) {
+  for (const id of taxonIdsAsNumbers) {
     if (!foundIds[id]) {
       nextRemainingIds.push(id);
     }
