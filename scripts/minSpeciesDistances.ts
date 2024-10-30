@@ -17,7 +17,7 @@ export async function fetchMinimumDistancesForSpecies(
       console.log(
         `Fetching ${remainingIds.length} taxa, using radius ${radius} km`
       );
-      const url = `https://api.inaturalist.org/v1/observations?taxon_id=${taxonIdsString}&geoprivacy=open&verifiable=true&per_page=200&lat=${lat}&lng=${lng}&radius=${radius}`;
+      const url = `https://api.inaturalist.org/v1/observations?taxon_id=${taxonIdsString}&geoprivacy=open&verifiable=true&licensed=true&per_page=200&lat=${lat}&lng=${lng}&radius=${radius}`;
       const response = await fetch(url);
 
       if (!response.ok) {

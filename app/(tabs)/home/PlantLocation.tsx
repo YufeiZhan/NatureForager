@@ -27,16 +27,14 @@ export default function PlantLocation() {
   if (!isNaN(Number(distanceKmToNearest)) && !isNaN(Number(initialLat))) {
     const kmPerDegLat = 40000 / 360; // circumference of earth is 40000 km
     const degLatToNearest = Number(distanceKmToNearest) / kmPerDegLat;
-    initialLatExtent = 3 * degLatToNearest;
+    initialLatExtent = 4 * degLatToNearest;
 
     const latRadians = (Math.PI * Number(initialLat)) / 180;
     const circumKmAtLatitude = 40000 * Math.cos(latRadians);
     const kmPerDegLng = circumKmAtLatitude / 360;
     const degLngToNearest = Number(distanceKmToNearest) / kmPerDegLng;
-    initialLngExtent = 3 * degLngToNearest;
+    initialLngExtent = 4 * degLngToNearest;
   }
-
-  console.log(initialLatExtent, initialLngExtent);
 
   return (
     <Map

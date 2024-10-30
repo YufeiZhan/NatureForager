@@ -46,11 +46,6 @@ export default function Map({
   const updateMapBounds = () => {
     map.current?.getMapBoundaries().then((bounds) => {
       setMapBounds(bounds);
-      console.log(
-        "map bounds",
-        bounds.northEast.latitude - bounds.southWest.latitude,
-        bounds.northEast.longitude - bounds.southWest.longitude
-      );
     });
   };
 
