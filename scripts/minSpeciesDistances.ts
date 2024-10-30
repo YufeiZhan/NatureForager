@@ -4,11 +4,13 @@ export async function fetchMinimumDistancesForSpecies(
   species: { [key: number]: string },
   lat: number,
   lng: number,
-  updateDistanceCallback: (taxonId: number, distance: number | null) => void
+  onUpdate: (taxonId: number, distance: number | null) => void,
+  onResultsReturned: () => void
 ) {
   let radius = 2;
   const speciesMinDistances: { [key: number]: number | null } = {};
   let remainingIds = Object.keys(species).map(Number);
+  let resultsStarted = false;
 
   try {
     while (remainingIds.length > 0 && radius <= 32) {
@@ -30,19 +32,21 @@ export async function fetchMinimumDistancesForSpecies(
       const contentType = response.headers.get("content-type");
       if (contentType && contentType.includes("application/json")) {
         const data = (await response.json()) as ObservationsResponse;
+
+        if (!resultsStarted && data.results.length > 0) {
+          resultsStarted = true;
+          onResultsReturned();
+        }
+
         const { foundIds, nextRemainingIds } = processObservationsWithRadius(
           data.results,
           remainingIds,
           lat,
           lng
         );
-
-        // Update each taxon ID's distance progressively
         for (const [taxonId, distance] of Object.entries(foundIds)) {
-          const id = Number(taxonId);
-          speciesMinDistances[id] = distance;
-          // Call the update callback as each distance is found
-          updateDistanceCallback(id, distance);
+          speciesMinDistances[Number(taxonId)] = distance;
+          onUpdate(Number(taxonId), distance); // Progressive update
         }
         remainingIds = nextRemainingIds;
 
@@ -58,16 +62,16 @@ export async function fetchMinimumDistancesForSpecies(
       }
     }
 
-    // For any species not found, set its distance to null
     for (const id of Object.keys(species).map(Number)) {
       if (!speciesMinDistances[id]) {
         speciesMinDistances[id] = null;
-        updateDistanceCallback(id, null);
       }
     }
   } catch (error) {
     console.error("Error fetching minimum distances:", error);
   }
+
+  return speciesMinDistances;
 }
 
 const processObservationsWithRadius = (
