@@ -7,41 +7,35 @@ export default function AppLayout() {
       screenOptions={{
         tabBarShowLabel: false,
         headerShown: false,
-        tabBarStyle: {
-          borderRadius: 35,
-        },
+        tabBarStyle: { borderRadius: 35,},
+        tabBarActiveTintColor: 'blue',
+        tabBarInactiveTintColor: 'gray',
       }}
     >
       <Tabs.Screen
         name="home"
         options={{
-          tabBarIcon: ({ color, size }) => (
-            <Image
-              source={require("@/assets/tab/foraging-tab-icon.png")}
-              style={styles.icon}
-            />
+          tabBarIcon: ({ focused, color, size }) => (
+            focused ? <Image source={require("@/assets/tab/home-tab-selected.png")} style={styles.icon}/>
+                    : <Image source={require("@/assets/tab/home-tab-unselected.png")} style={styles.icon}/>
           ),
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
-          tabBarIcon: ({ color, size }) => (
-            <Image
-              source={require("@/assets/tab/profile-tab-icon.png")}
-              style={styles.icon}
-            />
+          tabBarIcon: ({ focused, color, size }) => (
+            focused ? <Image source={require("@/assets/tab/profile-tab-selected.png")} style={styles.icon}/>
+                    : <Image source={require("@/assets/tab/profile-tab-unselected.png")} style={styles.icon}/>
           ),
         }}
       />
       <Tabs.Screen
         name="recognition"
         options={{
-          tabBarIcon: ({ color, size }) => (
-            <Image
-              source={require("@/assets/tab/camera-tab-icon.png")}
-              style={styles.icon}
-            />
+          tabBarIcon: ({ focused, color, size }) => (
+            focused ? <Image source={require("@/assets/tab/camera-tab-selected.png")} style={styles.icon}/>
+                    : <Image source={require("@/assets/tab/camera-tab-unselected.png")} style={styles.icon}/>
           ),
         }}
       />

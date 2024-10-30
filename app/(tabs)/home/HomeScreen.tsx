@@ -1,5 +1,5 @@
 // app/home/HomeScreen.tsx
-import { ThemedFlatList, ThemedView } from "@/components/Themed";
+import { ThemedFlatList, ThemedView, ThemedText } from "@/components/Themed";
 import { useEffect, useState, useMemo, useContext } from "react";
 import { Picker } from "@react-native-picker/picker";
 import { TextInput, ActivityIndicator, StyleSheet } from "react-native";
@@ -7,21 +7,9 @@ import { LocationContext } from "@/hooks/LocationContext";
 import HomeListItem from "@/components/HomeListItem";
 import { fetchMinimumDistancesForSpecies } from "@/scripts/minSpeciesDistances";
 import jsonData from "@/data/edible_plants.json";
+import { oliveGreen, pureWhite } from "@/constants/Colors";
 
-const allMonths = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-] as const;
+const allMonths = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ] as const;
 
 type Month = (typeof allMonths)[number];
 
@@ -122,6 +110,7 @@ export default function HomeScreen() {
     });
   }, [searchQuery, speciesThisMonth, speciesDistances]);
 
+  // todo: why justifyContent here doesn't take any effects?
   return (
     <ThemedView style={styles.mainContainer}>
       <TextInput
@@ -145,6 +134,9 @@ export default function HomeScreen() {
         data={listItemsToDisplay}
         keyExtractor={(item) => item.taxonId.toString()}
         renderItem={({ item }) => <HomeListItem {...item}></HomeListItem>}
+        ListFooterComponent={() => {return <ThemedView style={{alignItems:"center"}}>
+                                            <ThemedText style={{color:pureWhite}}> - end -</ThemedText>
+                                           </ThemedView>}}
       />}
 
       {loading && <ActivityIndicator size="large" />}
@@ -155,8 +147,9 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
-    justifyContent: "center",
+    justifyContent: "center", // Q: doesn't take any effects
     alignItems: "center",
+    backgroundColor: oliveGreen
   },
   searchBar: {
     width: "90%",
