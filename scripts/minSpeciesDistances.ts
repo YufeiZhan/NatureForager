@@ -1,3 +1,5 @@
+import { ObservationsResponse, Observation } from "@/iNaturalistTypes";
+
 export async function fetchMinimumDistancesForSpecies(
   species: { [key: number]: string },
   lat: number,
@@ -12,7 +14,10 @@ export async function fetchMinimumDistancesForSpecies(
     while (remainingIds.length > 0 && radius <= 32) {
       const taxonIdsString = remainingIds.join("%2C");
 
-      const url = `https://api.inaturalist.org/v1/observations?taxon_id=${taxonIdsString}&geoprivacy=open&quality_grade=research&per_page=200&order=desc&order_by=observed_on&lat=${lat}&lng=${lng}&radius=${radius}`;
+      console.log(
+        `Fetching ${remainingIds.length} taxa, using radius ${radius} km`
+      );
+      const url = `https://api.inaturalist.org/v1/observations?taxon_id=${taxonIdsString}&geoprivacy=open&verifiable=true&per_page=200&lat=${lat}&lng=${lng}&radius=${radius}`;
       const response = await fetch(url);
 
       if (!response.ok) {
@@ -24,14 +29,14 @@ export async function fetchMinimumDistancesForSpecies(
 
       const contentType = response.headers.get("content-type");
       if (contentType && contentType.includes("application/json")) {
-        const data = await response.json();
+        const data = (await response.json()) as ObservationsResponse;
         const { foundIds, nextRemainingIds } = processObservationsWithRadius(
           data.results,
           remainingIds,
           lat,
           lng
         );
-        
+
         // Update each taxon ID's distance progressively
         for (const [taxonId, distance] of Object.entries(foundIds)) {
           const id = Number(taxonId);
@@ -39,15 +44,18 @@ export async function fetchMinimumDistancesForSpecies(
           // Call the update callback as each distance is found
           updateDistanceCallback(id, distance);
         }
-
         remainingIds = nextRemainingIds;
+
+        // if nothing found, expand the search radius
+        if (data.total_results === 0) {
+          radius *= 2;
+        }
       } else {
         console.error(
           `Error fetching observations: Received non-JSON response`
         );
         break;
       }
-      radius *= 2;
     }
 
     // For any species not found, set its distance to null
@@ -63,7 +71,7 @@ export async function fetchMinimumDistancesForSpecies(
 }
 
 const processObservationsWithRadius = (
-  observations: any,
+  observations: Observation[],
   taxonIds: (string | number)[],
   userLat: number,
   userLng: number
@@ -85,7 +93,9 @@ const processObservationsWithRadius = (
 
     if (!locationString || !(matchesTaxonId || matchesAncestorId)) continue;
 
-    const matchedTaxonId = matchesTaxonId ? taxonId : ancestorIds.find((id) => taxonIdsAsNumbers.includes(id));
+    const matchedTaxonId = matchesTaxonId
+      ? taxonId
+      : ancestorIds.find((id) => taxonIdsAsNumbers.includes(id));
 
     if (!matchedTaxonId) continue;
 

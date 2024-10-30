@@ -11,7 +11,8 @@ import { ObservationsResponse } from "@/iNaturalistTypes";
 interface MapProps {
   initialLat: number;
   initialLng: number;
-  initialExtent?: number;
+  initialLatExtent?: number;
+  initialLngExtent?: number;
   iNaturalistTaxonId?: string;
   initialMarkers?: Markers;
 }
@@ -23,7 +24,8 @@ type Markers = Record<string, MarkerInfo>;
 export default function Map({
   initialLat,
   initialLng,
-  initialExtent = 0.05,
+  initialLatExtent = 0.05,
+  initialLngExtent = 0.05,
   iNaturalistTaxonId,
   initialMarkers = {},
 }: MapProps) {
@@ -34,8 +36,8 @@ export default function Map({
   const initialRegion = {
     latitude: initialLat,
     longitude: initialLng,
-    latitudeDelta: initialExtent,
-    longitudeDelta: initialExtent,
+    latitudeDelta: initialLatExtent,
+    longitudeDelta: initialLngExtent,
   };
   // map bounds are the actual rendered bounds, we will update these as the user moves the map
   const [mapBounds, setMapBounds] = useState<BoundingBox | undefined>(
@@ -44,6 +46,11 @@ export default function Map({
   const updateMapBounds = () => {
     map.current?.getMapBoundaries().then((bounds) => {
       setMapBounds(bounds);
+      console.log(
+        "map bounds",
+        bounds.northEast.latitude - bounds.southWest.latitude,
+        bounds.northEast.longitude - bounds.southWest.longitude
+      );
     });
   };
 
@@ -61,7 +68,7 @@ export default function Map({
     const fetchINaturalistData = async () => {
       const params = [
         "taxon_id=" + iNaturalistTaxonId,
-        "quality_grade=needs_id,research",
+        "verifiable=true",
         "geoprivacy=open",
         "licensed=true",
         "per_page=200",
