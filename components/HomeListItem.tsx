@@ -24,6 +24,7 @@ export default function HomeListItem(item: ItemData) {
             commonName: item.name,
             initialLat: location?.latitude,
             initialLng: location?.longitude,
+            distanceKmToNearest: item.distance,
           },
         });
       }}

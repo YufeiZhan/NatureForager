@@ -9,10 +9,10 @@ import MapView, {
 import { ObservationsResponse } from "@/iNaturalistTypes";
 
 interface MapProps {
-  iNaturalistTaxonId?: string;
   initialLat: number;
   initialLng: number;
   initialExtent?: number;
+  iNaturalistTaxonId?: string;
   initialMarkers?: Markers;
 }
 interface MarkerInfo {
@@ -21,10 +21,10 @@ interface MarkerInfo {
 type Markers = Record<string, MarkerInfo>;
 
 export default function Map({
-  iNaturalistTaxonId,
   initialLat,
   initialLng,
   initialExtent = 0.05,
+  iNaturalistTaxonId,
   initialMarkers = {},
 }: MapProps) {
   const map = useRef<MapView>(null);
