@@ -6,7 +6,7 @@
     "orientation": "portrait",
     "icon": "./assets/default/icon.png",
     "scheme": "Plant-Forager",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/default/splash.png",
       "resizeMode": "contain",

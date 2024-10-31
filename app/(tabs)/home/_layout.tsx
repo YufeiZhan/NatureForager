@@ -1,12 +1,18 @@
 // app/home/_layout.tsx
 import { Stack } from 'expo-router';
+import { globalStyles } from '@/styles/globalStyles';
 
 export default function HomeStack() {
   return (
-    <Stack>
+    <Stack
+      screenOptions ={{
+        headerTitleStyle: { ...globalStyles.headerTitleStyle},
+        headerBackTitle: "Back"
+      }}
+    >
       <Stack.Screen
         name="HomeScreen"
-        options={{ title: 'Home' }}
+        options={{ title: 'Nature Forager' }}
       />
       <Stack.Screen
         name="PlantLocation"

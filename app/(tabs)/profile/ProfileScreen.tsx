@@ -1,6 +1,6 @@
 // app/(tabs)/profile/ProfileScreen.tsx
 import { StyleSheet } from "react-native";
-import { Link, useRouter } from "expo-router";
+import { Link } from "expo-router";
 import { ThemedText, ThemedView } from "@/components/Themed";
 
 export default function ProfileScreen() {
