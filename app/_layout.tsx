@@ -1,9 +1,22 @@
 import { Stack } from "expo-router";
-function RootLayoutNav() {
+import { LocationContext } from "@/hooks/LocationContext"
+import { useLocation } from "@/hooks/useLocation"
+import { useColorScheme } from "react-native";
+import { getTheme } from "@/constants/Colors";
+import { ThemeProvider } from "@react-navigation/native";
+
+export default function RootLayout() {
+  const [location, setLocation] = useLocation();
+  const mode = useColorScheme()
+
   return (
-    <Stack>
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      <Stack.Screen name="PlantInfoModal" options={{ presentation: "modal" }} />
-    </Stack>
+    <ThemeProvider value={getTheme(mode === 'dark')}>
+      <LocationContext.Provider value={{ location, setLocation }}>
+        <Stack>
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="PlantInfoModal" options={{ presentation: "modal" }} />
+        </Stack>
+      </LocationContext.Provider>
+    </ThemeProvider>
   );
 }
