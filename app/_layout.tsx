@@ -14,7 +14,7 @@ export default function RootLayout() {
       <LocationContext.Provider value={{ location, setLocation }}>
         <Stack>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="PlantInfoModal" options={{ presentation: "modal" }} />
+          <Stack.Screen name="SpeciesInfoModal" options={{ presentation: "modal" }} />
         </Stack>
       </LocationContext.Provider>
     </ThemeProvider>

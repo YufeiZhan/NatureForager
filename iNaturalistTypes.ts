@@ -13,6 +13,9 @@ export interface Observation {
   location?: string;
   photos?: Photo[];
   taxon?: ObservationTaxon;
+  common_name?: string;
+  observed_on?: string;
+  description?: string;
 }
 
 export interface DateDetails {
