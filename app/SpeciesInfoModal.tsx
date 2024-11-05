@@ -133,10 +133,7 @@ export default function PlantInfoModal() {
         </ThemedView>
       </ThemedView>
 
-      <ThemedButton
-        title="Back to Map"
-        onPress={() => router.back()}
-      ></ThemedButton>
+      <ThemedButton title="Back to Map" onPress={() => router.back()} />
     </ThemedScrollView>
   );
 }

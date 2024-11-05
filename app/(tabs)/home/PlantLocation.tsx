@@ -1,12 +1,14 @@
 import { ThemedText, ThemedView } from "@/components/Themed";
-import { StyleSheet } from "react-native";
+import { StyleSheet, Modal } from "react-native";
 import Map from "@/components/Map";
 import { useNavigation } from "expo-router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNonArraySearchParams } from "@/hooks/useNonArraySearchParams";
 import { Button } from "react-native";
 import { RootStackParamList } from "../../../NavigationTypes";
 import { StackNavigationProp } from "@react-navigation/stack";
+import ObservationDetails from "@/components/ObservationDetails";
+import { Observation } from "@/iNaturalistTypes";
 
 type ProfileScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -15,6 +17,10 @@ type ProfileScreenNavigationProp = StackNavigationProp<
 
 export default function PlantLocation() {
   const { iNaturalistTaxonId, commonName } = useNonArraySearchParams();
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalObservation, setModalObservation] = useState<
+    Observation | undefined
+  >();
 
   // change screen header to match common name
   const nav = useNavigation<ProfileScreenNavigationProp>();
@@ -34,7 +40,27 @@ export default function PlantLocation() {
     });
   }, [commonName, iNaturalistTaxonId]);
 
-  return <Map iNaturalistTaxonId={iNaturalistTaxonId}></Map>;
+  const openDetailsModal = (observation: Observation) => {
+    setModalObservation(observation);
+    setModalVisible(true);
+  };
+
+  return (
+    <>
+      <Map
+        iNaturalistTaxonId={iNaturalistTaxonId}
+        onINaturalistMarkerPress={openDetailsModal}
+      ></Map>
+      <Modal visible={modalVisible} animationType="slide">
+        {modalObservation && (
+          <ObservationDetails
+            observation={modalObservation}
+            onClose={() => setModalVisible(false)}
+          ></ObservationDetails>
+        )}
+      </Modal>
+    </>
+  );
 }
 
 const styles = StyleSheet.create({

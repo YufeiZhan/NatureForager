@@ -5,23 +5,26 @@ import MapView, {
   BoundingBox,
   LatLng,
   Marker,
+  MapMarkerProps,
 } from "react-native-maps";
-import { ObservationsResponse } from "@/iNaturalistTypes";
+import { Observation, ObservationsResponse } from "@/iNaturalistTypes";
 
 interface MapProps {
   iNaturalistTaxonId?: string;
   initialLat?: number;
   initialLng?: number;
+  onINaturalistMarkerPress?: (observation: Observation) => void;
 }
-interface MarkerInfo {
+
+interface MarkerInfo extends MapMarkerProps {
   key: number;
-  coordinate: LatLng;
 }
 
 export default function Map({
   iNaturalistTaxonId,
   initialLat,
   initialLng,
+  onINaturalistMarkerPress,
 }: MapProps) {
   const map = useRef<MapView>(null);
 
@@ -75,6 +78,7 @@ export default function Map({
         newMarkers.push({
           key: observation.id || 0,
           coordinate: { latitude: latlng[0], longitude: latlng[1] },
+          onPress: () => onINaturalistMarkerPress?.(observation),
         });
       });
       setMarkers(newMarkers);
