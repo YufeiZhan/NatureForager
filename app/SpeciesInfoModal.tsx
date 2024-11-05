@@ -6,6 +6,7 @@ import {
   useWindowDimensions,
   LogBox,
   TextProps,
+  SafeAreaView,
 } from "react-native";
 import {
   ThemedScrollView,
@@ -32,6 +33,8 @@ LogBox.ignoreLogs([
   "MemoizedTNodeRenderer: Support for defaultProps will be removed",
   "TNodeChildrenRenderer: Support for defaultProps will be removed",
 ]);
+
+console.error = (error) => error.apply;
 
 export default function PlantInfoModal() {
   const { taxonId } = useLocalSearchParams();
@@ -104,37 +107,38 @@ export default function PlantInfoModal() {
   }
 
   return (
-    <ThemedScrollView contentContainerStyle={styles.mainContainer}>
-      <ThemedView style={styles.imageContainer}>
-        <Image
-          source={{ uri: taxonData?.photo_url }}
-          style={styles.image}
-          resizeMode="cover"
-        />
-      </ThemedView>
-
-      <ThemedView>
-        <ThemedText>Common Name: {taxonData?.common_name}</ThemedText>
-        <ThemedText>
-          Scientific Name:{" "}
-          <ThemedText style={{ fontStyle: "italic" }}>
-            {taxonData?.scientific_name}
-          </ThemedText>
-        </ThemedText>
-      </ThemedView>
-
-      <ThemedView>
-        <ThemedView>
-          <RenderHTML
-            contentWidth={width}
-            source={{ html: taxonData?.wikipedia_summary || "" }}
-            // defaultTextProps={{ style: { color: pureWhite } }}
+    <SafeAreaView style={{ flex: 1 }}>
+      <ThemedScrollView contentContainerStyle={styles.mainContainer}>
+        <ThemedView style={styles.imageContainer}>
+          <Image
+            source={{ uri: taxonData?.photo_url }}
+            style={styles.image}
+            resizeMode="cover"
           />
         </ThemedView>
-      </ThemedView>
 
+        <ThemedView>
+          <ThemedText>Common Name: {taxonData?.common_name}</ThemedText>
+          <ThemedText>
+            Scientific Name:{" "}
+            <ThemedText style={{ fontStyle: "italic" }}>
+              {taxonData?.scientific_name}
+            </ThemedText>
+          </ThemedText>
+        </ThemedView>
+
+        <ThemedView>
+          <ThemedView>
+            <RenderHTML
+              contentWidth={width}
+              source={{ html: taxonData?.wikipedia_summary || "" }}
+              // defaultTextProps={{ style: { color: pureWhite } }}
+            />
+          </ThemedView>
+        </ThemedView>
+      </ThemedScrollView>
       <ThemedButton title="Back to Map" onPress={() => router.back()} />
-    </ThemedScrollView>
+    </SafeAreaView>
   );
 }
 
