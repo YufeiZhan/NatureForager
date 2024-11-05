@@ -8,22 +8,27 @@ import { Button } from "react-native";
 import { RootStackParamList } from "../../../NavigationTypes";
 import { StackNavigationProp } from "@react-navigation/stack";
 
-type ProfileScreenNavigationProp = StackNavigationProp<RootStackParamList, "SpeciesInfoModal">;
+type ProfileScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  "SpeciesInfoModal"
+>;
 
 export default function PlantLocation() {
   const { iNaturalistTaxonId, commonName } = useNonArraySearchParams();
 
-
   // change screen header to match common name
   const nav = useNavigation<ProfileScreenNavigationProp>();
   useEffect(() => {
-    // Set screen header title and add a button to navigate to the PlantInfoModal
+    // Set screen header title and add a button to navigate to the modal containing species info
+    // Here instead of in main navigation because it updates based on this page's iNaturalistTaxonId
     nav.setOptions({
       title: commonName,
       headerRight: () => (
         <Button
-          title="Species Info"
-          onPress={() => nav.navigate("SpeciesInfoModal", { taxon_id: iNaturalistTaxonId })}
+          title="Info"
+          onPress={() =>
+            nav.navigate("SpeciesInfoModal", { taxon_id: iNaturalistTaxonId })
+          }
         />
       ),
     });
