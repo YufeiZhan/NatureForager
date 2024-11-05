@@ -23,8 +23,9 @@ export default function HomeListItem(item: ItemData) {
           params: {
             iNaturalistTaxonId: item.taxonId,
             commonName: item.name,
-            lat: location?.latitude,
-            lng: location?.longitude,
+            initialLat: location?.latitude,
+            initialLng: location?.longitude,
+            distanceKmToNearest: item.distance,
           },
         });
       }}

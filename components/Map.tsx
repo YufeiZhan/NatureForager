@@ -10,32 +10,39 @@ import MapView, {
 import { Observation, ObservationsResponse } from "@/iNaturalistTypes";
 
 interface MapProps {
+  initialLat: number;
+  initialLng: number;
+  initialLatExtent?: number;
+  initialLngExtent?: number;
   iNaturalistTaxonId?: string;
-  initialLat?: number;
-  initialLng?: number;
+  initialMarkers?: Markers;
   onINaturalistMarkerPress?: (observation: Observation) => void;
 }
 
 interface MarkerInfo extends MapMarkerProps {
   key: number;
+  initialMarkers?: Markers;
 }
+type Markers = Record<string, MarkerInfo>;
 
 export default function Map({
-  iNaturalistTaxonId,
   initialLat,
   initialLng,
+  initialLatExtent = 0.05,
+  initialLngExtent = 0.05,
+  iNaturalistTaxonId,
   onINaturalistMarkerPress,
+  initialMarkers = {},
 }: MapProps) {
   const map = useRef<MapView>(null);
 
   // region is the area to include within the map, but the map will probably
   // show more, depending on the aspect ratio
   const initialRegion = {
-    // default map center is Duke Chapel
-    latitude: initialLat || 36.001687,
-    longitude: initialLng || -78.939824,
-    latitudeDelta: 0.05,
-    longitudeDelta: 0.05,
+    latitude: initialLat,
+    longitude: initialLng,
+    latitudeDelta: initialLatExtent,
+    longitudeDelta: initialLngExtent,
   };
   // map bounds are the actual rendered bounds, we will update these as the user moves the map
   const [mapBounds, setMapBounds] = useState<BoundingBox | undefined>(
@@ -47,16 +54,21 @@ export default function Map({
     });
   };
 
-  // list of map markers
-  const [markers, setMarkers] = useState<MarkerInfo[]>([]);
+  // object containing map marker info
+  const [markers, setMarkers] = useState<Markers>(initialMarkers);
+  // when taxon id changes, reset markers
+  useEffect(() => {
+    setMarkers(initialMarkers);
+  }, [iNaturalistTaxonId]);
 
   // fetch iNaturalist observations whenever the taxon id changes or map bounds change
+  // don't fetch observations we've fetched previously
   useEffect(() => {
     if (iNaturalistTaxonId === undefined || mapBounds === undefined) return;
     const fetchINaturalistData = async () => {
       const params = [
         "taxon_id=" + iNaturalistTaxonId,
-        "quality_grade=needs_id,research",
+        "verifiable=true",
         "geoprivacy=open",
         "licensed=true",
         "per_page=200",
@@ -64,22 +76,25 @@ export default function Map({
         "nelng=" + mapBounds.northEast.longitude,
         "swlat=" + mapBounds.southWest.latitude,
         "swlng=" + mapBounds.southWest.longitude,
+        "not_id=" + Object.keys(markers).join(","),
       ];
       const url =
         "https://api.inaturalist.org/v1/observations?" + params.join("&");
       const data: ObservationsResponse = await (await fetch(url)).json();
 
       // update marker list
-      const newMarkers: MarkerInfo[] = [];
+      const newMarkers: Markers = { ...markers };
       data.results.forEach((observation) => {
         // location is stored in observation.location as the string "lat,lng"
-        const latlng = observation.location?.split(",").map((x) => Number(x));
+        const latlng = observation.location?.split(",").map(Number);
         if (latlng === undefined) return;
-        newMarkers.push({
-          key: observation.id || 0,
-          coordinate: { latitude: latlng[0], longitude: latlng[1] },
-          onPress: () => onINaturalistMarkerPress?.(observation),
-        });
+        if (observation.id !== undefined) {
+          newMarkers[observation.id] = {
+            key: observation.id || 0,
+            coordinate: { latitude: latlng[0], longitude: latlng[1] },
+            onPress: () => onINaturalistMarkerPress?.(observation),
+          };
+        }
       });
       setMarkers(newMarkers);
     };
@@ -94,8 +109,9 @@ export default function Map({
         ref={map}
         onMapReady={updateMapBounds}
         onRegionChangeComplete={updateMapBounds}
+        showsUserLocation={true}
       >
-        {markers.map((m) => (
+        {Object.values(markers).map((m) => (
           <Marker {...m}></Marker>
         ))}
         {/* uncomment to use open street map tiles */}
