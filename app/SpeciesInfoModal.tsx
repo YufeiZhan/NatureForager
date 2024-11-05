@@ -16,15 +16,9 @@ import {
 import { useLocalSearchParams, useRouter } from "expo-router";
 import RenderHTML from "react-native-render-html";
 import { oliveGreen, pureWhite } from "@/constants/Colors";
+import plantData from "@/data/edible_plants.json";
 
-interface Plant {
-  "iNaturalist ID": string;
-  "Scientific Name": string;
-  "Common Name": string;
-  Type: string;
-  "Month Ripe": string;
-  Notes?: string;
-}
+type Plant = (typeof plantData)[number];
 
 interface TaxonData {
   common_name: string;
@@ -33,17 +27,11 @@ interface TaxonData {
   photo_url: string;
 }
 
-interface Photo {
-  url: string;
-}
-
 LogBox.ignoreLogs([
   "TRenderEngineProvider: Support for defaultProps will be removed",
   "MemoizedTNodeRenderer: Support for defaultProps will be removed",
   "TNodeChildrenRenderer: Support for defaultProps will be removed",
 ]);
-
-const plantData: Plant[] = require("../data/edible_plants.json");
 
 function ModalText(props: TextProps) {
   return (
@@ -56,7 +44,6 @@ function ModalText(props: TextProps) {
 
 export default function PlantInfoModal() {
   const { taxonId } = useLocalSearchParams();
-  console.log(taxonId);
   const [plantInfo, setPlantInfo] = useState<Plant | null>(null);
   const [taxonData, setTaxonData] = useState<TaxonData | null>(null);
   const [loading, setLoading] = useState(true);
