@@ -27,7 +27,7 @@ export default function PlantLocation() {
         <Button
           title="Info"
           onPress={() =>
-            nav.navigate("SpeciesInfoModal", { taxon_id: iNaturalistTaxonId })
+            nav.navigate("SpeciesInfoModal", { taxonId: iNaturalistTaxonId })
           }
         />
       ),

@@ -1,5 +1,4 @@
 export type RootStackParamList = {
-    "(tabs)": undefined;
-    SpeciesInfoModal: { taxon_id: string};
-  };
-  
+  "(tabs)": undefined;
+  SpeciesInfoModal: { taxonId: string };
+};
