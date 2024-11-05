@@ -5,8 +5,9 @@ import MapView, {
   BoundingBox,
   LatLng,
   Marker,
+  MapMarkerProps,
 } from "react-native-maps";
-import { ObservationsResponse } from "@/iNaturalistTypes";
+import { Observation, ObservationsResponse } from "@/iNaturalistTypes";
 
 interface MapProps {
   initialLat: number;
@@ -15,9 +16,12 @@ interface MapProps {
   initialLngExtent?: number;
   iNaturalistTaxonId?: string;
   initialMarkers?: Markers;
+  onINaturalistMarkerPress?: (observation: Observation) => void;
 }
-interface MarkerInfo {
-  coordinate: LatLng;
+
+interface MarkerInfo extends MapMarkerProps {
+  key: number;
+  initialMarkers?: Markers;
 }
 type Markers = Record<string, MarkerInfo>;
 
@@ -27,6 +31,7 @@ export default function Map({
   initialLatExtent = 0.05,
   initialLngExtent = 0.05,
   iNaturalistTaxonId,
+  onINaturalistMarkerPress,
   initialMarkers = {},
 }: MapProps) {
   const map = useRef<MapView>(null);
@@ -85,7 +90,9 @@ export default function Map({
         if (latlng === undefined) return;
         if (observation.id !== undefined) {
           newMarkers[observation.id] = {
+            key: observation.id || 0,
             coordinate: { latitude: latlng[0], longitude: latlng[1] },
+            onPress: () => onINaturalistMarkerPress?.(observation),
           };
         }
       });
@@ -104,8 +111,8 @@ export default function Map({
         onRegionChangeComplete={updateMapBounds}
         showsUserLocation={true}
       >
-        {Object.entries(markers).map(([id, info]) => (
-          <Marker key={id} coordinate={info.coordinate}></Marker>
+        {Object.values(markers).map((m) => (
+          <Marker {...m}></Marker>
         ))}
         {/* uncomment to use open street map tiles */}
         {/* <UrlTile
