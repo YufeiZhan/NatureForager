@@ -1,8 +1,7 @@
 import {
   Image,
+  SafeAreaView,
   StyleSheet,
-  Pressable,
-  TextProps,
   useWindowDimensions,
 } from "react-native";
 import {
@@ -13,16 +12,6 @@ import {
 } from "../components/Themed";
 import { pureWhite, oliveGreen } from "@/constants/Colors";
 import { Observation } from "../iNaturalistTypes";
-import { useRouter } from "expo-router";
-
-function ModalText(props: TextProps) {
-  return (
-    <ThemedText
-      style={[{ color: pureWhite, marginLeft: 16 }, props.style]}
-      {...props}
-    />
-  );
-}
 
 interface ObservationDetailsProps {
   observation: Observation;
@@ -35,35 +24,27 @@ export default function ObservationDetails({
 }: ObservationDetailsProps) {
   const { width } = useWindowDimensions();
 
-  const router = useRouter();
   const handleAddToFavorites = () => {
     console.log("Add to Favorites pressed");
   };
 
-  //   const handleClose = () => {
-  //     console.log('Close modal');
-  //     router.back();
-  //   };
-
   return (
-    <ThemedView style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1 }}>
       <ThemedScrollView>
         {/* Header with common name */}
         <ThemedView style={styles.headerContainer}>
-          <ModalText style={styles.header}>
+          <ThemedText style={styles.header}>
             {observation.common_name || "Observation Details"}
-          </ModalText>
+          </ThemedText>
         </ThemedView>
 
         {/* Observation Date and Note */}
         <ThemedView style={styles.detailsContainer}>
-          <ModalText>
+          <ThemedText>
             Observed on: {observation.observed_on || "Date not available"}
-          </ModalText>
-          <ModalText></ModalText>
-          <ModalText>
-            {observation.description || "No notes available"}
-          </ModalText>
+          </ThemedText>
+          <ThemedText></ThemedText>
+          <ThemedText>{observation.description || ""}</ThemedText>
         </ThemedView>
 
         {/* Add to Favorite Button */}
@@ -84,13 +65,13 @@ export default function ObservationDetails({
               />
             ))
           ) : (
-            <ModalText>No photos available</ModalText>
+            <ThemedText>No photos available</ThemedText>
           )}
         </ThemedView>
       </ThemedScrollView>
       <ThemedButton title="Back to Map" onPress={onClose} />
-      <ModalText></ModalText>
-    </ThemedView>
+      <ThemedText></ThemedText>
+    </SafeAreaView>
   );
 }
 
@@ -101,14 +82,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
   },
-  closeButton: {
-    justifyContent: "center",
-    alignItems: "center",
-    color: "white",
-  },
   header: {
     fontSize: 24,
-    color: pureWhite,
     textAlign: "center",
     fontStyle: "italic",
   },
