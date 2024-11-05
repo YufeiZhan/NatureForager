@@ -10,7 +10,6 @@ import {
   ThemedText,
   ThemedButton,
 } from "../components/Themed";
-import { pureWhite, oliveGreen } from "@/constants/Colors";
 import { Observation } from "../iNaturalistTypes";
 
 interface ObservationDetailsProps {
@@ -43,7 +42,6 @@ export default function ObservationDetails({
           <ThemedText>
             Observed on: {observation.observed_on || "Date not available"}
           </ThemedText>
-          <ThemedText></ThemedText>
           <ThemedText>{observation.description || ""}</ThemedText>
         </ThemedView>
 
@@ -56,7 +54,7 @@ export default function ObservationDetails({
             observation.photos.map((photo, index) => (
               <Image
                 key={index}
-                source={{ uri: photo.url }}
+                source={{ uri: photo.url?.replace("square", "medium") }}
                 style={[
                   styles.photo,
                   { width: width - 32, height: width - 32 },
