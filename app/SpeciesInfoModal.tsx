@@ -13,7 +13,7 @@ import {
   ThemedText,
   ThemedButton,
 } from "../components/Themed";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import RenderHTML from "react-native-render-html";
 import { oliveGreen, pureWhite } from "@/constants/Colors";
 import plantData from "@/data/edible_plants.json";
@@ -33,15 +33,6 @@ LogBox.ignoreLogs([
   "TNodeChildrenRenderer: Support for defaultProps will be removed",
 ]);
 
-function ModalText(props: TextProps) {
-  return (
-    <ThemedText
-      style={[{ color: pureWhite, marginLeft: 16 }, props.style]}
-      {...props}
-    />
-  );
-}
-
 export default function PlantInfoModal() {
   const { taxonId } = useLocalSearchParams();
   const [plantInfo, setPlantInfo] = useState<Plant | null>(null);
@@ -49,6 +40,14 @@ export default function PlantInfoModal() {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const { width } = useWindowDimensions();
+
+  // change screen header to match common name
+  const nav = useNavigation();
+  useEffect(() => {
+    nav.setOptions({ title: plantInfo?.["Common Name"] });
+    // clean up once done
+    return () => nav.setOptions({ title: "" });
+  }, [plantInfo]);
 
   useEffect(() => {
     // Find the plant by taxonId from the local JSON data
@@ -73,15 +72,19 @@ export default function PlantInfoModal() {
         const taxon = data.results[0];
         // console.log(response);
 
+        const displayCommonName =
+          matchedPlant?.["Common Name"] ||
+          taxon.preferred_common_name ||
+          "No common name";
+
         setTaxonData({
-          common_name: taxon.preferred_common_name || "No common name",
+          common_name: displayCommonName,
           scientific_name: taxon.name,
           wikipedia_summary: taxon.wikipedia_summary || "No summary available",
           photo_url:
             taxon.taxon_photos[0]?.photo.medium_url ||
             "https://via.placeholder.com/300x200.png?text=Image+Not+Available",
         });
-        // console.log(taxonSummary);
       } catch (error) {
         console.error("Error fetching plant data:", error);
       } finally {
@@ -94,83 +97,62 @@ export default function PlantInfoModal() {
 
   if (loading) {
     return (
-      <ThemedView>
-        <ModalText>Loading plant information...</ModalText>
-      </ThemedView>
+      <ThemedScrollView contentContainerStyle={styles.mainContainer}>
+        <ThemedText>Loading plant information...</ThemedText>
+      </ThemedScrollView>
     );
   }
 
   return (
-    <ThemedView style={{ flex: 1 }}>
-      <ThemedScrollView>
-        <ThemedView style={styles.headerContainer}>
-          <ModalText style={styles.header}>
-            {taxonData?.common_name || "Plant Info"}
-          </ModalText>
-        </ThemedView>
+    <ThemedScrollView contentContainerStyle={styles.mainContainer}>
+      <ThemedView style={styles.imageContainer}>
+        <Image
+          source={{ uri: taxonData?.photo_url }}
+          style={styles.image}
+          resizeMode="cover"
+        />
+      </ThemedView>
 
-        <ThemedView style={styles.imageContainer}>
-          <Image
-            source={{ uri: taxonData?.photo_url }}
-            style={styles.image}
-            resizeMode="cover"
+      <ThemedView>
+        <ThemedText>Common Name: {taxonData?.common_name}</ThemedText>
+        <ThemedText>
+          Scientific Name:{" "}
+          <ThemedText style={{ fontStyle: "italic" }}>
+            {taxonData?.scientific_name}
+          </ThemedText>
+        </ThemedText>
+      </ThemedView>
+
+      <ThemedView>
+        <ThemedView>
+          <RenderHTML
+            contentWidth={width}
+            source={{ html: taxonData?.wikipedia_summary || "" }}
+            // defaultTextProps={{ style: { color: pureWhite } }}
           />
         </ThemedView>
+      </ThemedView>
 
-        <ThemedView>
-          <ModalText>Common Name: {taxonData?.common_name}</ModalText>
-          <ModalText
-            style={{ fontStyle: "italic", color: pureWhite, marginLeft: 16 }}
-          >
-            Scientific Name: {taxonData?.scientific_name}
-          </ModalText>
-
-          <ThemedView style={styles.section}>
-            <RenderHTML
-              contentWidth={width}
-              source={{ html: taxonData?.wikipedia_summary || "" }}
-              defaultTextProps={{ style: { color: pureWhite } }}
-            />
-          </ThemedView>
-        </ThemedView>
-        <Pressable style={styles.closeButton} onPress={() => router.back()}>
-          <ModalText>Back to Map</ModalText>
-        </Pressable>
-      </ThemedScrollView>
-    </ThemedView>
+      <ThemedButton
+        title="Back to Map"
+        onPress={() => router.back()}
+      ></ThemedButton>
+    </ThemedScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  headerContainer: {
-    padding: 16,
-    alignItems: "center",
-  },
-  closeButton: {
-    color: "blue",
-    alignItems: "center",
-  },
-  header: {
-    fontSize: 24,
-    color: pureWhite,
-    textAlign: "center",
-    marginVertical: 10,
+  mainContainer: {
+    flex: 1,
+    gap: 20,
+    padding: 20,
   },
   imageContainer: {
     alignItems: "center",
-    marginBottom: 20,
   },
   image: {
     width: 300,
     height: 200,
     borderRadius: 10,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginTop: 10,
-  },
-  section: {
-    padding: 16,
   },
 });
