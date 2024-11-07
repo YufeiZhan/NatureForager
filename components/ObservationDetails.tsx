@@ -11,6 +11,8 @@ import {
   ThemedButton,
 } from "../components/Themed";
 import { Observation } from "../iNaturalistTypes";
+import { useRouter } from "expo-router";
+
 
 interface ObservationDetailsProps {
   observation: Observation;
@@ -22,9 +24,20 @@ export default function ObservationDetails({
   onClose,
 }: ObservationDetailsProps) {
   const { width } = useWindowDimensions();
+  const router = useRouter();
 
   const handleAddToFavorites = () => {
-    console.log("Add to Favorites pressed");
+    onClose();
+    console.log(observation.id);
+    router.push({
+      pathname: "/(tabs)/profile/CreateFavorite",
+      params: {
+        plantId: observation.id,
+        commonName: observation.taxon?.preferred_common_name,
+        location: observation.location,
+        photo: observation.photos?.[0].url ?? '',
+      },
+    });
   };
 
   return (
@@ -33,7 +46,7 @@ export default function ObservationDetails({
         {/* Header with common name */}
         <ThemedView style={styles.headerContainer}>
           <ThemedText style={styles.header}>
-            {observation.common_name || "Observation Details"}
+            {observation.taxon?.preferred_common_name || "Observation Details"}
           </ThemedText>
         </ThemedView>
 

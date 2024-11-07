@@ -2,7 +2,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import uuid from "react-native-uuid";
 
 interface Plant {
-  id: string;
+  iNatualistId: string;
+  RandomlyGeneratedId: string;
   name: string;
   location: { latitude: number; longitude: number };
   photos?: string[];
@@ -23,16 +24,18 @@ export async function getFavorites(): Promise<Plant[]> {
 }
 
 // Add a new plant to favorites
-export async function addPlantToFavorites(
-  plantData: Omit<Plant, "id">
-): Promise<void> {
+export async function addPlantToFavorites(plantData: Plant): Promise<void> {
   try {
-    const newPlant: Plant = {
-      id: uuid.v4() as string,
-      ...plantData,
-    };
     const favorites = await getFavorites();
-    favorites.push(newPlant);
+
+    // Check for duplicates using the original `id`
+    const exists = favorites.some((plant) => plant.iNatualistId === plantData.iNatualistId);
+    if (exists) {
+      console.log("Plant with this ID already exists in favorites, not adding again.");
+      return;
+    }
+
+    favorites.push(plantData);
     await AsyncStorage.setItem(FAVORITES_KEY, JSON.stringify(favorites));
   } catch (error) {
     console.error("Error adding plant to favorites:", error);
@@ -41,19 +44,21 @@ export async function addPlantToFavorites(
 
 // Update an existing plant in favorites
 export async function updatePlantInFavorites(
-  plantId: string,
-  updatedData: Partial<Omit<Plant, "id">>
+  randomlyGeneratedId: string,
+  updatedData: Partial<Omit<Plant, "RandomlyGeneratedId">>
 ): Promise<void> {
   try {
     const favorites = await getFavorites();
-    const plantIndex = favorites.findIndex((plant) => plant.id === plantId);
+    const plantIndex = favorites.findIndex(
+      (plant) => plant.RandomlyGeneratedId === randomlyGeneratedId
+    );
 
     if (plantIndex === -1) {
       console.error("Plant not found in favorites");
       return;
     }
 
-    // Update only the provided fields
+    // Update only the provided fields in the matched plant
     favorites[plantIndex] = { ...favorites[plantIndex], ...updatedData };
     await AsyncStorage.setItem(FAVORITES_KEY, JSON.stringify(favorites));
   } catch (error) {
@@ -65,7 +70,7 @@ export async function updatePlantInFavorites(
 export async function removePlantFromFavorites(plantId: string): Promise<void> {
   try {
     const favorites = await getFavorites();
-    const updatedFavorites = favorites.filter((plant) => plant.id !== plantId);
+    const updatedFavorites = favorites.filter((plant) => plant.iNatualistId !== plantId);
     await AsyncStorage.setItem(FAVORITES_KEY, JSON.stringify(updatedFavorites));
   } catch (error) {
     console.error("Error removing plant from favorites:", error);
