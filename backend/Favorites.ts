@@ -3,6 +3,7 @@ import uuid from "react-native-uuid";
 
 interface Plant {
   id: string;
+  generatedId: string;
   name: string;
   location: { latitude: number; longitude: number };
   photos?: string[];
@@ -23,16 +24,18 @@ export async function getFavorites(): Promise<Plant[]> {
 }
 
 // Add a new plant to favorites
-export async function addPlantToFavorites(
-  plantData: Omit<Plant, "id">
-): Promise<void> {
+export async function addPlantToFavorites(plantData: Plant): Promise<void> {
   try {
-    const newPlant: Plant = {
-      id: uuid.v4() as string,
-      ...plantData,
-    };
     const favorites = await getFavorites();
-    favorites.push(newPlant);
+
+    // Check for duplicates using the original `id`
+    const exists = favorites.some((plant) => plant.id === plantData.id);
+    if (exists) {
+      console.log("Plant with this ID already exists in favorites, not adding again.");
+      return;
+    }
+
+    favorites.push(plantData);
     await AsyncStorage.setItem(FAVORITES_KEY, JSON.stringify(favorites));
   } catch (error) {
     console.error("Error adding plant to favorites:", error);
