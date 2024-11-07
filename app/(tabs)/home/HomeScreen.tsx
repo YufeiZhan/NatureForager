@@ -139,6 +139,8 @@ export default function HomeScreen() {
           borderWidth: 0,
           justifyContent: "center",
           alignItems: "center",
+          backgroundColor: pureWhite,
+          opacity: 0.8,
         }}
         placeholder="Select Month"
         containerStyle={{ width: 275 }}
