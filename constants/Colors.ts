@@ -11,16 +11,16 @@ export default {
   light: {},
 };
 
+// set the theme to always return the only theme that we implemented for now
+// if new theme is implemented in the future, return different theme based on the parameter boolean
 export function getTheme(dark: boolean): Theme {
-  return dark
-    ? { ...DarkTheme }
-    : {
-        ...DefaultTheme,
-        colors: {
-          ...DefaultTheme.colors,
-          background: oliveGreen, // screens' background
-          card: yellowSand, // set the header/tab bg color
-          text: pureWhite, // text for navigational elements
-        },
-      };
+  return {
+    ...DefaultTheme,
+    colors: {
+      ...DefaultTheme.colors,
+      background: oliveGreen, // screens' background
+      card: yellowSand, // set the header/tab bg color
+      text: pureWhite, // text for navigational elements
+    },
+  }
 }
