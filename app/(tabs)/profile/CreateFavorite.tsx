@@ -31,8 +31,8 @@ export default function CreateFavorite() {
   const handleCreateFavorite = async () => {
     // Prepare plant data
     const plantData = {
-      id: plantId as string,
-      generatedId: uuid.v4() as string,
+      iNatualistId: plantId as string,
+      RandomlyGeneratedId: uuid.v4() as string,
       name: commonName as string,
       location: {
         latitude: Number(stringLocation?.split(",")[0]) || 0,
