@@ -32,14 +32,14 @@ export default function HomeListItem(item: ItemData) {
       style={styles.container}
     >
 
-      <ThemedView style={styles.subContainer}>
+      <ThemedView style={styles.subContainerLeft}>
         <Image source={require("@/assets/plant/fruit.png")} style={styles.icon} ></Image>
         <ThemedText style={styles.title}> {item.name} </ThemedText>
       </ThemedView>
 
-      <ThemedView style={styles.subContainer}>
+      <ThemedView style={styles.subContainerRight}>
         <Image source={require("@/assets/pin/home.png")} style={styles.icon} ></Image>
-        <ThemedText> 
+        <ThemedText style={styles.distance}> 
           {item.distance ? `${Number(item.distance).toFixed(2)} km` : "None"}
         </ThemedText>
       </ThemedView>
@@ -62,16 +62,25 @@ export const styles = StyleSheet.create({
     marginVertical: 5,
     borderRadius:10,
   },
-  subContainer: {
+  subContainerRight: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginHorizontal: 10
+    marginHorizontal: 10, 
+  },
+  subContainerLeft: {
+    flexDirection: "row",
+    alignItems: "center",
+    flex: 1, // Allows the title to take up remaining space
   },
   icon: {
     margin: 10
   },
   title: {
     fontSize: 100,
-  }
+  },
+  distance: {
+    textAlign: "right",
+    minWidth: 2,
+  },
 })
