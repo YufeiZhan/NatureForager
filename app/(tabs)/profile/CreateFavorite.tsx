@@ -1,5 +1,5 @@
 import { useRouter } from "expo-router";
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Image, StyleSheet, TextInput, View } from "react-native";
 import {
   ThemedText,
@@ -23,7 +23,13 @@ export default function CreateFavorite() {
   const { addFavorite } = useContext(FavoritesContext);
 
   const [note, setNote] = useState(noteParam);
-  const [photoUrls, setPhotoUrls] = useState<string[]>(photos.split(","));
+  const [photoUrls, setPhotoUrls] = useState<string[]>([]);
+
+  // when params change, update state
+  useEffect(() => {
+    setNote(noteParam);
+    setPhotoUrls(photos.split(","));
+  }, [photos, noteParam]);
 
   // Handle the create button click
   const handleCreateFavorite = async () => {
