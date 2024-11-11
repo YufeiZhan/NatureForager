@@ -26,7 +26,9 @@ export function useFavorites() {
   const loadFavorites = async () => {
     try {
       const storedPlants = await AsyncStorage.getItem(FAVORITES_KEY);
-      setFavorites(storedPlants ? JSON.parse(storedPlants) : []);
+      const newFavorites = storedPlants ? JSON.parse(storedPlants) : [];
+      console.log("new favorites", newFavorites);
+      setFavorites(newFavorites);
     } catch (error) {
       console.error("Error fetching favorite plants:", error);
       setFavorites([]);

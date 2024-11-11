@@ -2,7 +2,7 @@ import { createContext } from "react";
 import { Favorite } from "./useFavorites";
 
 interface FavoritesContextType {
-  favorites: Favorite[];
+  favorites: Favorite[] | undefined;
   addFavorite: (plantData: Omit<Favorite, "id">) => Promise<void>;
   updateFavorite: (
     id: string,
@@ -12,7 +12,7 @@ interface FavoritesContextType {
   clearAllFavorites: () => Promise<void>;
 }
 
-export const LocationContext = createContext<FavoritesContextType>({
+export const FavoritesContext = createContext<FavoritesContextType>({
   favorites: [],
   addFavorite: async () => {},
   updateFavorite: async () => {},

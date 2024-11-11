@@ -1,17 +1,14 @@
-import { useLocalSearchParams, useRouter } from "expo-router";
-import React, { useState, useEffect } from "react";
+import { useRouter } from "expo-router";
+import React, { useState, useContext } from "react";
 import { Image, StyleSheet, TextInput, View } from "react-native";
 import {
   ThemedText,
   ThemedView,
   ThemedButton,
 } from "../../../components/Themed";
-import {
-  addPlantToFavorites,
-  getFavorites,
-  Favorite,
-} from "../../../backend/Favorites";
 import { useNonArraySearchParams } from "@/hooks/useNonArraySearchParams";
+import { Favorite } from "@/hooks/useFavorites";
+import { FavoritesContext } from "@/hooks/FavoritesContext";
 
 export default function CreateFavorite() {
   const router = useRouter();
@@ -23,6 +20,7 @@ export default function CreateFavorite() {
     photos,
     note: noteParam,
   } = useNonArraySearchParams();
+  const { addFavorite } = useContext(FavoritesContext);
 
   const [note, setNote] = useState(noteParam);
   const [photoUrls, setPhotoUrls] = useState<string[]>(photos.split(","));
@@ -44,10 +42,7 @@ export default function CreateFavorite() {
     }
 
     // Save plant data to favorites
-    await addPlantToFavorites(favoriteData);
-
-    const favorites = await getFavorites();
-    console.log("All stored favorites:", favorites);
+    await addFavorite(favoriteData);
 
     // Navigate back after saving
     router.back();

@@ -8,7 +8,6 @@ import MapView, {
   MapMarkerProps,
 } from "react-native-maps";
 import { Observation, ObservationsResponse } from "@/iNaturalistTypes";
-import { clearAllFavorites, getFavorites } from "@/backend/Favorites";
 
 interface MapProps {
   initialLat: number;
@@ -60,11 +59,7 @@ export default function Map({
   // prep favorites markers
   const favoritesMarkers: Markers = {};
   if (showFavorites) {
-    const loadFavoritesMarkers = async () => {
-      const favorites = await getFavorites();
-      favorites.forEach((fav) => {});
-    };
-    loadFavoritesMarkers();
+    // TODO
   }
 
   // object containing map marker info
