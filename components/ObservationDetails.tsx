@@ -9,7 +9,7 @@ import {
   ThemedView,
   ThemedText,
   ThemedButton,
-} from "../components/Themed";
+} from "./Themed";
 import { Observation } from "../iNaturalistTypes";
 import { useRouter } from "expo-router";
 import { useContext, useEffect, useState } from "react";
@@ -63,8 +63,11 @@ export default function ObservationDetails({
       <ThemedScrollView>
         {/* Header with common name */}
         <ThemedView style={styles.headerContainer}>
-          <ThemedText style={styles.header}>
+          <ThemedText style={styles.commonName}>
             {observation.taxon?.preferred_common_name || "Observation Details"}
+          </ThemedText>
+          <ThemedText style={styles.scientificName}>
+            {observation.taxon?.name}
           </ThemedText>
         </ThemedView>
 
@@ -114,10 +117,13 @@ const styles = StyleSheet.create({
   headerContainer: {
     padding: 16,
     alignItems: "center",
-    flexDirection: "row",
     justifyContent: "center",
   },
-  header: {
+  commonName: {
+    fontSize: 24,
+    textAlign: "center",
+  },
+  scientificName: {
     fontSize: 24,
     textAlign: "center",
     fontStyle: "italic",

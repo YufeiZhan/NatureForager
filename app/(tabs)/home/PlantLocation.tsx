@@ -1,14 +1,11 @@
-import { ThemedText, ThemedView } from "@/components/Themed";
-import { StyleSheet, Modal } from "react-native";
+import { StyleSheet } from "react-native";
 import Map from "@/components/Map";
 import { useNavigation } from "expo-router";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useNonArraySearchParams } from "@/hooks/useNonArraySearchParams";
 import { Button } from "react-native";
 import { RootStackParamList } from "../../../NavigationTypes";
 import { StackNavigationProp } from "@react-navigation/stack";
-import ObservationDetails from "@/components/ObservationDetails";
-import { Observation } from "@/iNaturalistTypes";
 
 type SpeciesInfoNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -23,11 +20,6 @@ export default function PlantLocation() {
     initialLng,
     distanceKmToNearest,
   } = useNonArraySearchParams();
-
-  const [modalVisible, setModalVisible] = useState(false);
-  const [modalObservation, setModalObservation] = useState<
-    Observation | undefined
-  >();
 
   // change screen header to match common name
   const nav = useNavigation<SpeciesInfoNavigationProp>();
@@ -46,11 +38,6 @@ export default function PlantLocation() {
       ),
     });
   }, [commonName, iNaturalistTaxonId]);
-
-  const openDetailsModal = (observation: Observation) => {
-    setModalObservation(observation);
-    setModalVisible(true);
-  };
 
   // calculate rough lat/lng extent based on distance to nearest observation, default to 0.05
   let initialLatExtent = 0.05;
@@ -75,16 +62,7 @@ export default function PlantLocation() {
         initialLng={Number(initialLng)}
         initialLatExtent={initialLatExtent}
         initialLngExtent={initialLngExtent}
-        onINaturalistMarkerPress={openDetailsModal}
       ></Map>
-      <Modal visible={modalVisible} animationType="slide">
-        {modalObservation && (
-          <ObservationDetails
-            observation={modalObservation}
-            onClose={() => setModalVisible(false)}
-          ></ObservationDetails>
-        )}
-      </Modal>
     </>
   );
 }

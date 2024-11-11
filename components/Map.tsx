@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, Modal } from "react-native";
 import MapView, {
   UrlTile,
   BoundingBox,
@@ -8,6 +8,7 @@ import MapView, {
   MapMarkerProps,
 } from "react-native-maps";
 import { Observation, ObservationsResponse } from "@/iNaturalistTypes";
+import ObservationDetails from "@/components/ObservationDetails";
 
 interface MapProps {
   initialLat: number;
@@ -17,7 +18,6 @@ interface MapProps {
   showFavorites?: boolean;
   iNaturalistTaxonId?: string;
   initialMarkers?: Markers;
-  onINaturalistMarkerPress?: (observation: Observation) => void;
 }
 
 interface MarkerInfo {
@@ -34,7 +34,6 @@ export default function Map({
   initialLngExtent = 0.05,
   showFavorites = false,
   iNaturalistTaxonId,
-  onINaturalistMarkerPress,
 }: MapProps) {
   const map = useRef<MapView>(null);
 
@@ -56,6 +55,16 @@ export default function Map({
     });
   };
 
+  // state for iNaturalist observation details modal
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalObservation, setModalObservation] = useState<
+    Observation | undefined
+  >();
+  const openDetailsModal = (observation: Observation) => {
+    setModalObservation(observation);
+    setModalVisible(true);
+  };
+
   // prep favorites markers
   const favoritesMarkers: Markers = {};
   if (showFavorites) {
@@ -75,8 +84,6 @@ export default function Map({
   useEffect(() => {
     if (iNaturalistTaxonId === undefined || mapBounds === undefined) return;
     const fetchINaturalistData = async () => {
-      const observationsWeHave: string[] = [];
-
       const params = [
         "taxon_id=" + iNaturalistTaxonId,
         "verifiable=true",
@@ -104,7 +111,7 @@ export default function Map({
             key: observation.id || 0,
             props: {
               coordinate: { latitude: latlng[0], longitude: latlng[1] },
-              onPress: () => onINaturalistMarkerPress?.(observation),
+              onPress: () => openDetailsModal(observation),
             },
           };
         }
@@ -134,6 +141,14 @@ export default function Map({
           flipY={false}
         /> */}
       </MapView>
+      <Modal visible={modalVisible} animationType="slide">
+        {modalObservation && (
+          <ObservationDetails
+            observation={modalObservation}
+            onClose={() => setModalVisible(false)}
+          ></ObservationDetails>
+        )}
+      </Modal>
     </View>
   );
 }
