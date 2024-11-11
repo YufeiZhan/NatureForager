@@ -7,33 +7,30 @@ import MapView, {
   Marker,
   MapMarkerProps,
 } from "react-native-maps";
-import { Observation, ObservationsResponse } from "@/iNaturalistTypes";
-import ObservationDetails from "@/components/ObservationDetails";
 
-interface MapProps {
+export interface MapProps {
   initialLat: number;
   initialLng: number;
   initialLatExtent?: number;
   initialLngExtent?: number;
-  showFavorites?: boolean;
-  iNaturalistTaxonId?: string;
-  initialMarkers?: Markers;
+  markers?: Markers;
+  onBoundsChange?: (bounds: BoundingBox) => void;
 }
 
-interface MarkerInfo {
+export interface MarkerInfo {
   key: number;
   iNaturalistId?: number;
   props: MapMarkerProps;
 }
-type Markers = Record<string, MarkerInfo>;
+export type Markers = Record<string, MarkerInfo>;
 
 export default function Map({
   initialLat,
   initialLng,
   initialLatExtent = 0.05,
   initialLngExtent = 0.05,
-  showFavorites = false,
-  iNaturalistTaxonId,
+  markers = {},
+  onBoundsChange,
 }: MapProps) {
   const map = useRef<MapView>(null);
 
@@ -46,80 +43,9 @@ export default function Map({
     longitudeDelta: initialLngExtent,
   };
   // map bounds are the actual rendered bounds, we will update these as the user moves the map
-  const [mapBounds, setMapBounds] = useState<BoundingBox | undefined>(
-    undefined
-  );
   const updateMapBounds = () => {
-    map.current?.getMapBoundaries().then((bounds) => {
-      setMapBounds(bounds);
-    });
+    map.current?.getMapBoundaries().then(onBoundsChange);
   };
-
-  // state for iNaturalist observation details modal
-  const [modalVisible, setModalVisible] = useState(false);
-  const [modalObservation, setModalObservation] = useState<
-    Observation | undefined
-  >();
-  const openDetailsModal = (observation: Observation) => {
-    setModalObservation(observation);
-    setModalVisible(true);
-  };
-
-  // prep favorites markers
-  const favoritesMarkers: Markers = {};
-  if (showFavorites) {
-    // TODO
-  }
-
-  // object containing map marker info
-  // init to favorites markers, and add iNat stuff in addition to that
-  const [markers, setMarkers] = useState<Markers>({});
-  // when taxon id changes, reset markers
-  useEffect(() => {
-    setMarkers({});
-  }, [iNaturalistTaxonId]);
-
-  // fetch iNaturalist observations whenever the taxon id changes or map bounds change
-  // don't fetch observations we've fetched previously
-  useEffect(() => {
-    if (iNaturalistTaxonId === undefined || mapBounds === undefined) return;
-    const fetchINaturalistData = async () => {
-      const params = [
-        "taxon_id=" + iNaturalistTaxonId,
-        "verifiable=true",
-        "geoprivacy=open",
-        "licensed=true",
-        "per_page=200",
-        "nelat=" + mapBounds.northEast.latitude,
-        "nelng=" + mapBounds.northEast.longitude,
-        "swlat=" + mapBounds.southWest.latitude,
-        "swlng=" + mapBounds.southWest.longitude,
-        "not_id=" + Object.keys(markers).join(","),
-      ];
-      const url =
-        "https://api.inaturalist.org/v1/observations?" + params.join("&");
-      const data: ObservationsResponse = await (await fetch(url)).json();
-
-      // update marker list
-      const newMarkers: Markers = { ...markers };
-      data.results.forEach((observation) => {
-        // location is stored in observation.location as the string "lat,lng"
-        const latlng = observation.location?.split(",").map(Number);
-        if (latlng === undefined) return;
-        if (observation.id !== undefined) {
-          newMarkers[observation.id] = {
-            key: observation.id || 0,
-            props: {
-              coordinate: { latitude: latlng[0], longitude: latlng[1] },
-              onPress: () => openDetailsModal(observation),
-            },
-          };
-        }
-      });
-      setMarkers(newMarkers);
-    };
-    fetchINaturalistData();
-  }, [iNaturalistTaxonId, mapBounds]);
 
   return (
     <View style={{ flex: 1 }}>
@@ -141,14 +67,6 @@ export default function Map({
           flipY={false}
         /> */}
       </MapView>
-      <Modal visible={modalVisible} animationType="slide">
-        {modalObservation && (
-          <ObservationDetails
-            observation={modalObservation}
-            onClose={() => setModalVisible(false)}
-          ></ObservationDetails>
-        )}
-      </Modal>
     </View>
   );
 }

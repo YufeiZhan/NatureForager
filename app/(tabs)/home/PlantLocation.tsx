@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native";
-import Map from "@/components/Map";
+import INaturalistMap from "@/components/INaturalistMap";
 import { useNavigation } from "expo-router";
 import { useEffect } from "react";
 import { useNonArraySearchParams } from "@/hooks/useNonArraySearchParams";
@@ -55,15 +55,13 @@ export default function PlantLocation() {
   }
 
   return (
-    <>
-      <Map
-        iNaturalistTaxonId={iNaturalistTaxonId}
-        initialLat={Number(initialLat)}
-        initialLng={Number(initialLng)}
-        initialLatExtent={initialLatExtent}
-        initialLngExtent={initialLngExtent}
-      ></Map>
-    </>
+    <INaturalistMap
+      iNaturalistTaxonId={iNaturalistTaxonId}
+      initialLat={Number(initialLat)}
+      initialLng={Number(initialLng)}
+      initialLatExtent={initialLatExtent}
+      initialLngExtent={initialLngExtent}
+    />
   );
 }
 
