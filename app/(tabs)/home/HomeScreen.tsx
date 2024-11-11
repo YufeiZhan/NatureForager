@@ -1,8 +1,7 @@
 // app/home/HomeScreen.tsx
 import { ThemedFlatList, ThemedView, ThemedText } from "@/components/Themed";
 import { useEffect, useState, useMemo, useContext } from "react";
-import { Picker } from "@react-native-picker/picker";
-import DropDownPicker from 'react-native-dropdown-picker';
+import DropDownPicker from "react-native-dropdown-picker";
 import { TextInput, ActivityIndicator, StyleSheet } from "react-native";
 import { LocationContext } from "@/hooks/LocationContext";
 import HomeListItem from "@/components/HomeListItem";
@@ -10,7 +9,20 @@ import { fetchMinimumDistancesForSpecies } from "@/scripts/minSpeciesDistances";
 import jsonData from "@/data/edible_plants.json";
 import { oliveGreen, pureWhite } from "@/constants/Colors";
 
-const allMonths = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ] as const;
+const allMonths = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+] as const;
 
 type Month = (typeof allMonths)[number];
 
@@ -35,7 +47,6 @@ export default function HomeScreen() {
 
   const [open, setOpen] = useState(false);
 
-
   // read in the json data
   useEffect(() => {
     const organizedData: TaxaByMonth = {};
@@ -57,7 +68,7 @@ export default function HomeScreen() {
   useEffect(() => {
     const fetchDistances = async () => {
       setLoading(true);
-      setShown(false)
+      setShown(false);
       if (location && Object.keys(speciesThisMonth).length > 0) {
         setLoading(true);
         const newSpeciesDistances = await fetchMinimumDistancesForSpecies(
@@ -119,7 +130,8 @@ export default function HomeScreen() {
     <ThemedView style={styles.mainContainer}>
       <TextInput
         style={styles.searchBar}
-        placeholder="Search for species..."
+        placeholder="Search species list..."
+        placeholderTextColor="gray"
         value={searchQuery}
         onChangeText={(text) => setSearchQuery(text)}
       />
@@ -149,14 +161,20 @@ export default function HomeScreen() {
         }}
       />
 
-      {shown && <ThemedFlatList
-        data={listItemsToDisplay}
-        keyExtractor={(item) => item.taxonId.toString()}
-        renderItem={({ item }) => <HomeListItem {...item}></HomeListItem>}
-        ListFooterComponent={() => {return <ThemedView style={{alignItems:"center"}}>
-                                            <ThemedText style={{color:pureWhite}}> - end -</ThemedText>
-                                           </ThemedView>}}
-      />}
+      {shown && (
+        <ThemedFlatList
+          data={listItemsToDisplay}
+          keyExtractor={(item) => item.taxonId.toString()}
+          renderItem={({ item }) => <HomeListItem {...item}></HomeListItem>}
+          ListFooterComponent={() => {
+            return (
+              <ThemedView style={{ alignItems: "center" }}>
+                <ThemedText style={{ color: pureWhite }}> - end -</ThemedText>
+              </ThemedView>
+            );
+          }}
+        />
+      )}
 
       {loading && <ActivityIndicator size="large" />}
     </ThemedView>
@@ -166,14 +184,15 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
-    justifyContent: "center", // Q: doesn't take any effects
+    justifyContent: "flex-start",
     alignItems: "center",
-    backgroundColor: oliveGreen
+    backgroundColor: oliveGreen,
+    padding: 10,
+    paddingTop: 20,
   },
   searchBar: {
-    width: "90%",
+    width: "100%",
     padding: 10,
-    margin: 10,
     backgroundColor: "#f0f0f0",
     borderRadius: 5,
   },

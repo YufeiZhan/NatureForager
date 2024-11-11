@@ -31,15 +31,14 @@ export default function HomeListItem(item: ItemData) {
       }}
       style={styles.container}
     >
-
       <ThemedView style={styles.subContainerLeft}>
-        <Image source={require("@/assets/plant/fruit.png")} style={styles.icon} ></Image>
-        <ThemedText style={styles.title}> {item.name} </ThemedText>
+        <Image source={require("@/assets/plant/fruit.png")}></Image>
+        <ThemedText style={styles.title}>{item.name}</ThemedText>
       </ThemedView>
 
       <ThemedView style={styles.subContainerRight}>
-        <Image source={require("@/assets/pin/home.png")} style={styles.icon} ></Image>
-        <ThemedText style={styles.distance}> 
+        <Image source={require("@/assets/pin/home.png")}></Image>
+        <ThemedText style={styles.distance}>
           {item.distance ? `${Number(item.distance).toFixed(2)} km` : "None"}
         </ThemedText>
       </ThemedView>
@@ -47,40 +46,37 @@ export default function HomeListItem(item: ItemData) {
   );
 }
 
-// todo: fontSize unadjustable???
-// todo: a lot of flying fetching observations errors, not very stable
-//  - would be better if the results get rendered after all data fetched and use activity indicator before
 export const styles = StyleSheet.create({
   container: {
-    flex:1,
+    flex: 1,
+    gap: 10,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    width: Dimensions.get('window').width * 0.9,
+    width: "100%",
     backgroundColor: pureWhite,
     opacity: 0.8,
     marginVertical: 5,
-    borderRadius:10,
-  },
-  subContainerRight: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginHorizontal: 10, 
+    borderRadius: 10,
+    padding: 10,
   },
   subContainerLeft: {
     flexDirection: "row",
     alignItems: "center",
+    gap: 10,
     flex: 1, // Allows the title to take up remaining space
   },
-  icon: {
-    margin: 10
+  subContainerRight: {
+    flexDirection: "row",
+    gap: 10,
+    alignItems: "center",
   },
   title: {
-    fontSize: 100,
+    flex: 1,
+    flexWrap: "wrap",
   },
   distance: {
     textAlign: "right",
     minWidth: 2,
   },
-})
+});
