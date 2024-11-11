@@ -1,4 +1,4 @@
-// app/home/_layout.tsx
+// app/(tabs)/profile/_layout.tsx
 import { Stack } from 'expo-router';
 import { globalStyles } from '@/styles/globalStyles';
 
@@ -21,6 +21,10 @@ export default function ProfileStack() {
       <Stack.Screen
         name="SaveForLater"
         options={{ title: 'Save for Later' }}
+      />
+      <Stack.Screen 
+        name="SetReminderScreen" 
+        options={{ title: 'Set Reminder' }}
       />
     </Stack>
   );
