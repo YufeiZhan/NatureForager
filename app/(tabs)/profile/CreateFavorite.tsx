@@ -9,6 +9,7 @@ import {
 import { useNonArraySearchParams } from "@/hooks/useNonArraySearchParams";
 import { Favorite } from "@/hooks/useFavorites";
 import { FavoritesContext } from "@/hooks/FavoritesContext";
+import EditLocationModal from "@/components/EditLocationModal";
 
 export default function CreateFavorite() {
   const router = useRouter();
@@ -54,15 +55,9 @@ export default function CreateFavorite() {
     router.back();
   };
 
-  const handleEditLocation = () => {
-    router.push({
-      pathname: "/profile/EditLocation",
-      params: {
-        latitude: latitude,
-        longitude: longitude,
-      },
-    });
-  };
+  // edit location modal
+  const [editLocationModalVisible, setEditLocationModalVisible] =
+    useState(false);
 
   return (
     <ThemedView style={styles.container}>
@@ -74,7 +69,10 @@ export default function CreateFavorite() {
         <ThemedText style={styles.mapText}>
           Location: {latitude}, {longitude}
         </ThemedText>
-        <ThemedButton title="Edit" onPress={handleEditLocation} />
+        <ThemedButton
+          title="Edit"
+          onPress={() => setEditLocationModalVisible(true)}
+        />
       </ThemedView>
 
       {/* Photo */}
@@ -105,6 +103,14 @@ export default function CreateFavorite() {
         <ThemedButton title="Cancel" onPress={() => router.back()} />
         <ThemedButton title="Create" onPress={handleCreateFavorite} />
       </View>
+
+      <EditLocationModal
+        visible={editLocationModalVisible}
+        latitude={Number(latitude)}
+        longitude={Number(longitude)}
+        onClose={() => setEditLocationModalVisible(false)}
+        onConfirmLocation={() => {}}
+      />
     </ThemedView>
   );
 }

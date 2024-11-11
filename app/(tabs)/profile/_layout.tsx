@@ -13,10 +13,6 @@ export default function ProfileStack() {
       <Stack.Screen name="ProfileScreen" options={{ title: "My Plants" }} />
       <Stack.Screen name="Favorites" options={{ title: "Favorites" }} />
       <Stack.Screen name="SaveForLater" options={{ title: "Save for Later" }} />
-      <Stack.Screen
-        name="EditLocation"
-        options={{ title: "Choose Location" }}
-      />
     </Stack>
   );
 }
