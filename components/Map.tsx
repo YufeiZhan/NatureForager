@@ -16,13 +16,8 @@ export interface MapProps {
   markers?: Markers;
   onBoundsChange?: (bounds: BoundingBox) => void;
 }
-
-export interface MarkerInfo {
-  key: number;
-  iNaturalistId?: number;
-  props: MapMarkerProps;
-}
-export type Markers = Record<string, MarkerInfo>;
+// string is the key/id of a marker
+export type Markers = Record<string, MapMarkerProps>;
 
 export default function Map({
   initialLat,
@@ -57,8 +52,8 @@ export default function Map({
         onRegionChangeComplete={updateMapBounds}
         showsUserLocation={true}
       >
-        {Object.values(markers).map((m) => (
-          <Marker key={m.key} {...m.props}></Marker>
+        {Object.entries(markers).map(([key, props]) => (
+          <Marker key={key} {...props}></Marker>
         ))}
         {/* uncomment to use open street map tiles */}
         {/* <UrlTile

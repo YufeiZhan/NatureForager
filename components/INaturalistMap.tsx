@@ -62,11 +62,8 @@ export default function INaturalistMap({
         if (latlng === undefined) return;
         if (observation.id !== undefined) {
           newMarkers[observation.id] = {
-            key: observation.id || 0,
-            props: {
-              coordinate: { latitude: latlng[0], longitude: latlng[1] },
-              onPress: () => openDetailsModal(observation),
-            },
+            coordinate: { latitude: latlng[0], longitude: latlng[1] },
+            onPress: () => openDetailsModal(observation),
           };
         }
       });
