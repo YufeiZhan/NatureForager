@@ -13,7 +13,6 @@ import {
 import { Observation } from "../iNaturalistTypes";
 import { useRouter } from "expo-router";
 
-
 interface ObservationDetailsProps {
   observation: Observation;
   onClose: () => void;
@@ -28,15 +27,20 @@ export default function ObservationDetails({
 
   const handleAddToFavorites = () => {
     onClose();
-    console.log(observation.id);
+    const params = {
+      iNaturalistId: observation.id,
+      name: observation.taxon?.preferred_common_name || observation.taxon?.name,
+      latitude: observation.location?.split(",")[0],
+      longitude: observation.location?.split(",")[1],
+      photos:
+        observation.photos?.map(
+          (p) => p.url?.replace("square", "medium") || ""
+        ) || "",
+      note: observation.description,
+    };
     router.push({
       pathname: "/(tabs)/profile/CreateFavorite",
-      params: {
-        plantId: observation.id,
-        commonName: observation.taxon?.preferred_common_name,
-        location: observation.location,
-        photo: observation.photos?.[0].url ?? '',
-      },
+      params: params,
     });
   };
 

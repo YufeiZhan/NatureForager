@@ -1,9 +1,9 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import uuid from "react-native-uuid";
 
-interface Plant {
+export interface Favorite {
   id: string;
-  generatedId: string;
+  iNaturalistId?: number;
   name: string;
   location: { latitude: number; longitude: number };
   photos?: string[];
@@ -13,7 +13,7 @@ interface Plant {
 const FAVORITES_KEY = "@favorite_plants";
 
 // Helper function to get all favorites
-export async function getFavorites(): Promise<Plant[]> {
+export async function getFavorites(): Promise<Favorite[]> {
   try {
     const storedPlants = await AsyncStorage.getItem(FAVORITES_KEY);
     return storedPlants ? JSON.parse(storedPlants) : [];
@@ -24,28 +24,41 @@ export async function getFavorites(): Promise<Plant[]> {
 }
 
 // Add a new plant to favorites
-export async function addPlantToFavorites(plantData: Plant): Promise<void> {
+export async function addPlantToFavorites(
+  plantData: Omit<Favorite, "id">
+): Promise<void> {
   try {
     const favorites = await getFavorites();
 
-    // Check for duplicates using the original `id`
-    const exists = favorites.some((plant) => plant.id === plantData.id);
+    // Check for duplicate iNaturalist observation
+    const exists = favorites.some(
+      (plant) =>
+        plant.iNaturalistId && plant.iNaturalistId === plantData.iNaturalistId
+    );
     if (exists) {
-      console.log("Plant with this ID already exists in favorites, not adding again.");
+      console.log(
+        "Plant with this iNaturalist ID already exists in favorites, not adding again."
+      );
       return;
     }
 
-    favorites.push(plantData);
+    // generate unique id and add
+    const favToAdd: Favorite = {
+      id: uuid.v4() as string,
+      ...plantData,
+    };
+    favorites.push(favToAdd);
     await AsyncStorage.setItem(FAVORITES_KEY, JSON.stringify(favorites));
   } catch (error) {
     console.error("Error adding plant to favorites:", error);
+    console.error(JSON.stringify(plantData));
   }
 }
 
 // Update an existing plant in favorites
 export async function updatePlantInFavorites(
   plantId: string,
-  updatedData: Partial<Omit<Plant, "id">>
+  updatedData: Partial<Omit<Favorite, "id">>
 ): Promise<void> {
   try {
     const favorites = await getFavorites();
@@ -79,6 +92,7 @@ export async function removePlantFromFavorites(plantId: string): Promise<void> {
 export async function clearAllFavorites(): Promise<void> {
   try {
     await AsyncStorage.removeItem(FAVORITES_KEY);
+    console.log("Cleared all favorites");
   } catch (error) {
     console.error("Error clearing favorite plants:", error);
   }

@@ -8,20 +8,23 @@ import MapView, {
   MapMarkerProps,
 } from "react-native-maps";
 import { Observation, ObservationsResponse } from "@/iNaturalistTypes";
+import { clearAllFavorites, getFavorites } from "@/backend/Favorites";
 
 interface MapProps {
   initialLat: number;
   initialLng: number;
   initialLatExtent?: number;
   initialLngExtent?: number;
+  showFavorites?: boolean;
   iNaturalistTaxonId?: string;
   initialMarkers?: Markers;
   onINaturalistMarkerPress?: (observation: Observation) => void;
 }
 
-interface MarkerInfo extends MapMarkerProps {
+interface MarkerInfo {
   key: number;
-  initialMarkers?: Markers;
+  iNaturalistId?: number;
+  props: MapMarkerProps;
 }
 type Markers = Record<string, MarkerInfo>;
 
@@ -30,9 +33,9 @@ export default function Map({
   initialLng,
   initialLatExtent = 0.05,
   initialLngExtent = 0.05,
+  showFavorites = false,
   iNaturalistTaxonId,
   onINaturalistMarkerPress,
-  initialMarkers = {},
 }: MapProps) {
   const map = useRef<MapView>(null);
 
@@ -54,11 +57,22 @@ export default function Map({
     });
   };
 
+  // prep favorites markers
+  const favoritesMarkers: Markers = {};
+  if (showFavorites) {
+    const loadFavoritesMarkers = async () => {
+      const favorites = await getFavorites();
+      favorites.forEach((fav) => {});
+    };
+    loadFavoritesMarkers();
+  }
+
   // object containing map marker info
-  const [markers, setMarkers] = useState<Markers>(initialMarkers);
+  // init to favorites markers, and add iNat stuff in addition to that
+  const [markers, setMarkers] = useState<Markers>({});
   // when taxon id changes, reset markers
   useEffect(() => {
-    setMarkers(initialMarkers);
+    setMarkers({});
   }, [iNaturalistTaxonId]);
 
   // fetch iNaturalist observations whenever the taxon id changes or map bounds change
@@ -66,6 +80,8 @@ export default function Map({
   useEffect(() => {
     if (iNaturalistTaxonId === undefined || mapBounds === undefined) return;
     const fetchINaturalistData = async () => {
+      const observationsWeHave: string[] = [];
+
       const params = [
         "taxon_id=" + iNaturalistTaxonId,
         "verifiable=true",
@@ -91,8 +107,10 @@ export default function Map({
         if (observation.id !== undefined) {
           newMarkers[observation.id] = {
             key: observation.id || 0,
-            coordinate: { latitude: latlng[0], longitude: latlng[1] },
-            onPress: () => onINaturalistMarkerPress?.(observation),
+            props: {
+              coordinate: { latitude: latlng[0], longitude: latlng[1] },
+              onPress: () => onINaturalistMarkerPress?.(observation),
+            },
           };
         }
       });
@@ -112,7 +130,7 @@ export default function Map({
         showsUserLocation={true}
       >
         {Object.values(markers).map((m) => (
-          <Marker {...m}></Marker>
+          <Marker key={m.key} {...m.props}></Marker>
         ))}
         {/* uncomment to use open street map tiles */}
         {/* <UrlTile

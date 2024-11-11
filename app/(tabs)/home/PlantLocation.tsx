@@ -10,7 +10,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import ObservationDetails from "@/components/ObservationDetails";
 import { Observation } from "@/iNaturalistTypes";
 
-type ProfileScreenNavigationProp = StackNavigationProp<
+type SpeciesInfoNavigationProp = StackNavigationProp<
   RootStackParamList,
   "SpeciesInfoModal"
 >;
@@ -30,7 +30,7 @@ export default function PlantLocation() {
   >();
 
   // change screen header to match common name
-  const nav = useNavigation<ProfileScreenNavigationProp>();
+  const nav = useNavigation<SpeciesInfoNavigationProp>();
   useEffect(() => {
     // Set screen header title and add a button to navigate to the modal containing species info
     // Here instead of in main navigation because it updates based on this page's iNaturalistTaxonId
