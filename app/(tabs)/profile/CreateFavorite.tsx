@@ -54,6 +54,16 @@ export default function CreateFavorite() {
     router.back();
   };
 
+  const handleEditLocation = () => {
+    router.push({
+      pathname: "/profile/EditLocation",
+      params: {
+        latitude: latitude,
+        longitude: longitude,
+      },
+    });
+  };
+
   return (
     <ThemedView style={styles.container}>
       {/* Common Name */}
@@ -64,7 +74,7 @@ export default function CreateFavorite() {
         <ThemedText style={styles.mapText}>
           Location: {latitude}, {longitude}
         </ThemedText>
-        <ThemedButton title="Edit" onPress={() => {}} />
+        <ThemedButton title="Edit" onPress={handleEditLocation} />
       </ThemedView>
 
       {/* Photo */}
