@@ -13,6 +13,7 @@ export interface MapProps {
   initialLng: number;
   initialLatExtent?: number;
   initialLngExtent?: number;
+  animateToMarkerId?: string;
   markers?: Markers;
   onBoundsChange?: (bounds: BoundingBox) => void;
 }
@@ -29,6 +30,7 @@ export default function Map({
   initialLng,
   initialLatExtent = 0.05,
   initialLngExtent = 0.05,
+  animateToMarkerId,
   markers = {},
   onBoundsChange,
 }: MapProps) {
@@ -46,6 +48,16 @@ export default function Map({
   const updateMapBounds = () => {
     map.current?.getMapBoundaries().then(onBoundsChange);
   };
+
+  // when new animation target arrives, pan the map
+  useEffect(() => {
+    if (!animateToMarkerId || !map.current) return;
+    const { latitude, longitude } = markers[animateToMarkerId].coordinate;
+    map.current.animateCamera({
+      center: { latitude: latitude, longitude: longitude },
+    });
+    // map.current.animateToRegion()
+  }, [animateToMarkerId]);
 
   return (
     <View style={{ flex: 1 }}>

@@ -1,25 +1,29 @@
 import { Favorite } from "@/hooks/useFavorites";
 import { ThemedText, ThemedView } from "./Themed";
-import { StyleSheet, Image } from "react-native";
+import { StyleSheet, Image, Pressable } from "react-native";
 import { ivoryWhite } from "@/constants/Colors";
 
 export default function FavoritesListItem({
   favorite,
+  onPress,
 }: {
   favorite: Favorite;
+  onPress?: () => void;
 }) {
   const imgSource = favorite.photos?.[0]
     ? { uri: favorite.photos[0] }
     : require("@/assets/plant/leaf.png");
 
   return (
-    <ThemedView style={styles.listItem}>
-      <Image style={styles.image} source={imgSource}></Image>
-      <ThemedView style={{ flex: 1 }}>
-        <ThemedText style={styles.name}>{favorite.name}</ThemedText>
-        {favorite.note && <ThemedText>{favorite.note}</ThemedText>}
+    <Pressable onPress={onPress}>
+      <ThemedView style={styles.listItem}>
+        <Image style={styles.image} source={imgSource}></Image>
+        <ThemedView style={{ flex: 1 }}>
+          <ThemedText style={styles.name}>{favorite.name}</ThemedText>
+          {favorite.note && <ThemedText>{favorite.note}</ThemedText>}
+        </ThemedView>
       </ThemedView>
-    </ThemedView>
+    </Pressable>
   );
 }
 
