@@ -30,6 +30,7 @@ export default function EditLocationModal({
   const [centerLat, setCenterLat] = useState(DEFAULT_LOCATION.latitude);
   const [centerLng, setCenterLng] = useState(DEFAULT_LOCATION.longitude);
   // when modal is opened/reopened, reset to default location
+  // also reset location if location changed
   useEffect(() => {
     setCenterLat(
       latitude || userLocation?.latitude || DEFAULT_LOCATION.latitude
@@ -37,7 +38,7 @@ export default function EditLocationModal({
     setCenterLng(
       longitude || userLocation?.longitude || DEFAULT_LOCATION.longitude
     );
-  }, [visible]);
+  }, [visible, latitude, longitude]);
 
   const handleRegionChange = (region: Region) => {
     setCenterLat(region.latitude);
