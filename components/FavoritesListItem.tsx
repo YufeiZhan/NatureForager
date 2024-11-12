@@ -3,13 +3,16 @@ import { ThemedText, ThemedView } from "./Themed";
 import { StyleSheet, Image, Pressable } from "react-native";
 import { ivoryWhite } from "@/constants/Colors";
 
+interface FavoritesListItemProps {
+  favorite: Favorite;
+  selected?: boolean;
+  onPress?: () => void;
+}
+
 export default function FavoritesListItem({
   favorite,
   onPress,
-}: {
-  favorite: Favorite;
-  onPress?: () => void;
-}) {
+}: FavoritesListItemProps) {
   const imgSource = favorite.photos?.[0]
     ? { uri: favorite.photos[0] }
     : require("@/assets/plant/leaf.png");

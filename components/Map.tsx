@@ -7,7 +7,9 @@ import MapView, {
   Marker,
   MapMarkerProps,
   MapMarker,
+  Callout,
 } from "react-native-maps";
+import { ThemedButton, ThemedText } from "./Themed";
 
 export interface MapProps {
   initialLat: number;
