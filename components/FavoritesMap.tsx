@@ -30,6 +30,7 @@ export default function FavoritesMap({
         title: fav.name,
         description: fav.note,
         onPress: () => {
+          // placeholder
           console.log(fav.name);
         },
       };

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { RefObject, useEffect, useRef, useState } from "react";
 import { View, StyleSheet, Modal } from "react-native";
 import MapView, {
   UrlTile,
@@ -6,6 +6,7 @@ import MapView, {
   LatLng,
   Marker,
   MapMarkerProps,
+  MapMarker,
 } from "react-native-maps";
 
 export interface MapProps {
@@ -35,6 +36,8 @@ export default function Map({
   onBoundsChange,
 }: MapProps) {
   const map = useRef<MapView>(null);
+  // init refs to use for map markers
+  const markerRefs = useRef<Record<string, MapMarker>>({});
 
   // region is the area to include within the map, but the map will probably
   // show more, depending on the aspect ratio
@@ -53,10 +56,17 @@ export default function Map({
   useEffect(() => {
     if (!animateToMarkerId || !map.current) return;
     const { latitude, longitude } = markers[animateToMarkerId].coordinate;
-    map.current.animateCamera({
-      center: { latitude: latitude, longitude: longitude },
-    });
-    // map.current.animateToRegion()
+    const animationDuration = 250; //ms
+    map.current.animateCamera(
+      {
+        center: { latitude: latitude, longitude: longitude },
+      },
+      { duration: animationDuration }
+    );
+    // also show its callout (only after the animation finishes, to prevent weirdness)
+    setTimeout(() => {
+      markerRefs.current?.[animateToMarkerId].showCallout();
+    }, animationDuration + 100);
   }, [animateToMarkerId]);
 
   return (
@@ -70,7 +80,13 @@ export default function Map({
         showsUserLocation={true}
       >
         {Object.entries(markers).map(([key, { callout, ...props }]) => (
-          <Marker key={key} {...props}></Marker>
+          <Marker
+            key={key}
+            ref={(m) =>
+              m ? (markerRefs.current[key] = m) : delete markerRefs.current[key]
+            }
+            {...props}
+          ></Marker>
         ))}
         {/* uncomment to use open street map tiles */}
         {/* <UrlTile
