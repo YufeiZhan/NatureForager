@@ -14,6 +14,8 @@ export default function SuggestionListItem(item: ReminderSpecies) {
     });
   };
 
+  const abbreviatedMonths = item.months.map((month) => month.substring(0, 3));
+
   return (
     <Pressable
       onPress={() => handleSelectSpecies(item)}
@@ -22,11 +24,10 @@ export default function SuggestionListItem(item: ReminderSpecies) {
       <ThemedView style={styles.subContainer}>
         <Image source={require("@/assets/plant/fruit.png")} style={styles.icon} />
         <ThemedText style={styles.title}> {item.name} </ThemedText>
-        <ThemedText>Ripe in: {item.months.join(", ")}</ThemedText>
       </ThemedView>
 
       <ThemedView style={styles.subContainer}>
-        <ThemedText>Ripe in: {item.months.join(", ")}</ThemedText>
+        <ThemedText>Ripe in: {abbreviatedMonths.join(", ")}</ThemedText>
       </ThemedView>
     </Pressable>
   );
@@ -35,9 +36,9 @@ export default function SuggestionListItem(item: ReminderSpecies) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: "row",
+    flexDirection: "column",
     justifyContent: "space-between",
-    alignItems: "center",
+    alignItems: "flex-start",
     width: Dimensions.get("window").width * 0.9,
     backgroundColor: pureWhite,
     opacity: 0.8,

@@ -1,37 +1,40 @@
 // app/FrequencySelectionScreen.tsx
-import { SetStateAction, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import { useRouter, useLocalSearchParams } from "expo-router";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Alert, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { ThemedButton, ThemedText, ThemedView } from "@/components/Themed";
 import { Picker } from "@react-native-picker/picker";
-import { ReminderSpecies } from '@/backend/Reminder';
+import { Reminder, saveReminder, deleteReminder, loadReminders } from '@/backend/Reminder';
 
 export default function FrequencySelectionScreen() {
   const router = useRouter();
   const { species: stringSpecies } = useLocalSearchParams<{ species: string }>();
-  const species: ReminderSpecies = stringSpecies ? JSON.parse(stringSpecies) : null;
+  const species: Reminder = stringSpecies ? JSON.parse(stringSpecies) : null;
   const [frequency, setFrequency] = useState("monthly");
+  const [isExistingReminder, setIsExistingReminder] = useState(false);
 
-  const saveReminder = async () => {
-    try {
-      const storedData = await AsyncStorage.getItem("savedPlants");
-      const savedPlants: { [key: number]: ReminderSpecies & { frequency: string } } = storedData ? JSON.parse(storedData) : {};
+  useEffect(() => {
+    const loadSpeciesReminder = async () => {
+      const reminders = await loadReminders();
+      const existingReminder = reminders.find(reminder => reminder.id === species.id);
 
-      const speciesId = species.id;
-      const existingEntry = savedPlants[speciesId];
-      const existingMonths = existingEntry?.months ?? [];
-      const speciesMonths = species.months ?? [];
-      const updatedMonths = Array.from(new Set([...existingMonths, ...speciesMonths]));
+      if (existingReminder) {
+        setFrequency(existingReminder.frequency);
+        setIsExistingReminder(true);
+      }
+    };
 
-      savedPlants[speciesId] = { ...species, months: updatedMonths, frequency };
-      await AsyncStorage.setItem("savedPlants", JSON.stringify(savedPlants));
+    loadSpeciesReminder();
+  }, [species.id]);
 
-      Alert.alert("Reminder saved", `You'll be reminded about ${species.name}.`);
-      router.back();
-    } catch (error) {
-      console.error("Error saving reminder:", error);
-    }
+  const handleSaveReminder = async () => {
+    await saveReminder(species, frequency);
+    router.back();
+  };
+
+  const handleDeleteReminder = async () => {
+    await deleteReminder(species.id);
+    router.back();
   };
 
   return (
@@ -46,7 +49,10 @@ export default function FrequencySelectionScreen() {
         </Picker>
       </View>
 
-      <ThemedButton title="Save Reminder" onPress={saveReminder} />
+      <ThemedButton title="Save Reminder" onPress={handleSaveReminder} />
+      {isExistingReminder && (
+        <ThemedButton title="Delete Reminder" onPress={handleDeleteReminder} />
+      )}
       <ThemedButton title="Cancel" onPress={() => router.back()} />
     </ThemedView>
   );
