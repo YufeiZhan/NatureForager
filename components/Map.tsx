@@ -16,8 +16,13 @@ export interface MapProps {
   markers?: Markers;
   onBoundsChange?: (bounds: BoundingBox) => void;
 }
+
+interface MarkerProps extends MapMarkerProps {
+  callout?: JSX.Element;
+}
+
 // string is the key/id of a marker
-export type Markers = Record<string, MapMarkerProps>;
+export type Markers = Record<string, MarkerProps>;
 
 export default function Map({
   initialLat,
@@ -52,7 +57,7 @@ export default function Map({
         onRegionChangeComplete={updateMapBounds}
         showsUserLocation={true}
       >
-        {Object.entries(markers).map(([key, props]) => (
+        {Object.entries(markers).map(([key, { callout, ...props }]) => (
           <Marker key={key} {...props}></Marker>
         ))}
         {/* uncomment to use open street map tiles */}

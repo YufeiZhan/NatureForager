@@ -17,6 +17,8 @@ export default function FavoritesMap({ ...mapProps }: FavoritesMapProps) {
           latitude: fav.location.latitude,
           longitude: fav.location.longitude,
         },
+        title: fav.name,
+        description: fav.note,
         onPress: () => {
           console.log(fav.name);
         },
