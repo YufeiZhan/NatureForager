@@ -24,7 +24,7 @@ export default function ProfileStack() {
       />
       <Stack.Screen 
         name="SetReminderScreen" 
-        options={{ title: 'Set Reminder' }}
+        options={{ title: 'Set New Reminder' }}
       />
     </Stack>
   );
