@@ -25,7 +25,6 @@ export default function EditLocationModal({
 }: EditLocationModalProps) {
   // load user location as a fallback
   const { location: userLocation } = useContext(LocationContext);
-  const map = useRef<MapView>(null);
 
   const [centerLat, setCenterLat] = useState(DEFAULT_LOCATION.latitude);
   const [centerLng, setCenterLng] = useState(DEFAULT_LOCATION.longitude);
@@ -53,7 +52,6 @@ export default function EditLocationModal({
         initialLatExtent={0.005}
         initialLngExtent={0.005}
         onRegionChange={handleRegionChange}
-        ref={map}
       />
       <Image
         source={require("@/assets/pin/choose-location.png")}
