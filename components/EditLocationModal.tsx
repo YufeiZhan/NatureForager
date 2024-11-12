@@ -1,8 +1,8 @@
 import { LocationContext } from "@/hooks/LocationContext";
 import { DEFAULT_LOCATION } from "@/hooks/useLocation";
-import { useContext, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import Map, { Markers } from "@/components/Map";
-import { Modal } from "react-native";
+import { Modal, Image } from "react-native";
 import { ThemedButton, ThemedView } from "./Themed";
 import { StyleSheet } from "react-native";
 import { yellowSand } from "@/constants/Colors";
@@ -25,27 +25,23 @@ export default function EditLocationModal({
 }: EditLocationModalProps) {
   // load user location as a fallback
   const { location: userLocation } = useContext(LocationContext);
-  const map = useRef<MapView>();
+  const map = useRef<MapView>(null);
 
-  const [centerLat, setCenterLat] = useState(
-    latitude || userLocation?.latitude || DEFAULT_LOCATION.latitude
-  );
-  const [centerLng, setCenterLng] = useState(
-    longitude || userLocation?.longitude || DEFAULT_LOCATION.longitude
-  );
-  const [testMarkers, setTestMarkers] = useState<Markers>({});
+  const [centerLat, setCenterLat] = useState(DEFAULT_LOCATION.latitude);
+  const [centerLng, setCenterLng] = useState(DEFAULT_LOCATION.longitude);
+  // when modal is opened/reopened, reset to default location
+  useEffect(() => {
+    setCenterLat(
+      latitude || userLocation?.latitude || DEFAULT_LOCATION.latitude
+    );
+    setCenterLng(
+      longitude || userLocation?.longitude || DEFAULT_LOCATION.longitude
+    );
+  }, [visible]);
 
   const handleRegionChange = (region: Region) => {
     setCenterLat(region.latitude);
     setCenterLng(region.longitude);
-    setTestMarkers({
-      0: {
-        coordinate: {
-          latitude: region.latitude,
-          longitude: region.longitude,
-        },
-      },
-    });
   };
 
   return (
@@ -55,12 +51,19 @@ export default function EditLocationModal({
         initialLng={centerLng}
         initialLatExtent={0.005}
         initialLngExtent={0.005}
-        markers={testMarkers}
         onRegionChange={handleRegionChange}
+        ref={map}
+      />
+      <Image
+        source={require("@/assets/pin/choose-location.png")}
+        style={styles.pin}
       />
       <ThemedView style={styles.bottomButtons}>
         <ThemedButton title="Cancel" onPress={onClose}></ThemedButton>
-        <ThemedButton title="Confirm Location"></ThemedButton>
+        <ThemedButton
+          title="Confirm Location"
+          onPress={() => onConfirmLocation(centerLat, centerLng)}
+        ></ThemedButton>
       </ThemedView>
     </Modal>
   );
@@ -79,5 +82,18 @@ const styles = StyleSheet.create({
     position: "absolute",
     backgroundColor: yellowSand,
     bottom: 0,
+  },
+  pin: {
+    position: "absolute",
+    // aspect ratio 0.5 ish
+    width: 30,
+    height: 60,
+    // position bottom at map center
+    alignSelf: "center",
+    bottom: "50%",
+    // make sure the pin anchor location is at map center
+    transform: "translateY(10dp)",
+    // don't interfere with map dragging
+    pointerEvents: "none",
   },
 });

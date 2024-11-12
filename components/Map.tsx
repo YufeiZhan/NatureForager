@@ -1,4 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import {
+  ForwardedRef,
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
 import { View, StyleSheet, Modal } from "react-native";
 import MapView, {
   UrlTile,
@@ -21,16 +28,22 @@ export interface MapProps {
 // string is the key/id of a marker
 export type Markers = Record<string, MapMarkerProps>;
 
-export default function Map({
-  initialLat,
-  initialLng,
-  initialLatExtent = 0.05,
-  initialLngExtent = 0.05,
-  markers = {},
-  onBoundsChangeComplete,
-  onRegionChange,
-}: MapProps) {
+// forward MapView component ref so parents can use its methods
+export default forwardRef(function (
+  {
+    initialLat,
+    initialLng,
+    initialLatExtent = 0.05,
+    initialLngExtent = 0.05,
+    markers = {},
+    onBoundsChangeComplete,
+    onRegionChange,
+  }: MapProps,
+  ref: ForwardedRef<MapView | null>
+) {
   const map = useRef<MapView>(null);
+  // forward the map ref up to the parent
+  useImperativeHandle<MapView | null, MapView | null>(ref, () => map.current);
 
   // region is the area to include within the map, but the map will probably
   // show more, depending on the aspect ratio
@@ -66,7 +79,7 @@ export default function Map({
         /> */}
     </MapView>
   );
-}
+});
 
 const styles = StyleSheet.create({
   map: {
