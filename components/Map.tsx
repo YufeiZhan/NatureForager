@@ -1,5 +1,5 @@
-import { RefObject, useEffect, useRef, useState } from "react";
-import { View, StyleSheet, Modal } from "react-native";
+import { useEffect, useRef } from "react";
+import { View, StyleSheet } from "react-native";
 import MapView, {
   UrlTile,
   BoundingBox,
@@ -7,6 +7,7 @@ import MapView, {
   MapMarkerProps,
   MapMarker,
   MapPressEvent,
+  Region,
 } from "react-native-maps";
 
 export interface MapProps {
@@ -16,7 +17,8 @@ export interface MapProps {
   initialLngExtent?: number;
   selectedMarkerId?: string;
   markers?: Markers;
-  onBoundsChange?: (bounds: BoundingBox) => void;
+  onBoundsChangeComplete?: (bounds: BoundingBox) => void;
+  onRegionChange?: (region: Region) => void;
   onPress?: (e: MapPressEvent) => void;
 }
 interface MarkerProps extends MapMarkerProps {
@@ -27,6 +29,7 @@ export type Markers = Record<string, MarkerProps>;
 
 const PAN_ANIMATION_DURATION = 300; //ms
 
+// forward MapView component ref so parents can use its methods
 export default function Map({
   initialLat,
   initialLng,
@@ -34,7 +37,8 @@ export default function Map({
   initialLngExtent = 0.05,
   selectedMarkerId,
   markers = {},
-  onBoundsChange,
+  onBoundsChangeComplete,
+  onRegionChange,
   onPress,
 }: MapProps) {
   const map = useRef<MapView>(null);
@@ -51,7 +55,7 @@ export default function Map({
   };
   // map bounds are the actual rendered bounds, we will update these as the user moves the map
   const updateMapBounds = () => {
-    map.current?.getMapBoundaries().then(onBoundsChange);
+    map.current?.getMapBoundaries().then(onBoundsChangeComplete);
   };
 
   const panToMarker = (markerId: string, duration: number) => {
@@ -80,43 +84,43 @@ export default function Map({
   }, [selectedMarkerId]);
 
   return (
-    <View style={{ flex: 1 }}>
-      <MapView
-        style={styles.map}
-        initialRegion={initialRegion}
-        ref={map}
-        onMapReady={updateMapBounds}
-        onRegionChangeComplete={updateMapBounds}
-        showsUserLocation={true}
-        onPress={onPress}
-        onMarkerPress={(e) =>
-          panToMarker(e.nativeEvent.id, PAN_ANIMATION_DURATION)
-        }
-      >
-        {Object.entries(markers).map(([key, { callout, ...props }]) => (
-          <Marker
-            key={key} // for the .map()
-            identifier={key} // for MapView event handling
-            ref={(m) =>
-              m ? (markerRefs.current[key] = m) : delete markerRefs.current[key]
-            }
-            stopPropagation // so we can detect if just pressing on the map background, not a marker
-            {...props}
-          />
-        ))}
-        {/* uncomment to use open street map tiles */}
-        {/* <UrlTile
+    <MapView
+      style={styles.map}
+      initialRegion={initialRegion}
+      ref={map}
+      onMapReady={updateMapBounds}
+      onRegionChangeComplete={updateMapBounds}
+      onRegionChange={onRegionChange}
+      showsUserLocation={true}
+      onPress={onPress}
+      onMarkerPress={(e) =>
+        panToMarker(e.nativeEvent.id, PAN_ANIMATION_DURATION)
+      }
+    >
+      {Object.entries(markers).map(([key, { callout, ...props }]) => (
+        <Marker
+          key={key} // for the .map()
+          identifier={key} // for MapView event handling
+          ref={(m) =>
+            m ? (markerRefs.current[key] = m) : delete markerRefs.current[key]
+          }
+          stopPropagation // so we can detect if just pressing on the map background, not a marker
+          {...props}
+        />
+      ))}
+      {/* uncomment to use open street map tiles */}
+      {/* <UrlTile
           urlTemplate="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
           maximumZ={19}
           flipY={false}
         /> */}
-      </MapView>
-    </View>
+    </MapView>
   );
 }
 
 const styles = StyleSheet.create({
   map: {
+    flex: 1,
     width: "100%",
     height: "100%",
   },
