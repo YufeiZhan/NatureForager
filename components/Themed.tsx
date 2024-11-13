@@ -1,13 +1,24 @@
-import {StyleSheet,View,ViewProps,Text,TextProps,Button,ButtonProps,ScrollView,ScrollViewProps,FlatList,FlatListProps,} from "react-native";
-
+import {
+  StyleSheet,
+  View,
+  ViewProps,
+  Text,
+  TextProps,
+  Button,
+  ButtonProps,
+  ScrollView,
+  ScrollViewProps,
+  FlatList,
+  FlatListProps,
+} from "react-native";
 
 export function ThemedView(props: ViewProps) {
   const { style, ...otherProps } = props;
-  return <View style={[style, styles.view]} {...otherProps}></View>;
+  return <View style={[styles.view, style]} {...otherProps}></View>;
 }
 export function ThemedText(props: TextProps) {
   const { style, ...otherProps } = props;
-  return <Text style={[style, styles.text]} {...otherProps}></Text>;
+  return <Text style={[styles.text, style]} {...otherProps}></Text>;
 }
 
 export function ThemedButton(props: ButtonProps) {
@@ -20,13 +31,13 @@ export function ThemedButton(props: ButtonProps) {
 export function ThemedScrollView(props: ScrollViewProps) {
   const { style, ...otherProps } = props;
   return (
-    <ScrollView style={[style, styles.scrollView]} {...otherProps}></ScrollView>
+    <ScrollView style={[styles.scrollView, style]} {...otherProps}></ScrollView>
   );
 }
 
 export function ThemedFlatList<T>(props: FlatListProps<T>) {
   const { style, ...otherProps } = props;
-  return <FlatList style={[style, styles.flatList]} {...otherProps}></FlatList>;
+  return <FlatList style={[styles.flatList, style]} {...otherProps}></FlatList>;
 }
 
 const styles = StyleSheet.create({
