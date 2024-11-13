@@ -120,7 +120,7 @@ const processObservationsWithRadius = (
   return { foundIds, nextRemainingIds };
 };
 
-const calculateDistance = (
+export const calculateDistance = (
   lat1: number,
   lon1: number,
   lat2: number,

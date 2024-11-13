@@ -8,6 +8,7 @@ import { FavoritesContext } from "@/hooks/FavoritesContext";
 import { LocationContext } from "@/hooks/LocationContext";
 import { Favorite } from "@/hooks/useFavorites";
 import { useNonArraySearchParams } from "@/hooks/useNonArraySearchParams";
+import { calculateDistance } from "@/scripts/minSpeciesDistances";
 import BottomSheet, {
   BottomSheetFlatList,
   BottomSheetFlatListMethods,
@@ -47,6 +48,26 @@ export default function Favorites() {
     bottomSheetRef.current?.snapToIndex(1);
   };
 
+  const getSortedFavorites = () => {
+    // sort favorites by location
+    if (!favorites) return undefined;
+    if (!location) return favorites;
+    // calculate distance of each favorite from user
+    const distances: Record<string, number> = {};
+    favorites.forEach((fav) => {
+      distances[fav.id] = calculateDistance(
+        fav.location.latitude,
+        fav.location.longitude,
+        location.latitude,
+        location.longitude
+      );
+    });
+    // slice so we don't affect original array, then sort
+    return favorites.slice().sort((a, b) => {
+      return distances[a.id] - distances[b.id];
+    });
+  };
+
   return (
     <>
       {!location && <ThemedText>Loading location...</ThemedText>}
@@ -73,7 +94,7 @@ export default function Favorites() {
                 <ThemedButton title="Add Favorite" />
                 <BottomSheetFlatList
                   style={styles.favList}
-                  data={favorites}
+                  data={getSortedFavorites()}
                   ref={favListRef}
                   renderItem={({ item }) => (
                     <FavoritesListItem
