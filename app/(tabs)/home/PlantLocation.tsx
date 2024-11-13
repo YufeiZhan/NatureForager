@@ -1,16 +1,13 @@
-import { ThemedText, ThemedView } from "@/components/Themed";
-import { StyleSheet, Modal } from "react-native";
-import Map from "@/components/Map";
+import { StyleSheet } from "react-native";
+import INaturalistMap from "@/components/INaturalistMap";
 import { useNavigation } from "expo-router";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useNonArraySearchParams } from "@/hooks/useNonArraySearchParams";
 import { Button } from "react-native";
 import { RootStackParamList } from "../../../NavigationTypes";
 import { StackNavigationProp } from "@react-navigation/stack";
-import ObservationDetails from "@/components/ObservationDetails";
-import { Observation } from "@/iNaturalistTypes";
 
-type ProfileScreenNavigationProp = StackNavigationProp<
+type SpeciesInfoNavigationProp = StackNavigationProp<
   RootStackParamList,
   "SpeciesInfoModal"
 >;
@@ -24,13 +21,8 @@ export default function PlantLocation() {
     distanceKmToNearest,
   } = useNonArraySearchParams();
 
-  const [modalVisible, setModalVisible] = useState(false);
-  const [modalObservation, setModalObservation] = useState<
-    Observation | undefined
-  >();
-
   // change screen header to match common name
-  const nav = useNavigation<ProfileScreenNavigationProp>();
+  const nav = useNavigation<SpeciesInfoNavigationProp>();
   useEffect(() => {
     // Set screen header title and add a button to navigate to the modal containing species info
     // Here instead of in main navigation because it updates based on this page's iNaturalistTaxonId
@@ -46,11 +38,6 @@ export default function PlantLocation() {
       ),
     });
   }, [commonName, iNaturalistTaxonId]);
-
-  const openDetailsModal = (observation: Observation) => {
-    setModalObservation(observation);
-    setModalVisible(true);
-  };
 
   // calculate rough lat/lng extent based on distance to nearest observation, default to 0.05
   let initialLatExtent = 0.05;
@@ -68,24 +55,13 @@ export default function PlantLocation() {
   }
 
   return (
-    <>
-      <Map
-        iNaturalistTaxonId={iNaturalistTaxonId}
-        initialLat={Number(initialLat)}
-        initialLng={Number(initialLng)}
-        initialLatExtent={initialLatExtent}
-        initialLngExtent={initialLngExtent}
-        onINaturalistMarkerPress={openDetailsModal}
-      ></Map>
-      <Modal visible={modalVisible} animationType="slide">
-        {modalObservation && (
-          <ObservationDetails
-            observation={modalObservation}
-            onClose={() => setModalVisible(false)}
-          ></ObservationDetails>
-        )}
-      </Modal>
-    </>
+    <INaturalistMap
+      iNaturalistTaxonId={iNaturalistTaxonId}
+      initialLat={Number(initialLat)}
+      initialLng={Number(initialLng)}
+      initialLatExtent={initialLatExtent}
+      initialLngExtent={initialLngExtent}
+    />
   );
 }
 

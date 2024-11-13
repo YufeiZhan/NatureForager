@@ -1,52 +1,54 @@
-import { useLocalSearchParams, useRouter } from "expo-router";
-import React, { useState, useEffect } from "react";
-import {
-  Image,
-  StyleSheet,
-  TextInput,
-  View,
-} from "react-native";
+import { useRouter } from "expo-router";
+import React, { useState, useContext, useEffect } from "react";
+import { Image, StyleSheet, TextInput, View } from "react-native";
 import {
   ThemedText,
   ThemedView,
   ThemedButton,
 } from "../../../components/Themed";
-import { addPlantToFavorites, getFavorites } from "../../../backend/Favorites";
-import uuid from "react-native-uuid";
+import { useNonArraySearchParams } from "@/hooks/useNonArraySearchParams";
+import { Favorite } from "@/hooks/useFavorites";
+import { FavoritesContext } from "@/hooks/FavoritesContext";
 
 export default function CreateFavorite() {
   const router = useRouter();
-  const { plantId, commonName, location, photo } = useLocalSearchParams();
-  const [note, setNote] = useState("");
-  const stringLocation = location as string;
+  const {
+    iNaturalistId,
+    name,
+    latitude,
+    longitude,
+    photos,
+    note: noteParam,
+  } = useNonArraySearchParams();
+  const { addFavorite } = useContext(FavoritesContext);
 
+  const [note, setNote] = useState(noteParam);
+  const [photoUrls, setPhotoUrls] = useState<string[]>([]);
+
+  // when params change, update state
   useEffect(() => {
-    setNote(""); // Reset note to empty when component mounts
-  }, []);
-
-  // Enhance photo quality
-  const photoUri = typeof photo === "string" ? photo.replace("square", "large") : "";
+    setNote(noteParam);
+    setPhotoUrls(photos.split(","));
+  }, [photos, noteParam]);
 
   // Handle the create button click
   const handleCreateFavorite = async () => {
     // Prepare plant data
-    const plantData = {
-      iNatualistId: plantId as string,
-      RandomlyGeneratedId: uuid.v4() as string,
-      name: commonName as string,
+    const favoriteData: Omit<Favorite, "id"> = {
+      name: name,
       location: {
-        latitude: Number(stringLocation?.split(",")[0]) || 0,
-        longitude: Number(stringLocation?.split(",")[1]) || 0,
+        latitude: Number(latitude),
+        longitude: Number(longitude),
       },
-      photos: [photoUri],
-      note,
+      photos: photoUrls,
+      note: note,
     };
+    if (iNaturalistId) {
+      favoriteData.iNaturalistId = Number(iNaturalistId);
+    }
 
     // Save plant data to favorites
-    await addPlantToFavorites(plantData);
-
-    const favorites = await getFavorites();
-    console.log("All stored favorites:", favorites);
+    await addFavorite(favoriteData);
 
     // Navigate back after saving
     router.back();
@@ -55,19 +57,21 @@ export default function CreateFavorite() {
   return (
     <ThemedView style={styles.container}>
       {/* Common Name */}
-      <ThemedText style={styles.commonName}>{commonName}</ThemedText>
+      <ThemedText style={styles.commonName}>{name}</ThemedText>
 
       {/* Map Placeholder */}
       <ThemedView style={styles.mapContainer}>
-        <ThemedText style={styles.mapText}>Location: {location}</ThemedText>
+        <ThemedText style={styles.mapText}>
+          Location: {latitude}, {longitude}
+        </ThemedText>
         <ThemedButton title="Edit" onPress={() => {}} />
       </ThemedView>
 
       {/* Photo */}
       <ThemedView style={styles.photoContainer}>
-        {photoUri ? (
+        {photoUrls[0] ? (
           <Image
-            source={{ uri: photoUri }}
+            source={{ uri: photoUrls[0] }}
             style={styles.photo}
             resizeMode="cover"
           />
@@ -137,7 +141,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     marginBottom: 16,
     textAlignVertical: "top",
-    color: "white"
+    color: "white",
   },
   buttonContainer: {
     flexDirection: "row",

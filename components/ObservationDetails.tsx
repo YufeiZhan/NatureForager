@@ -9,10 +9,11 @@ import {
   ThemedView,
   ThemedText,
   ThemedButton,
-} from "../components/Themed";
+} from "./Themed";
 import { Observation } from "../iNaturalistTypes";
 import { useRouter } from "expo-router";
-
+import { useContext, useEffect, useState } from "react";
+import { FavoritesContext } from "@/hooks/FavoritesContext";
 
 interface ObservationDetailsProps {
   observation: Observation;
@@ -26,16 +27,33 @@ export default function ObservationDetails({
   const { width } = useWindowDimensions();
   const router = useRouter();
 
+  // keep track of whether this observation is favorited
+  const { favorites } = useContext(FavoritesContext);
+  const [isFavorited, setIsFavorited] = useState(false);
+  useEffect(() => {
+    const isInFavorites = Boolean(
+      observation.id &&
+        favorites &&
+        favorites.some((fav) => fav.iNaturalistId === observation.id)
+    );
+    setIsFavorited(isInFavorites);
+  }, [observation, favorites]);
+
   const handleAddToFavorites = () => {
     onClose();
-    console.log(observation.id);
     router.push({
       pathname: "/(tabs)/profile/CreateFavorite",
       params: {
-        plantId: observation.id,
-        commonName: observation.taxon?.preferred_common_name,
-        location: observation.location,
-        photo: observation.photos?.[0].url ?? '',
+        iNaturalistId: observation.id,
+        name:
+          observation.taxon?.preferred_common_name || observation.taxon?.name,
+        latitude: observation.location?.split(",")[0],
+        longitude: observation.location?.split(",")[1],
+        photos:
+          observation.photos?.map(
+            (p) => p.url?.replace("square", "medium") || ""
+          ) || "",
+        note: observation.description,
       },
     });
   };
@@ -45,8 +63,11 @@ export default function ObservationDetails({
       <ThemedScrollView>
         {/* Header with common name */}
         <ThemedView style={styles.headerContainer}>
-          <ThemedText style={styles.header}>
+          <ThemedText style={styles.commonName}>
             {observation.taxon?.preferred_common_name || "Observation Details"}
+          </ThemedText>
+          <ThemedText style={styles.scientificName}>
+            {observation.taxon?.name}
           </ThemedText>
         </ThemedView>
 
@@ -59,7 +80,13 @@ export default function ObservationDetails({
         </ThemedView>
 
         {/* Add to Favorite Button */}
-        <ThemedButton title="Add to Favorites" onPress={handleAddToFavorites} />
+        {!isFavorited && (
+          <ThemedButton
+            title="Add to Favorites"
+            onPress={handleAddToFavorites}
+          />
+        )}
+        {isFavorited && <ThemedText>Favorited!</ThemedText>}
 
         {/* Photos */}
         <ThemedView style={styles.photoContainer}>
@@ -90,10 +117,13 @@ const styles = StyleSheet.create({
   headerContainer: {
     padding: 16,
     alignItems: "center",
-    flexDirection: "row",
     justifyContent: "center",
   },
-  header: {
+  commonName: {
+    fontSize: 24,
+    textAlign: "center",
+  },
+  scientificName: {
     fontSize: 24,
     textAlign: "center",
     fontStyle: "italic",

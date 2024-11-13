@@ -1,19 +1,24 @@
 // app/(tabs)/profile/Favorites.tsx
-import { ThemedText, ThemedView } from "@/components/Themed";
+import FavoritesMap from "@/components/FavoritesMap";
+import { ThemedText } from "@/components/Themed";
+import { LocationContext } from "@/hooks/LocationContext";
+import { useContext } from "react";
 import { StyleSheet } from "react-native";
 
 export default function Favorites() {
+  const { location } = useContext(LocationContext);
+
   return (
-    <ThemedView style={styles.container}>
-      <ThemedText>This is the Favorites Screen</ThemedText>
-    </ThemedView>
+    <>
+      {!location && <ThemedText>Loading location...</ThemedText>}
+      {location && (
+        <FavoritesMap
+          initialLat={Number(location.latitude)}
+          initialLng={Number(location.longitude)}
+        />
+      )}
+    </>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-});
+const styles = StyleSheet.create({});
