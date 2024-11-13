@@ -5,7 +5,6 @@ export interface ReminderSpecies {
   id: number;
   name: string;
   type: string;
-  //   monthRipe: string;
   months: string[];
 }
 
@@ -21,6 +20,7 @@ export interface Reminder extends ReminderSpecies {
 export const loadReminders = async (): Promise<Reminder[]> => {
   try {
     const storedData = await AsyncStorage.getItem("savedPlants");
+    console.log(storedData)
     const reminders = storedData ? JSON.parse(storedData) : {};
     return Object.values(reminders);
   } catch (error) {

@@ -29,7 +29,8 @@ export default function FrequencySelectionScreen() {
 
   const handleSaveReminder = async () => {
     await saveReminder(species, frequency);
-    router.back();
+    // router.back();
+    router.push('/reminder/SaveForLater');
   };
 
   const handleDeleteReminder = async () => {

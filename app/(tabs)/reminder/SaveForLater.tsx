@@ -1,11 +1,10 @@
 // app/(tabs)/profile/SaveForLater.tsx
 import { ThemedFlatList, ThemedText, ThemedView, ThemedButton } from "@/components/Themed";
-import { StyleSheet, Alert } from "react-native";
+import { StyleSheet, Alert, Pressable } from "react-native";
 import { useEffect, useState } from "react";
 import * as Notifications from 'expo-notifications';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
-import { Reminder } from '@/backend/Reminder';
+import { Reminder, loadReminders } from '@/backend/Reminder';
 
 export default function SaveForLater() {
   const router = useRouter();
@@ -13,28 +12,12 @@ export default function SaveForLater() {
 
   // Load reminders from AsyncStorage
   useEffect(() => {
-    const loadReminders = async () => {
-      try {
-        const savedReminders = await AsyncStorage.getItem('savedPlants');
-        if (savedReminders) {
-          const parsedReminders = JSON.parse(savedReminders);
-
-          const remindersArray: Reminder[] = Object.values(parsedReminders).map((reminder: any) => ({
-            id: reminder.id,
-            name: reminder.name,
-            type: reminder.type,
-            monthRipe: reminder.monthRipe,
-            months: reminder.months,
-            frequency: reminder.frequency || "monthly",
-          }));
-
-          setReminders(remindersArray);
-        }
-      } catch (error) {
-        console.error("Failed to load reminders:", error);
-      }
+    const loadSpeciesReminder = async () => {
+      const remindersData = await loadReminders();
+      setReminders(remindersData)
     };
 
+    // move to home screen
     const requestNotificationPermission = async () => {
       const { status } = await Notifications.requestPermissionsAsync();
       if (status !== 'granted') {
@@ -62,26 +45,34 @@ export default function SaveForLater() {
       }
     };
 
-    loadReminders();
+    loadSpeciesReminder();
     requestNotificationPermission();
     // checkForSeasonalReminders();
-  }, [reminders]);
+  }, []);
+
+  const handleItemPress = (item: Reminder) => {
+    router.push({
+      pathname: "/reminder/FrequencySelection",
+      params: { species: JSON.stringify(item) },
+    });
+  };
 
   return (
     <ThemedView style={styles.container}>
-      <ThemedText>Save for Later Plants</ThemedText>
       <ThemedFlatList
         data={reminders}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
-          <ThemedText>
-            {item.name} - Ripe in {item.months.join(", ")}
-          </ThemedText>
+          <Pressable onPress={() => handleItemPress(item)}>
+            <ThemedText>
+              {item.name} - Ripe in {item.months.join(", ")} ({item.frequency})
+            </ThemedText>
+          </Pressable>
         )}
       />
       <ThemedButton
         title="+ Add New Reminder"
-        onPress={() => router.push('./SetReminderScreen')}
+        onPress={() => router.push('/reminder/SetReminderScreen')}
       />
     </ThemedView>
   );

@@ -1,4 +1,3 @@
-// app/(tabs)/profile/_layout.tsx
 import { Stack } from 'expo-router';
 import { globalStyles } from '@/styles/globalStyles';
 
@@ -11,12 +10,12 @@ export default function ProfileStack() {
       }}
     >
       <Stack.Screen
-        name="ProfileScreen"
-        options={{ title: 'My Plants' }}
+        name="SaveForLater"
+        options={{ title: 'Save for Later' }}
       />
-      <Stack.Screen
-        name="Favorites"
-        options={{ title: 'Favorites' }}
+      <Stack.Screen 
+        name="SetReminderScreen" 
+        options={{ title: 'Set New Reminder' }}
       />
     </Stack>
   );

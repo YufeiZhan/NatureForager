@@ -9,7 +9,7 @@ export default function SuggestionListItem(item: ReminderSpecies) {
 
   const handleSelectSpecies = (species: ReminderSpecies) => {
     router.push({
-      pathname: "/FrequencySelection",
+      pathname: "/reminder/FrequencySelection",
       params: { species: JSON.stringify(species) },
     });
   };
