@@ -1,11 +1,12 @@
-import { useEffect, useRef, useState } from "react";
-import { View, StyleSheet, Modal } from "react-native";
+import { useRef } from "react";
+import { StyleSheet } from "react-native";
 import MapView, {
   UrlTile,
   BoundingBox,
   LatLng,
   Marker,
   MapMarkerProps,
+  Region,
 } from "react-native-maps";
 
 export interface MapProps {
@@ -14,18 +15,21 @@ export interface MapProps {
   initialLatExtent?: number;
   initialLngExtent?: number;
   markers?: Markers;
-  onBoundsChange?: (bounds: BoundingBox) => void;
+  onBoundsChangeComplete?: (bounds: BoundingBox) => void;
+  onRegionChange?: (region: Region) => void;
 }
 // string is the key/id of a marker
 export type Markers = Record<string, MapMarkerProps>;
 
+// forward MapView component ref so parents can use its methods
 export default function Map({
   initialLat,
   initialLng,
   initialLatExtent = 0.05,
   initialLngExtent = 0.05,
   markers = {},
-  onBoundsChange,
+  onBoundsChangeComplete,
+  onRegionChange,
 }: MapProps) {
   const map = useRef<MapView>(null);
 
@@ -39,35 +43,35 @@ export default function Map({
   };
   // map bounds are the actual rendered bounds, we will update these as the user moves the map
   const updateMapBounds = () => {
-    map.current?.getMapBoundaries().then(onBoundsChange);
+    map.current?.getMapBoundaries().then(onBoundsChangeComplete);
   };
 
   return (
-    <View style={{ flex: 1 }}>
-      <MapView
-        style={styles.map}
-        initialRegion={initialRegion}
-        ref={map}
-        onMapReady={updateMapBounds}
-        onRegionChangeComplete={updateMapBounds}
-        showsUserLocation={true}
-      >
-        {Object.entries(markers).map(([key, props]) => (
-          <Marker key={key} {...props}></Marker>
-        ))}
-        {/* uncomment to use open street map tiles */}
-        {/* <UrlTile
+    <MapView
+      style={styles.map}
+      initialRegion={initialRegion}
+      ref={map}
+      onMapReady={updateMapBounds}
+      onRegionChangeComplete={updateMapBounds}
+      onRegionChange={onRegionChange}
+      showsUserLocation={true}
+    >
+      {Object.entries(markers).map(([key, props]) => (
+        <Marker key={key} {...props}></Marker>
+      ))}
+      {/* uncomment to use open street map tiles */}
+      {/* <UrlTile
           urlTemplate="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
           maximumZ={19}
           flipY={false}
         /> */}
-      </MapView>
-    </View>
+    </MapView>
   );
 }
 
 const styles = StyleSheet.create({
   map: {
+    flex: 1,
     width: "100%",
     height: "100%",
   },

@@ -74,7 +74,11 @@ export default function INaturalistMap({
 
   return (
     <>
-      <Map markers={markers} onBoundsChange={setMapBounds} {...mapProps}></Map>
+      <Map
+        markers={markers}
+        onBoundsChangeComplete={setMapBounds}
+        {...mapProps}
+      ></Map>
       <Modal visible={modalVisible} animationType="slide">
         {modalObservation && (
           <ObservationDetails

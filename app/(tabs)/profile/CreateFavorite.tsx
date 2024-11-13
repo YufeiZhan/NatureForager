@@ -9,27 +9,36 @@ import {
 import { useNonArraySearchParams } from "@/hooks/useNonArraySearchParams";
 import { Favorite } from "@/hooks/useFavorites";
 import { FavoritesContext } from "@/hooks/FavoritesContext";
+import EditLocationModal from "@/components/EditLocationModal";
+import { DEFAULT_LOCATION } from "@/hooks/useLocation";
 
 export default function CreateFavorite() {
   const router = useRouter();
   const {
     iNaturalistId,
-    name,
-    latitude,
-    longitude,
-    photos,
+    name: nameParam,
+    latitude: latitudeParam,
+    longitude: longitudeParam,
+    photos: photosParam,
     note: noteParam,
   } = useNonArraySearchParams();
   const { addFavorite } = useContext(FavoritesContext);
 
+  const [name, setName] = useState(nameParam);
+  const [latitude, setLatitude] = useState(Number(latitudeParam));
+  const [longitude, setLongitude] = useState(Number(longitudeParam));
   const [note, setNote] = useState(noteParam);
   const [photoUrls, setPhotoUrls] = useState<string[]>([]);
 
-  // when params change, update state
+  // when params change (screen is reopened), update state to match all params
+  // if we just used the params as initial state values, reopening the screen with new params wouldn't update anything
   useEffect(() => {
+    setName(nameParam);
+    setLatitude(Number(latitudeParam));
+    setLongitude(Number(longitudeParam));
     setNote(noteParam);
-    setPhotoUrls(photos.split(","));
-  }, [photos, noteParam]);
+    setPhotoUrls(photosParam.split(","));
+  }, [nameParam, latitudeParam, longitudeParam, photosParam, noteParam]);
 
   // Handle the create button click
   const handleCreateFavorite = async () => {
@@ -54,6 +63,16 @@ export default function CreateFavorite() {
     router.back();
   };
 
+  const handleLocationChoice = (newLat: number, newLng: number) => {
+    setLatitude(newLat);
+    setLongitude(newLng);
+    setEditLocationModalVisible(false);
+  };
+
+  // edit location modal
+  const [editLocationModalVisible, setEditLocationModalVisible] =
+    useState(false);
+
   return (
     <ThemedView style={styles.container}>
       {/* Common Name */}
@@ -64,7 +83,10 @@ export default function CreateFavorite() {
         <ThemedText style={styles.mapText}>
           Location: {latitude}, {longitude}
         </ThemedText>
-        <ThemedButton title="Edit" onPress={() => {}} />
+        <ThemedButton
+          title="Edit"
+          onPress={() => setEditLocationModalVisible(true)}
+        />
       </ThemedView>
 
       {/* Photo */}
@@ -95,6 +117,14 @@ export default function CreateFavorite() {
         <ThemedButton title="Cancel" onPress={() => router.back()} />
         <ThemedButton title="Create" onPress={handleCreateFavorite} />
       </View>
+
+      <EditLocationModal
+        visible={editLocationModalVisible}
+        latitude={latitude}
+        longitude={longitude}
+        onClose={() => setEditLocationModalVisible(false)}
+        onConfirmLocation={handleLocationChoice}
+      />
     </ThemedView>
   );
 }
