@@ -8,6 +8,7 @@ import MapView, {
   MapMarkerProps,
   MapMarker,
   Callout,
+  MapPressEvent,
 } from "react-native-maps";
 import { ThemedButton, ThemedText } from "./Themed";
 
@@ -19,6 +20,7 @@ export interface MapProps {
   animateToMarkerId?: string;
   markers?: Markers;
   onBoundsChange?: (bounds: BoundingBox) => void;
+  onPress?: (e: MapPressEvent) => void;
 }
 
 interface MarkerProps extends MapMarkerProps {
@@ -36,6 +38,7 @@ export default function Map({
   animateToMarkerId,
   markers = {},
   onBoundsChange,
+  onPress,
 }: MapProps) {
   const map = useRef<MapView>(null);
   // init refs to use for map markers
@@ -80,6 +83,7 @@ export default function Map({
         onMapReady={updateMapBounds}
         onRegionChangeComplete={updateMapBounds}
         showsUserLocation={true}
+        onPress={onPress}
       >
         {Object.entries(markers).map(([key, { callout, ...props }]) => (
           <Marker
@@ -87,6 +91,7 @@ export default function Map({
             ref={(m) =>
               m ? (markerRefs.current[key] = m) : delete markerRefs.current[key]
             }
+            stopPropagation // so we can detect if just pressing on the map background, not a marker
             {...props}
           ></Marker>
         ))}

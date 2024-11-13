@@ -24,7 +24,6 @@ export default function Favorites() {
   const handleListItemPressed = (fav: Favorite) => {
     setSelectedFavorite(fav);
     bottomSheetRef.current?.snapToIndex(1);
-    // favListRef.current?.scrollToItem({ item: fav, viewPosition: 0 });
   };
 
   return (
@@ -36,6 +35,8 @@ export default function Favorites() {
             initialLat={Number(location.latitude)}
             initialLng={Number(location.longitude)}
             selectedFavoriteId={selectedFavorite?.id}
+            onSelectFavorite={(fav) => setSelectedFavorite(fav)}
+            onDeselectFavorites={() => setSelectedFavorite(undefined)}
           />
           <BottomSheet
             backgroundStyle={styles.bottomSheet}

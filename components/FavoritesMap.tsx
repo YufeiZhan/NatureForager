@@ -1,21 +1,21 @@
 import { FavoritesContext } from "@/hooks/FavoritesContext";
 import Map, { MapProps, Markers } from "./Map";
 import { useContext, useEffect, useState } from "react";
+import { Favorite } from "@/hooks/useFavorites";
 
 interface FavoritesMapProps extends MapProps {
   selectedFavoriteId?: string;
+  onSelectFavorite?: (favorite: Favorite) => void;
+  onDeselectFavorites?: () => void;
 }
 
 export default function FavoritesMap({
   selectedFavoriteId,
+  onSelectFavorite,
+  onDeselectFavorites,
   ...mapProps
 }: FavoritesMapProps) {
   const [markers, setMarkers] = useState<Markers>({});
-
-  // when marker is selected, pan to it
-  useEffect(() => {
-    if (!selectedFavoriteId) return;
-  }, [selectedFavoriteId]);
 
   // construct markers for favorites
   const { favorites } = useContext(FavoritesContext);
@@ -27,11 +27,10 @@ export default function FavoritesMap({
           latitude: fav.location.latitude,
           longitude: fav.location.longitude,
         },
-        title: fav.name,
-        description: fav.note,
-        onPress: () => {
-          // placeholder
-          console.log(fav.name);
+        // title: fav.name,
+        // description: fav.note,
+        onPress: (e) => {
+          onSelectFavorite?.(fav);
         },
       };
     });
@@ -42,6 +41,7 @@ export default function FavoritesMap({
     <Map
       markers={markers}
       animateToMarkerId={selectedFavoriteId}
+      onPress={onDeselectFavorites}
       {...mapProps}
     ></Map>
   );
