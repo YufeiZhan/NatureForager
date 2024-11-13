@@ -27,9 +27,8 @@ export default function FavoritesMap({
           latitude: fav.location.latitude,
           longitude: fav.location.longitude,
         },
-        // title: fav.name,
-        // description: fav.note,
-        onPress: (e) => {
+        title: fav.name,
+        onSelect: (e) => {
           onSelectFavorite?.(fav);
         },
       };
@@ -40,7 +39,7 @@ export default function FavoritesMap({
   return (
     <Map
       markers={markers}
-      animateToMarkerId={selectedFavoriteId}
+      selectedMarkerId={selectedFavoriteId}
       onPress={onDeselectFavorites}
       {...mapProps}
     ></Map>
