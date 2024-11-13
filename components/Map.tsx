@@ -66,7 +66,12 @@ export default function Map({
 
   // when new marker should be selected, pan the map and show a callout
   useEffect(() => {
-    if (!selectedMarkerId || !map.current) return;
+    if (!map.current) return;
+    if (!selectedMarkerId) {
+      // no marker selected anymore, clear callouts (or at least try to)
+      Object.values(markerRefs.current).forEach((m) => m.hideCallout());
+      return;
+    }
     panToMarker(selectedMarkerId, PAN_ANIMATION_DURATION);
     // also show its callout (only after the animation finishes, to prevent weirdness)
     setTimeout(() => {

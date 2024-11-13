@@ -48,6 +48,11 @@ export default function Favorites() {
     bottomSheetRef.current?.snapToIndex(1);
   };
 
+  const handleDeselectFavorite = () => {
+    setSelectedFavorite(undefined);
+    setMarkerIdToSelect("");
+  };
+
   const getSortedFavorites = () => {
     // sort favorites by location
     if (!favorites) return undefined;
@@ -78,7 +83,7 @@ export default function Favorites() {
             initialLng={Number(location.longitude)}
             selectedFavoriteId={markerIdToSelect}
             onSelectFavorite={(fav) => handleSelectFavorite(fav, true)}
-            onDeselectFavorites={() => setSelectedFavorite(undefined)}
+            onDeselectFavorites={() => handleDeselectFavorite()}
           />
 
           <BottomSheet
@@ -109,7 +114,7 @@ export default function Favorites() {
             {selectedFavorite && (
               <FavoriteDetails
                 favorite={selectedFavorite}
-                onClose={() => setSelectedFavorite(undefined)}
+                onClose={() => handleDeselectFavorite()}
               />
             )}
           </BottomSheet>
