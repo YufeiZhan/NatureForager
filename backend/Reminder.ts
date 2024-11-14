@@ -84,7 +84,7 @@ const monthNames = [
   "January", "February", "March", "April", "May", "June",
   "July", "August", "September", "October", "November", "December"
 ];
-
+const ifTest = true;
 
 export const cancelSpeciesNotifications = async (speciesId: number, month: string) => {
   const notifications = await Notifications.getAllScheduledNotificationsAsync();
@@ -120,28 +120,34 @@ export const scheduleSpeciesNotifications = async (species: Reminder, frequency:
         body: `${species.name} is in season this month!`,
         data: { speciesId: species.id, month },
       },
-      trigger: { ...monthTrigger, day: 1 },
+      trigger:  ifTest
+      ? { seconds: 20 }  // 20 seconds
+      : { ...monthTrigger, day: 1 },
     });
   } else if (frequency === "biweekly") {
-    biweeklyDays.forEach((day) =>
+    biweeklyDays.forEach((day, index) =>
       Notifications.scheduleNotificationAsync({
         content: {
           title: `${species.name} Reminder`,
           body: `${species.name} is in season this month!`,
           data: { speciesId: species.id, month },
         },
-        trigger: { ...monthTrigger, day },
+        trigger: ifTest
+        ? { seconds: 20 * (index + 1) }  // 20, 40, 60 seconds for biweekly
+        : { ...monthTrigger, day },
       })
     );
   } else if (frequency === "weekly") {
-    weeklyDays.forEach((day) =>
+    weeklyDays.forEach((day, index) =>
       Notifications.scheduleNotificationAsync({
         content: {
           title: `${species.name} Reminder`,
           body: `${species.name} is in season this month!`,
           data: { speciesId: species.id, month },
         },
-        trigger: { ...monthTrigger, day },
+        trigger: ifTest
+        ? { seconds: 10 * (index + 1) }  // 10, 20, 30, 40, 50 seconds for weekly
+        : { ...monthTrigger, day },
       })
     );
   }
@@ -165,7 +171,9 @@ export const scheduleMonthlySummaryNotification = async (speciesInSeason: Remind
       body: `Species ripe this month: ${notificationContent}`,
       data: { month },
     },
-    trigger: {
+    trigger: ifTest
+    ? { seconds: 30}  // 30 seconds
+    :{
       month: monthIndex + 1, // Adjust for 1-based month index required by notifications API
       day: 1,
       hour: 9,
