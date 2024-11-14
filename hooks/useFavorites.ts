@@ -3,7 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import uuid from "react-native-uuid";
 
 export interface Favorite {
-  id?: string;
+  id: string;
   iNaturalistId?: number;
   name: string;
   location: { latitude: number; longitude: number };
