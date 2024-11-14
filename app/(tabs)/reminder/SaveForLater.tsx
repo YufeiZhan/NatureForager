@@ -25,29 +25,8 @@ export default function SaveForLater() {
       }
     };
 
-    const checkForSeasonalReminders = async () => {
-      const today = new Date();
-      const isTesting = true;
-      const currentMonth = today.toLocaleString('default', { month: 'long' });
-
-      if (isTesting || today.getDate() === 1) {
-        const speciesInSeason = reminders.filter(reminder => reminder.months.includes(currentMonth));
-        if (speciesInSeason.length > 0) {
-          await Notifications.scheduleNotificationAsync({
-            content: {
-              title: "New things in season soon!",
-              body: `This month: ${speciesInSeason.map(s => s.name).join(", ")}`,
-              data: { speciesInSeason },
-            },
-            trigger: { seconds: 10 },
-          });
-        }
-      }
-    };
-
     loadSpeciesReminder();
     requestNotificationPermission();
-    // checkForSeasonalReminders();
   }, []);
 
   const handleItemPress = (item: Reminder) => {
