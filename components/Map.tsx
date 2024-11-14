@@ -1,11 +1,12 @@
-import { useRef } from "react";
-import { StyleSheet } from "react-native";
+import { useEffect, useRef } from "react";
+import { View, StyleSheet } from "react-native";
 import MapView, {
   UrlTile,
   BoundingBox,
-  LatLng,
   Marker,
   MapMarkerProps,
+  MapMarker,
+  MapPressEvent,
   Region,
 } from "react-native-maps";
 
@@ -14,12 +15,19 @@ export interface MapProps {
   initialLng: number;
   initialLatExtent?: number;
   initialLngExtent?: number;
+  selectedMarkerId?: string;
   markers?: Markers;
   onBoundsChangeComplete?: (bounds: BoundingBox) => void;
   onRegionChange?: (region: Region) => void;
+  onPress?: (e: MapPressEvent) => void;
+}
+interface MarkerProps extends MapMarkerProps {
+  callout?: JSX.Element;
 }
 // string is the key/id of a marker
-export type Markers = Record<string, MapMarkerProps>;
+export type Markers = Record<string, MarkerProps>;
+
+const PAN_ANIMATION_DURATION = 300; //ms
 
 // forward MapView component ref so parents can use its methods
 export default function Map({
@@ -27,11 +35,15 @@ export default function Map({
   initialLng,
   initialLatExtent = 0.05,
   initialLngExtent = 0.05,
+  selectedMarkerId,
   markers = {},
   onBoundsChangeComplete,
   onRegionChange,
+  onPress,
 }: MapProps) {
   const map = useRef<MapView>(null);
+  // init refs to use for map markers
+  const markerRefs = useRef<Record<string, MapMarker>>({});
 
   // region is the area to include within the map, but the map will probably
   // show more, depending on the aspect ratio
@@ -46,6 +58,31 @@ export default function Map({
     map.current?.getMapBoundaries().then(onBoundsChangeComplete);
   };
 
+  const panToMarker = (markerId: string, duration: number) => {
+    const { latitude, longitude } = markers[markerId].coordinate;
+    map.current?.animateCamera(
+      {
+        center: { latitude: latitude, longitude: longitude },
+      },
+      { duration: duration }
+    );
+  };
+
+  // when new marker should be selected, pan the map and show a callout
+  useEffect(() => {
+    if (!map.current) return;
+    if (!selectedMarkerId) {
+      // no marker selected anymore, clear callouts (or at least try to)
+      Object.values(markerRefs.current).forEach((m) => m.hideCallout());
+      return;
+    }
+    panToMarker(selectedMarkerId, PAN_ANIMATION_DURATION);
+    // also show its callout (only after the animation finishes, to prevent weirdness)
+    setTimeout(() => {
+      markerRefs.current?.[selectedMarkerId].showCallout();
+    }, PAN_ANIMATION_DURATION + 50);
+  }, [selectedMarkerId]);
+
   return (
     <MapView
       style={styles.map}
@@ -55,9 +92,21 @@ export default function Map({
       onRegionChangeComplete={updateMapBounds}
       onRegionChange={onRegionChange}
       showsUserLocation={true}
+      onPress={onPress}
+      onMarkerPress={(e) =>
+        panToMarker(e.nativeEvent.id, PAN_ANIMATION_DURATION)
+      }
     >
-      {Object.entries(markers).map(([key, props]) => (
-        <Marker key={key} {...props}></Marker>
+      {Object.entries(markers).map(([key, { callout, ...props }]) => (
+        <Marker
+          key={key} // for the .map()
+          identifier={key} // for MapView event handling
+          ref={(m) =>
+            m ? (markerRefs.current[key] = m) : delete markerRefs.current[key]
+          }
+          stopPropagation // so we can detect if just pressing on the map background, not a marker
+          {...props}
+        />
       ))}
       {/* uncomment to use open street map tiles */}
       {/* <UrlTile
