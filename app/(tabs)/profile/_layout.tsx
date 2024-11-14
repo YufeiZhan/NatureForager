@@ -5,9 +5,9 @@ import { globalStyles } from '@/styles/globalStyles';
 export default function ProfileStack() {
   return (
     <Stack
-      screenOptions ={{
-        headerTitleStyle: { ...globalStyles.headerTitleStyle},
-        headerBackTitle: "Back"
+      screenOptions={{
+        headerTitleStyle: { ...globalStyles.headerTitleStyle },
+        headerBackTitle: "Back",
       }}
     >
       <Stack.Screen

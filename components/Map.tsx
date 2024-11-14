@@ -1,40 +1,49 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { View, StyleSheet } from "react-native";
 import MapView, {
   UrlTile,
   BoundingBox,
-  LatLng,
   Marker,
   MapMarkerProps,
+  MapMarker,
+  MapPressEvent,
+  Region,
 } from "react-native-maps";
-import { Observation, ObservationsResponse } from "@/iNaturalistTypes";
 
-interface MapProps {
+export interface MapProps {
   initialLat: number;
   initialLng: number;
   initialLatExtent?: number;
   initialLngExtent?: number;
-  iNaturalistTaxonId?: string;
-  initialMarkers?: Markers;
-  onINaturalistMarkerPress?: (observation: Observation) => void;
+  selectedMarkerId?: string;
+  markers?: Markers;
+  onBoundsChangeComplete?: (bounds: BoundingBox) => void;
+  onRegionChange?: (region: Region) => void;
+  onPress?: (e: MapPressEvent) => void;
 }
-
-interface MarkerInfo extends MapMarkerProps {
-  key: number;
-  initialMarkers?: Markers;
+interface MarkerProps extends MapMarkerProps {
+  callout?: JSX.Element;
 }
-type Markers = Record<string, MarkerInfo>;
+// string is the key/id of a marker
+export type Markers = Record<string, MarkerProps>;
 
+const PAN_ANIMATION_DURATION = 300; //ms
+
+// forward MapView component ref so parents can use its methods
 export default function Map({
   initialLat,
   initialLng,
   initialLatExtent = 0.05,
   initialLngExtent = 0.05,
-  iNaturalistTaxonId,
-  onINaturalistMarkerPress,
-  initialMarkers = {},
+  selectedMarkerId,
+  markers = {},
+  onBoundsChangeComplete,
+  onRegionChange,
+  onPress,
 }: MapProps) {
   const map = useRef<MapView>(null);
+  // init refs to use for map markers
+  const markerRefs = useRef<Record<string, MapMarker>>({});
 
   // region is the area to include within the map, but the map will probably
   // show more, depending on the aspect ratio
@@ -45,88 +54,73 @@ export default function Map({
     longitudeDelta: initialLngExtent,
   };
   // map bounds are the actual rendered bounds, we will update these as the user moves the map
-  const [mapBounds, setMapBounds] = useState<BoundingBox | undefined>(
-    undefined
-  );
   const updateMapBounds = () => {
-    map.current?.getMapBoundaries().then((bounds) => {
-      setMapBounds(bounds);
-    });
+    map.current?.getMapBoundaries().then(onBoundsChangeComplete);
   };
 
-  // object containing map marker info
-  const [markers, setMarkers] = useState<Markers>(initialMarkers);
-  // when taxon id changes, reset markers
-  useEffect(() => {
-    setMarkers(initialMarkers);
-  }, [iNaturalistTaxonId]);
+  const panToMarker = (markerId: string, duration: number) => {
+    const { latitude, longitude } = markers[markerId].coordinate;
+    map.current?.animateCamera(
+      {
+        center: { latitude: latitude, longitude: longitude },
+      },
+      { duration: duration }
+    );
+  };
 
-  // fetch iNaturalist observations whenever the taxon id changes or map bounds change
-  // don't fetch observations we've fetched previously
+  // when new marker should be selected, pan the map and show a callout
   useEffect(() => {
-    if (iNaturalistTaxonId === undefined || mapBounds === undefined) return;
-    const fetchINaturalistData = async () => {
-      const params = [
-        "taxon_id=" + iNaturalistTaxonId,
-        "verifiable=true",
-        "geoprivacy=open",
-        "licensed=true",
-        "per_page=200",
-        "nelat=" + mapBounds.northEast.latitude,
-        "nelng=" + mapBounds.northEast.longitude,
-        "swlat=" + mapBounds.southWest.latitude,
-        "swlng=" + mapBounds.southWest.longitude,
-        "not_id=" + Object.keys(markers).join(","),
-      ];
-      const url =
-        "https://api.inaturalist.org/v1/observations?" + params.join("&");
-      const data: ObservationsResponse = await (await fetch(url)).json();
-
-      // update marker list
-      const newMarkers: Markers = { ...markers };
-      data.results.forEach((observation) => {
-        // location is stored in observation.location as the string "lat,lng"
-        const latlng = observation.location?.split(",").map(Number);
-        if (latlng === undefined) return;
-        if (observation.id !== undefined) {
-          newMarkers[observation.id] = {
-            key: observation.id || 0,
-            coordinate: { latitude: latlng[0], longitude: latlng[1] },
-            onPress: () => onINaturalistMarkerPress?.(observation),
-          };
-        }
-      });
-      setMarkers(newMarkers);
-    };
-    fetchINaturalistData();
-  }, [iNaturalistTaxonId, mapBounds]);
+    if (!map.current) return;
+    if (!selectedMarkerId) {
+      // no marker selected anymore, clear callouts (or at least try to)
+      Object.values(markerRefs.current).forEach((m) => m.hideCallout());
+      return;
+    }
+    panToMarker(selectedMarkerId, PAN_ANIMATION_DURATION);
+    // also show its callout (only after the animation finishes, to prevent weirdness)
+    setTimeout(() => {
+      markerRefs.current?.[selectedMarkerId].showCallout();
+    }, PAN_ANIMATION_DURATION + 50);
+  }, [selectedMarkerId]);
 
   return (
-    <View style={{ flex: 1 }}>
-      <MapView
-        style={styles.map}
-        initialRegion={initialRegion}
-        ref={map}
-        onMapReady={updateMapBounds}
-        onRegionChangeComplete={updateMapBounds}
-        showsUserLocation={true}
-      >
-        {Object.values(markers).map((m) => (
-          <Marker {...m}></Marker>
-        ))}
-        {/* uncomment to use open street map tiles */}
-        {/* <UrlTile
+    <MapView
+      style={styles.map}
+      initialRegion={initialRegion}
+      ref={map}
+      onMapReady={updateMapBounds}
+      onRegionChangeComplete={updateMapBounds}
+      onRegionChange={onRegionChange}
+      showsUserLocation={true}
+      onPress={onPress}
+      onMarkerPress={(e) =>
+        panToMarker(e.nativeEvent.id, PAN_ANIMATION_DURATION)
+      }
+    >
+      {Object.entries(markers).map(([key, { callout, ...props }]) => (
+        <Marker
+          key={key} // for the .map()
+          identifier={key} // for MapView event handling
+          ref={(m) =>
+            m ? (markerRefs.current[key] = m) : delete markerRefs.current[key]
+          }
+          stopPropagation // so we can detect if just pressing on the map background, not a marker
+          {...props}
+        />
+      ))}
+      {/* uncomment to use open street map tiles */}
+      {/* <UrlTile
           urlTemplate="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
           maximumZ={19}
           flipY={false}
         /> */}
-      </MapView>
-    </View>
+    </MapView>
   );
 }
 
 const styles = StyleSheet.create({
   map: {
+    flex: 1,
     width: "100%",
     height: "100%",
   },
