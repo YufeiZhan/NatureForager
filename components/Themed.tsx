@@ -27,18 +27,23 @@ export function ThemedText(props: TextProps) {
 // maybe create our custom button using a Pressable View?
 // because it will be hard to make system default look aesthetic nature-wise
 // don't take ButtonProps if we do that, probably will be ViewProps
-export function ThemedButton({...props}:ButtonProps & {action?: 'primary' | 'secondary'}) {
-  const {action = "primary", title, onPress, ...otherProps} = props;
-  console.log(action)
+export function ThemedButton({
+  ...props
+}: ButtonProps & { action?: "primary" | "secondary" }) {
+  const { action = "primary", title, onPress, ...otherProps } = props;
 
-  if (action === 'primary'){
-    return <Pressable style={styles.primaryButton} onPress={onPress}>
-            <Text style={styles.primaryButtonText}>{title}</Text>
-           </Pressable>
+  if (action === "primary") {
+    return (
+      <Pressable style={styles.primaryButton} onPress={onPress}>
+        <Text style={styles.primaryButtonText}>{title}</Text>
+      </Pressable>
+    );
   } else {
-    return <Pressable style={styles.secondaryButton} onPress={onPress}>
-            <Text style={styles.secondaryButtonText}>{title}</Text>
-           </Pressable>
+    return (
+      <Pressable style={styles.secondaryButton} onPress={onPress}>
+        <Text style={styles.secondaryButtonText}>{title}</Text>
+      </Pressable>
+    );
   }
 }
 
@@ -59,10 +64,10 @@ export function ThemedFlatList<T>(props: FlatListProps<T>) {
 }
 
 const styles = StyleSheet.create({
-  primaryButton:{
+  primaryButton: {
     backgroundColor: ivoryWhite,
-    alignSelf: 'center',
-    justifyContent: 'center',
+    alignSelf: "center",
+    justifyContent: "center",
     paddingVertical: 18,
     paddingHorizontal: 40,
     borderRadius: 20,
@@ -70,13 +75,13 @@ const styles = StyleSheet.create({
   primaryButtonText: {
     color: darkGreen,
     fontSize: 18,
-    fontWeight: '700',
-    alignItems: 'center'
+    fontWeight: "700",
+    alignItems: "center",
   },
-  secondaryButton:{
+  secondaryButton: {
     backgroundColor: darkGreen,
-    alignSelf: 'center',
-    justifyContent: 'center',
+    alignSelf: "center",
+    justifyContent: "center",
     paddingVertical: 18,
     paddingHorizontal: 40,
     borderRadius: 20,
@@ -84,8 +89,8 @@ const styles = StyleSheet.create({
   secondaryButtonText: {
     color: ivoryWhite,
     fontSize: 18,
-    fontWeight: '700',
-    alignItems: 'center'
+    fontWeight: "700",
+    alignItems: "center",
   },
   view: {},
   text: {
