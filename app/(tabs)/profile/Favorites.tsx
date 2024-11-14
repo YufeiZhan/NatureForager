@@ -96,7 +96,7 @@ export default function Favorites() {
             {/* if no favorite selected, show full list */}
             {favorites && !selectedFavorite && (
               <>
-                <ThemedButton title="Add Favorite" />
+                <ThemedButton title="Add Favorite" action="primary"/>
                 <BottomSheetFlatList
                   style={styles.favList}
                   data={getSortedFavorites()}
