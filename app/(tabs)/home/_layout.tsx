@@ -6,7 +6,7 @@ export default function HomeStack() {
   return (
     <Stack
       screenOptions ={{
-        headerTitleStyle: { ...globalStyles.headerTitleStyle},
+        headerTitleStyle: { ...globalStyles.headerTitleStyle },
         headerBackTitle: "Back"
       }}
     >

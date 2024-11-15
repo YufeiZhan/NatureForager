@@ -9,7 +9,9 @@ export const themes = {
 export const globalStyles = StyleSheet.create({
     headerTitleStyle: { // header title styling for each tab stack
         fontSize: themes.fontSize.headerTitle,
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        fontFamily: 'Hubballi_400Regular', 
+        fontSize:25
     }
 })
 

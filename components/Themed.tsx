@@ -35,13 +35,13 @@ export function ThemedButton({
   if (action === "primary") {
     return (
       <Pressable style={styles.primaryButton} onPress={onPress}>
-        <Text style={styles.primaryButtonText}>{title}</Text>
+        <ThemedText style={styles.primaryButtonText}>{title}</ThemedText>
       </Pressable>
     );
   } else {
     return (
       <Pressable style={styles.secondaryButton} onPress={onPress}>
-        <Text style={styles.secondaryButtonText}>{title}</Text>
+        <ThemedText style={styles.secondaryButtonText}>{title}</ThemedText>
       </Pressable>
     );
   }
@@ -94,7 +94,9 @@ const styles = StyleSheet.create({
   },
   view: {},
   text: {
-    fontSize: 16,
+    fontSize: 20,
+    letterSpacing: -1,
+    fontFamily: "Hubballi_400Regular"
   },
   scrollView: {},
   flatList: {},
