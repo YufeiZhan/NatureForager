@@ -51,15 +51,29 @@ export default function EditFavoriteScreen() {
 
   // Handle the update button
   const handleUpdate = async () => {
-    if (favorite.id){
-        await updateFavorite(favorite.id, favorite);
-    }
+    console.log(note);
+    await updateFavorite(favorite.id, {
+      name,
+      location: { latitude, longitude },
+      photos: photoUrls,
+      note,
+    });
     router.back();
   };
 
   // Handle the cancel button
   const handleCancel = () => {
     router.back();
+  };
+
+  const handleNoteChange = (newNote: string) => {
+    console.log("Note changed to:", newNote);
+    setNote(newNote);
+  };
+
+  const handlePhotoUrlsChange = (newPhotoUrls: string[]) => {
+    console.log("Photo URLs changed to:", newPhotoUrls);
+    setPhotoUrls(newPhotoUrls);
   };
 
   return (
@@ -69,8 +83,8 @@ export default function EditFavoriteScreen() {
         setName={setName}
         setLatitude={setLatitude}
         setLongitude={setLongitude}
-        setNote={setNote}
-        setPhotoUrls={setPhotoUrls}
+        setNote={handleNoteChange}
+        setPhotoUrls={handlePhotoUrlsChange}
       />
 
       {/* Bottom Buttons */}

@@ -5,6 +5,7 @@ import { ThemedText, ThemedView, ThemedButton } from "./Themed";
 import { Favorite } from "@/hooks/useFavorites";
 import EditLocationModal from "@/components/EditLocationModal";
 import { DEFAULT_LOCATION } from "@/hooks/useLocation";
+import * as ImagePicker from "expo-image-picker";
 
 interface EditFavoriteProps {
     favorite: Favorite;
@@ -40,8 +41,22 @@ const handleRemovePhoto = (index: number) => {
 };
 
 // Add a new photo (dummy button)
-const handleAddPhoto = () => {
-    setPhotoUrls([...favorite.photos ?? [], "https://via.placeholder.com/150"]);
+const handleAddPhoto = async () => {
+  const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+  if (status !== 'granted') {
+    return;
+  }
+
+  const result = await ImagePicker.launchImageLibraryAsync({
+    allowsMultipleSelection: false,
+    quality: 1,
+  });
+  
+
+  if (!result.canceled) {
+    const updatedPhotos = [...(favorite.photos ?? []), result.assets[0].uri];
+    setPhotoUrls(updatedPhotos);
+  }
 };
 
 return (
@@ -140,8 +155,8 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   addPhotoButton: {
-    width: 50,
-    height: 50,
+    width: 100,
+    height: 100,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#d3a15d",
@@ -158,15 +173,15 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   photo: {
-    width: 50,
-    height: 50,
+    width: 100,
+    height: 100,
     borderRadius: 5,
   },
   removePhotoButton: {
     position: "absolute",
     top: -8,
     right: -8,
-    backgroundColor: "#f55",
+    backgroundColor: "white",
     borderRadius: 10,
     width: 20,
     height: 20,
@@ -174,7 +189,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   removePhotoText: {
-    color: "#fff",
+    color: "black",
     fontSize: 12,
   },
   buttonContainer: {
