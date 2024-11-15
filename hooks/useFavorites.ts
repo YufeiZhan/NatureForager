@@ -74,6 +74,8 @@ export function useFavorites() {
         console.error("Plant not found in favorites");
         return;
       }
+      const updatedFavorites = [...favorites];
+      updatedFavorites[plantIndex] = { ...favorites[plantIndex], ...updatedData };
       // Update only the provided fields
       favorites[plantIndex] = { ...favorites[plantIndex], ...updatedData };
       await AsyncStorage.setItem(FAVORITES_KEY, JSON.stringify(favorites));
