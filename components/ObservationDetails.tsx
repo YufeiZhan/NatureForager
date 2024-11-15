@@ -107,7 +107,7 @@ export default function ObservationDetails({
           )}
         </ThemedView>
       </ThemedScrollView>
-      <ThemedButton title="Back to Map" onPress={onClose} />
+      <ThemedButton title="Back to Map" onPress={onClose} action="secondary" />
       <ThemedText></ThemedText>
     </SafeAreaView>
   );
