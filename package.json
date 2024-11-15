@@ -17,6 +17,7 @@
     "expo": "~51.0.28",
     "expo-image-picker": "^16.0.2",
     "expo-location": "~17.0.1",
+    "expo-notifications": "~0.28.19",
     "expo-router": "^3.5.23",
     "expo-status-bar": "~1.12.1",
     "papaparse": "^5.4.1",
@@ -29,9 +30,7 @@
     "react-native-reanimated": "^3.10.1",
     "react-native-render-html": "^6.3.4",
     "react-native-uuid": "^2.0.2",
-    "uuid": "^10.0.0",
-    "expo-notifications": "~0.28.19",
-    "react-native-gesture-handler": "~2.16.1"
+    "uuid": "^10.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
