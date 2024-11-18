@@ -6,6 +6,12 @@ import { useNonArraySearchParams } from "@/hooks/useNonArraySearchParams";
 import { Button } from "react-native";
 import { RootStackParamList } from "../../../NavigationTypes";
 import { StackNavigationProp } from "@react-navigation/stack";
+import BottomSheet, {
+  BottomSheetFlatList,
+  BottomSheetFlatListMethods,
+} from "@gorhom/bottom-sheet";
+import { yellowSand } from "@/constants/Colors";
+import SpeciesInfo from "@/components/SpeciesInfo";
 
 type SpeciesInfoNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -24,19 +30,8 @@ export default function PlantLocation() {
   // change screen header to match common name
   const nav = useNavigation<SpeciesInfoNavigationProp>();
   useEffect(() => {
-    // Set screen header title and add a button to navigate to the modal containing species info
     // Here instead of in main navigation because it updates based on this page's iNaturalistTaxonId
-    nav.setOptions({
-      title: commonName,
-      headerRight: () => (
-        <Button
-          title="Info"
-          onPress={() =>
-            nav.navigate("SpeciesInfoModal", { taxonId: iNaturalistTaxonId })
-          }
-        />
-      ),
-    });
+    nav.setOptions({ title: commonName });
   }, [commonName, iNaturalistTaxonId]);
 
   // calculate rough lat/lng extent based on distance to nearest observation, default to 0.05
@@ -55,13 +50,23 @@ export default function PlantLocation() {
   }
 
   return (
-    <INaturalistMap
-      iNaturalistTaxonId={iNaturalistTaxonId}
-      initialLat={Number(initialLat)}
-      initialLng={Number(initialLng)}
-      initialLatExtent={initialLatExtent}
-      initialLngExtent={initialLngExtent}
-    />
+    <>
+      <INaturalistMap
+        iNaturalistTaxonId={iNaturalistTaxonId}
+        initialLat={Number(initialLat)}
+        initialLng={Number(initialLng)}
+        initialLatExtent={initialLatExtent}
+        initialLngExtent={initialLngExtent}
+      />
+      <BottomSheet
+        backgroundStyle={styles.bottomSheet}
+        enableDynamicSizing={false}
+        snapPoints={["5%", "35%", "100%"]}
+        index={1}
+      >
+        <SpeciesInfo taxonId={iNaturalistTaxonId} />
+      </BottomSheet>
+    </>
   );
 }
 
@@ -70,5 +75,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+  bottomSheet: {
+    backgroundColor: yellowSand,
   },
 });

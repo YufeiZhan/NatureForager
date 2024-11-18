@@ -20,10 +20,6 @@ export default function RootLayout() {
           <FavoritesContext.Provider value={favoritesAndFunctions}>
             <Stack>
               <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-              <Stack.Screen
-                name="SpeciesInfoModal"
-                options={{ presentation: "modal", title: "" }}
-              />
             </Stack>
           </FavoritesContext.Provider>
         </LocationContext.Provider>

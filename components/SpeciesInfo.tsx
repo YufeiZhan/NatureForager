@@ -36,21 +36,12 @@ LogBox.ignoreLogs([
 
 console.error = (error) => error.apply;
 
-export default function PlantInfoModal() {
-  const { taxonId } = useLocalSearchParams();
+export default function SpeciesInfo({ taxonId }: { taxonId: string }) {
   const [plantInfo, setPlantInfo] = useState<Plant | null>(null);
   const [taxonData, setTaxonData] = useState<TaxonData | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const { width } = useWindowDimensions();
-
-  // change screen header to match common name
-  const nav = useNavigation();
-  useEffect(() => {
-    nav.setOptions({ title: plantInfo?.["Common Name"] });
-    // clean up once done
-    return () => nav.setOptions({ title: "" });
-  }, [plantInfo]);
 
   useEffect(() => {
     // Find the plant by taxonId from the local JSON data
@@ -107,38 +98,35 @@ export default function PlantInfoModal() {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <ThemedScrollView contentContainerStyle={styles.mainContainer}>
-        <ThemedView style={styles.imageContainer}>
-          <Image
-            source={{ uri: taxonData?.photo_url }}
-            style={styles.image}
-            resizeMode="cover"
+    <ThemedScrollView contentContainerStyle={styles.mainContainer}>
+      <ThemedView style={styles.imageContainer}>
+        <Image
+          source={{ uri: taxonData?.photo_url }}
+          style={styles.image}
+          resizeMode="cover"
+        />
+      </ThemedView>
+
+      <ThemedView>
+        <ThemedText>Common Name: {taxonData?.common_name}</ThemedText>
+        <ThemedText>
+          Scientific Name:{" "}
+          <ThemedText style={{ fontStyle: "italic" }}>
+            {taxonData?.scientific_name}
+          </ThemedText>
+        </ThemedText>
+      </ThemedView>
+
+      <ThemedView>
+        <ThemedView>
+          <RenderHTML
+            contentWidth={width}
+            source={{ html: taxonData?.wikipedia_summary || "" }}
+            // defaultTextProps={{ style: { color: pureWhite } }}
           />
         </ThemedView>
-
-        <ThemedView>
-          <ThemedText>Common Name: {taxonData?.common_name}</ThemedText>
-          <ThemedText>
-            Scientific Name:{" "}
-            <ThemedText style={{ fontStyle: "italic" }}>
-              {taxonData?.scientific_name}
-            </ThemedText>
-          </ThemedText>
-        </ThemedView>
-
-        <ThemedView>
-          <ThemedView>
-            <RenderHTML
-              contentWidth={width}
-              source={{ html: taxonData?.wikipedia_summary || "" }}
-              // defaultTextProps={{ style: { color: pureWhite } }}
-            />
-          </ThemedView>
-        </ThemedView>
-      </ThemedScrollView>
-      <ThemedButton title="Back to Map" onPress={() => router.back()} action="secondary" />
-    </SafeAreaView>
+      </ThemedView>
+    </ThemedScrollView>
   );
 }
 
