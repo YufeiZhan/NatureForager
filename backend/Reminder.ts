@@ -21,7 +21,7 @@ export interface Reminder extends ReminderSpecies {
 export const loadReminders = async (): Promise<Reminder[]> => {
   try {
     const storedData = await AsyncStorage.getItem("savedPlants");
-    console.log(storedData)
+    // console.log(storedData)
     const reminders = storedData ? JSON.parse(storedData) : {};
     return Object.values(reminders);
   } catch (error) {
@@ -52,7 +52,6 @@ export const saveReminder = async (
     savedPlants[speciesId] = { ...species, months: updatedMonths, frequency };
 
     await AsyncStorage.setItem("savedPlants", JSON.stringify(savedPlants));
-    console.log(savedPlants);
     Alert.alert("Reminder saved", `You'll be reminded about ${species.name}.`);
   } catch (error) {
     console.error("Error saving reminder:", error);
@@ -85,7 +84,7 @@ const monthNames = [
   "July", "August", "September", "October", "November", "December"
 ];
 const ifTest = true;
-
+/*
 export const cancelSpeciesNotifications = async (speciesId: number, month: string) => {
   const notifications = await Notifications.getAllScheduledNotificationsAsync();
 
@@ -168,11 +167,11 @@ export const scheduleMonthlySummaryNotification = async (speciesInSeason: Remind
   await Notifications.scheduleNotificationAsync({
     content: {
       title: `${month} Species in Season:`,
-      body: `Species ripe this month: ${notificationContent}`,
+      body: `${speciesInSeason.length} species ripe this month: ${notificationContent}`,
       data: { month },
     },
     trigger: ifTest
-    ? { seconds: 30}  // 30 seconds
+    ? { seconds: 20}  // 30 seconds
     :{
       month: monthIndex + 1, // Adjust for 1-based month index required by notifications API
       day: 1,
@@ -192,4 +191,100 @@ export const cancelMonthlySummaryNotification = async (month: string) => {
       Notifications.cancelScheduledNotificationAsync(notification.identifier);
     }
   });
+};
+*/
+export const scheduleNotification = async (speciesInSeason: ReminderSpecies[], month: string, frequency: string) => {
+  const speciesNames = speciesInSeason.slice(0, 3).map(s => s.name).join(", ");
+  const notificationContent = speciesInSeason.length > 3 ? `${speciesNames}...` : speciesNames;
+  const monthIndex = monthNames.indexOf(month);
+
+  const biweeklyDays = [15, 29];
+  const weeklyDays = [8, 22];
+  const monthTrigger = { month: monthIndex + 1, hour: 9, minute: 0, repeats: true };
+
+  if (monthIndex === -1) {
+    console.error(`Invalid month: ${month}`);
+    return;
+  }
+  
+  if (frequency === "monthly") {
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: `${month} Species in Season!`,
+        body: `${speciesInSeason.length} species ripe this month: ${notificationContent}`,
+        data: { month },
+      },
+      trigger:  ifTest
+      ? { seconds: 10 }  // 20 seconds
+      : { ...monthTrigger, day: 1 },
+    });
+  } else if (frequency === "biweekly") {
+    biweeklyDays.forEach((day, index) =>
+      Notifications.scheduleNotificationAsync({
+        content: {
+          title: `${month} Biweekly Reminder!`,
+          body: `${speciesInSeason.length} species ripe this month: ${notificationContent}`,
+          data: { month },
+        },
+        trigger: ifTest
+        ? { seconds: 20 * (index + 1) }  // 20, 40 seconds for biweekly
+        : { ...monthTrigger, day },
+      })
+    );
+  } else if (frequency === "weekly") {
+    weeklyDays.forEach((day, index) =>
+      Notifications.scheduleNotificationAsync({
+        content: {
+          title: `${month} Weekly Reminder!`,
+          body: `${speciesInSeason.length} species ripe this month: ${notificationContent}`,
+          data: { month },
+        },
+        trigger: ifTest
+        ? { seconds: 30 * (index + 1) }  // 30, 60 seconds for weekly
+        : { ...monthTrigger, day },
+      })
+    );
+  }
+  // await Notifications.scheduleNotificationAsync({
+  //   content: {
+  //     title: `${month} Species in Season:`,
+  //     body: `${speciesInSeason.length} species ripe this month: ${notificationContent}`,
+  //     data: { month },
+  //   },
+  //   trigger: ifTest
+  //   ? { seconds: 20}  // 30 seconds
+  //   :{
+  //     month: monthIndex + 1, // Adjust for 1-based month index required by notifications API
+  //     day: 1,
+  //     hour: 9,
+  //     minute: 0,
+  //     repeats: true,
+  //   },
+  // });
+};
+
+export const cancelNotification = async (month: string, frequency: string) => {
+  const notifications = await Notifications.getAllScheduledNotificationsAsync();
+  if (notifications.length == 0) {
+    return;
+  }
+  if (frequency === "monthly") {
+    notifications.forEach((notification) => {
+      if (notification.content.data?.month === month && notification.content.title === `${month} Species in Season!`) {
+        Notifications.cancelScheduledNotificationAsync(notification.identifier);
+      }
+    });
+  } else if (frequency === "biweekly") {
+    notifications.forEach((notification) => {
+      if (notification.content.data?.month === month && notification.content.title === `${month} Biweekly Reminder!`) {
+        Notifications.cancelScheduledNotificationAsync(notification.identifier);
+      }
+    });
+  } else if (frequency === "weekly") {
+    notifications.forEach((notification) => {
+      if (notification.content.data?.month === month && notification.content.title === `${month} Weekly Reminder!`) {
+        Notifications.cancelScheduledNotificationAsync(notification.identifier);
+      }
+    });
+  }
 };

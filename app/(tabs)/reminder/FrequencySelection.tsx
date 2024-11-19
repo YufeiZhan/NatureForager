@@ -1,17 +1,17 @@
 // app/FrequencySelectionScreen.tsx
 // Scheduling:
-// 1. Schedule one notification at the beginning of each month (9am on the first day of that month): something like "Species in Season this Month: {species that are ripe this month}" If there are more than 3 species ripe this month, just list the first 3 with "..." at the end
-// 2. For each species, send notifications according to their frequency during that month: "{species name} is in season this month!}". If the frequency is monthly, send one at 12pm on the first day of that month; if the frequency is biweekly, send one at 12pm on the first day of that month and one on the 15th and 29th day; if the frequency is weekly, send one at 12pm on the first day of that month and one on the 8th/15th/22nd/29th day
+// 1. Schedule one notification at the beginning of each month for all species this month (9am on the first day of that month): something like "Species in Season this Month: {species that are ripe this month}" If there are more than 3 species ripe this month, just list the first 3 with "..." at the end
+// 2. If the frequency is biweekly or weekly, send two additional reminders at 9am on the 15th and 29th day; if the frequency is weekly, send another two additional reminders on the 8th and 22nd day
 // Save and Delete Rule:
-// 1. When saving a new reminder, not only Schedule individual species notifications but also cancel the previous summary notification for this month and reschedule so we can add this new species
-// 2. When changing the frequency for an existing reminder, cancel the previous individual notifications for this species and reschedule for the new frequency.
-// 3. When deleting an existing reminder, cancel the previous individual notifications for this species and the previous summary notification for this month. If there are species left for this month, reschedule the summary notification for this month.
+// 1. When saving a new reminder, not only schedule species notifications but also cancel the previous summary notification for this month and reschedule so we can add this new species
+// 2. When changing the frequency for an existing reminder, cancel the previous notifications for this species and reschedule for the new frequency.
+// 3. When deleting an existing reminder, cancel the previous notifications including this species. If there are species left for this month, reschedule the notification for this month.
 import { SetStateAction, useEffect, useState } from "react";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { StyleSheet, View } from "react-native";
 import { ThemedButton, ThemedText, ThemedView } from "@/components/Themed";
 import { Picker } from "@react-native-picker/picker";
-import { Reminder, saveReminder, deleteReminder, loadReminders, cancelMonthlySummaryNotification, scheduleSpeciesNotifications, scheduleMonthlySummaryNotification, cancelSpeciesNotifications } from '@/backend/Reminder';
+import { Reminder, saveReminder, deleteReminder, loadReminders, cancelNotification, scheduleNotification } from '@/backend/Reminder';
 
 export default function FrequencySelectionScreen() {
   const router = useRouter();
@@ -35,22 +35,52 @@ export default function FrequencySelectionScreen() {
     loadSpeciesReminder();
   }, [species.id]);
 
+  const rescheduleNotifications = async () => {
+    for (const month of species.months) {
+      const allReminders = await loadReminders();
+      await cancelNotification(month, "monthly");
+      const inSeasonSpecies = allReminders.filter(reminder => reminder.months.includes(month));
+      if (inSeasonSpecies.length > 0) {
+        await scheduleNotification(inSeasonSpecies, month, "monthly");
+      }
+
+      if (species.frequency == "biweekly" || species.frequency == "weekly"){
+        await cancelNotification(month, "biweekly");
+        const biweeklySpecies = allReminders.filter(reminder => reminder.months.includes(month) && (reminder.frequency == "biweekly" || reminder.frequency == "weekly"));
+        console.log("biweekly: ", biweeklySpecies);
+        if (biweeklySpecies.length > 0) {
+          await scheduleNotification(biweeklySpecies, month, "biweekly");
+        }
+      }
+      if (species.frequency == "weekly"){
+        await cancelNotification(month, "weekly");
+        const weeklySpecies = allReminders.filter(reminder => reminder.months.includes(month) && reminder.frequency == "weekly");
+        console.log("weekly: ", weeklySpecies);
+        if (weeklySpecies.length > 0) {
+          await scheduleNotification(weeklySpecies, month, "weekly");
+        }
+      }
+    }
+  }
+
   const handleSaveReminder = async () => {
     await saveReminder(species, frequency);
 
-    // Loop over each month in which the species is ripe
-    for (const month of species.months) {
-      // Cancel and reschedule the monthly summary notification for each ripe month
-      await cancelMonthlySummaryNotification(month);
+    await rescheduleNotifications();
 
-      // Schedule notifications for this species with the new frequency
-      await scheduleSpeciesNotifications(species, frequency, month);
+    // // Loop over each month in which the species is ripe
+    // for (const month of species.months) {
+    //   // Cancel and reschedule the monthly summary notification for each ripe month
+    //   await cancelMonthlySummaryNotification(month);
 
-      // Reload reminders and reschedule the summary notification for each ripe month
-      const allReminders = await loadReminders();
-      const inSeasonSpecies = allReminders.filter(reminder => reminder.months.includes(month));
-      await scheduleMonthlySummaryNotification(inSeasonSpecies, month);
-    }
+    //   // Schedule notifications for this species with the new frequency
+    //   await scheduleSpeciesNotifications(species, frequency, month);
+
+    //   // Reload reminders and reschedule the summary notification for each ripe month
+    //   const allReminders = await loadReminders();
+    //   const inSeasonSpecies = allReminders.filter(reminder => reminder.months.includes(month));
+    //   await scheduleMonthlySummaryNotification(inSeasonSpecies, month);
+    // }
     // check which workflow
     if (returnBack){
       router.back();
@@ -62,21 +92,26 @@ export default function FrequencySelectionScreen() {
   const handleDeleteReminder = async () => {
     await deleteReminder(species.id);
 
-    for (const month of species.months) {
-      // Cancel notifications for this species and the summary notification for each ripe month
-      await cancelSpeciesNotifications(species.id, month);
-      await cancelMonthlySummaryNotification(month);
+    await rescheduleNotifications();
 
-      // Reload reminders and reschedule the summary notification if there are remaining species for each ripe month
-      const allReminders = await loadReminders();
-      const inSeasonSpecies = allReminders.filter(reminder => reminder.months.includes(month));
+    // for (const month of species.months) {
+    //   // Cancel notifications for this species and the summary notification for each ripe month
+    //   await cancelSpeciesNotifications(species.id, month);
+    //   await cancelMonthlySummaryNotification(month);
 
-      if (inSeasonSpecies.length > 0) {
-        await scheduleMonthlySummaryNotification(inSeasonSpecies, month);
-      }
+    //   // Reload reminders and reschedule the summary notification if there are remaining species for each ripe month
+    //   const allReminders = await loadReminders();
+    //   const inSeasonSpecies = allReminders.filter(reminder => reminder.months.includes(month));
+
+    //   if (inSeasonSpecies.length > 0) {
+    //     await scheduleMonthlySummaryNotification(inSeasonSpecies, month);
+    //   }
+    // }
+    if (returnBack){
+      router.back();
+    } else {
+      router.push('/reminder/SaveForLater');
     }
-    
-    router.back();
   };
 
   return (
