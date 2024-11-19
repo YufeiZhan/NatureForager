@@ -1,11 +1,12 @@
-import { StyleSheet } from "react-native";
+import { Pressable, StyleSheet } from "react-native";
 import INaturalistMap from "@/components/INaturalistMap";
 import { useNavigation } from "expo-router";
 import { useEffect } from "react";
 import { useNonArraySearchParams } from "@/hooks/useNonArraySearchParams";
-import { Button } from "react-native";
 import { RootStackParamList } from "../../../NavigationTypes";
 import { StackNavigationProp } from "@react-navigation/stack";
+import Icon from 'react-native-vector-icons/FontAwesome';
+
 
 type SpeciesInfoNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -29,12 +30,12 @@ export default function PlantLocation() {
     nav.setOptions({
       title: commonName,
       headerRight: () => (
-        <Button
-          title="Info"
-          onPress={() =>
-            nav.navigate("SpeciesInfoModal", { taxonId: iNaturalistTaxonId })
-          }
-        />
+        <Pressable onPress={() =>
+          nav.navigate("SpeciesInfoModal", { taxonId: iNaturalistTaxonId })
+        }>
+            <Icon name="info-circle" size={20} color="white"/>
+        </Pressable>
+
       ),
     });
   }, [commonName, iNaturalistTaxonId]);

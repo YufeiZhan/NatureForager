@@ -8,8 +8,6 @@ export default function AppLayout() {
         tabBarShowLabel: false,
         headerShown: false,
         tabBarStyle: { borderRadius: 35,},
-        tabBarActiveTintColor: 'blue',
-        tabBarInactiveTintColor: 'gray',
       }}
     >
       <Tabs.Screen

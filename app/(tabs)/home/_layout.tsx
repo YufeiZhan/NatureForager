@@ -7,7 +7,8 @@ export default function HomeStack() {
     <Stack
       screenOptions ={{
         headerTitleStyle: { ...globalStyles.headerTitleStyle },
-        headerBackTitle: "Back"
+        headerBackTitleVisible: false,
+        headerTintColor: 'white'
       }}
     >
       <Stack.Screen
