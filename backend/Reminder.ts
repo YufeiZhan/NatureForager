@@ -104,7 +104,10 @@ export const scheduleNotification = async (speciesInSeason: ReminderSpecies[], m
       content: {
         title: `${month} Species in Season!`,
         body: `${speciesInSeason.length} species ripe this month: ${notificationContent}`,
-        data: { month },
+        data: { 
+          month,
+          screen: "/reminder/SaveForLater"
+        },
       },
       trigger:  ifTest
       ? { seconds: 10 }  // 20 seconds
@@ -116,7 +119,10 @@ export const scheduleNotification = async (speciesInSeason: ReminderSpecies[], m
         content: {
           title: `${month} Biweekly Reminder!`,
           body: `${speciesInSeason.length} species ripe this month: ${notificationContent}`,
-          data: { month },
+          data: { 
+            month,
+            screen: "/reminder/SaveForLater"
+          },
         },
         trigger: ifTest
         ? { seconds: 20 * (index + 1) }  // 20, 40 seconds for biweekly
@@ -129,7 +135,10 @@ export const scheduleNotification = async (speciesInSeason: ReminderSpecies[], m
         content: {
           title: `${month} Weekly Reminder!`,
           body: `${speciesInSeason.length} species ripe this month: ${notificationContent}`,
-          data: { month },
+          data: { 
+            month,
+            screen: "/reminder/SaveForLater"
+          },
         },
         trigger: ifTest
         ? { seconds: 30 * (index + 1) }  // 30, 60 seconds for weekly
@@ -137,22 +146,6 @@ export const scheduleNotification = async (speciesInSeason: ReminderSpecies[], m
       })
     );
   }
-  // await Notifications.scheduleNotificationAsync({
-  //   content: {
-  //     title: `${month} Species in Season:`,
-  //     body: `${speciesInSeason.length} species ripe this month: ${notificationContent}`,
-  //     data: { month },
-  //   },
-  //   trigger: ifTest
-  //   ? { seconds: 20}  // 30 seconds
-  //   :{
-  //     month: monthIndex + 1, // Adjust for 1-based month index required by notifications API
-  //     day: 1,
-  //     hour: 9,
-  //     minute: 0,
-  //     repeats: true,
-  //   },
-  // });
 };
 
 export const cancelNotification = async (month: string, frequency: string) => {
