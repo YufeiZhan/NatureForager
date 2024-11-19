@@ -9,16 +9,25 @@ Save and Delete Rule:
 */
 import { SetStateAction, useEffect, useState } from "react";
 import { useRouter, useLocalSearchParams } from "expo-router";
-import { StyleSheet, View } from "react-native";
+import { Modal, StyleSheet, View } from "react-native";
 import { ThemedButton, ThemedText, ThemedView } from "@/components/Themed";
 import { Picker } from "@react-native-picker/picker";
 import { Reminder, saveReminder, deleteReminder, loadReminders, cancelNotification, scheduleNotification } from '@/backend/Reminder';
+import { oliveGreen } from "@/constants/Colors";
 
-export default function FrequencySelectionScreen() {
+interface FrequencySelectionProps {
+  species: Reminder;
+  ifBack: boolean;
+  onClose: () => void;
+}
+
+
+export default function FrequencySelection({
+  species,
+  ifBack,
+  onClose,
+}: FrequencySelectionProps){
   const router = useRouter();
-  const { species: stringSpecies, ifBack } = useLocalSearchParams<{ species: string; ifBack: string }>();
-  const returnBack = ifBack === "true";
-  const species: Reminder = stringSpecies ? JSON.parse(stringSpecies) : null;
   const [frequency, setFrequency] = useState("monthly");
   const [isExistingReminder, setIsExistingReminder] = useState(false);
 
@@ -68,10 +77,9 @@ export default function FrequencySelectionScreen() {
     await saveReminder(species, frequency);
     await rescheduleNotifications();
 
-    if (returnBack){
+    onClose();
+    if(ifBack){
       router.back();
-    } else {
-      router.push('/reminder/SaveForLater');
     }
   };
 
@@ -79,31 +87,37 @@ export default function FrequencySelectionScreen() {
     await deleteReminder(species.id);
     await rescheduleNotifications();
 
-    if (returnBack){
+    onClose();
+    if(ifBack){
       router.back();
-    } else {
-      router.push('/reminder/SaveForLater');
     }
   };
 
   return (
-    <ThemedView style={styles.container}>
-      <ThemedText>Select Frequency for {species.name}</ThemedText>
+    <Modal
+      animationType="slide"
+      visible={true}
+      transparent={false}
+      onRequestClose={onClose}
+    >
+      <ThemedView style={styles.container}>
+        <ThemedText>Select Frequency for {species.name}</ThemedText>
 
-      <View style={styles.pickerContainer}>
-        <Picker selectedValue={frequency} onValueChange={(itemValue: SetStateAction<string>) => setFrequency(itemValue)} style={styles.picker}>
-          <Picker.Item label="Monthly" value="monthly" />
-          <Picker.Item label="Biweekly" value="biweekly" />
-          <Picker.Item label="Weekly" value="weekly" />
-        </Picker>
-      </View>
+        <View style={styles.pickerContainer}>
+          <Picker selectedValue={frequency} onValueChange={(itemValue: SetStateAction<string>) => setFrequency(itemValue)} style={styles.picker}>
+            <Picker.Item label="Monthly" value="monthly" />
+            <Picker.Item label="Biweekly" value="biweekly" />
+            <Picker.Item label="Weekly" value="weekly" />
+          </Picker>
+        </View>
 
-      <ThemedButton title="Save Reminder" onPress={handleSaveReminder} />
-      {isExistingReminder && (
-        <ThemedButton title="Delete Reminder" onPress={handleDeleteReminder} />
-      )}
-      <ThemedButton title="Cancel" onPress={() => router.back()} />
-    </ThemedView>
+        <ThemedButton title="Save Reminder" onPress={handleSaveReminder} />
+        {isExistingReminder && (
+          <ThemedButton title="Delete Reminder" onPress={handleDeleteReminder} />
+        )}
+        <ThemedButton title="Cancel" onPress={() => onClose()} />
+      </ThemedView>
+    </Modal>
   );
 }
 
@@ -113,6 +127,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: 20,
+    backgroundColor: oliveGreen,
   },
   pickerContainer: {
     width: "100%",
