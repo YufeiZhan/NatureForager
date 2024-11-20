@@ -22,7 +22,7 @@ export default function AppLayout() {
         }}
       />
       <Tabs.Screen
-        name="profile"
+        name="favorites"
         options={{
           tabBarIcon: ({ focused, color, size }) => (
             focused ? <Image source={require("@/assets/tab/profile-tab-selected.png")} style={styles.icon}/>
