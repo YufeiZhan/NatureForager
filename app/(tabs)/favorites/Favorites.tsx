@@ -1,4 +1,4 @@
-// app/(tabs)/profile/Favorites.tsx
+// app/(tabs)/favorites/Favorites.tsx
 import FavoriteDetails from "@/components/FavoriteDetails";
 import FavoritesListItem from "@/components/FavoritesListItem";
 import FavoritesMap from "@/components/FavoritesMap";
@@ -76,7 +76,7 @@ export default function Favorites() {
 
   const router = useRouter(); 
   const handleAddFavorite = () => {
-    router.push("/(tabs)/profile/CreateFavorite");
+    router.push("/(tabs)/favorites/CreateFavorite");
   };
 
   return (
