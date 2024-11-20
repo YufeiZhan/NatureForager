@@ -7,11 +7,38 @@ import { ThemeProvider } from "@react-navigation/native";
 import { FavoritesContext } from "@/hooks/FavoritesContext";
 import { useFavorites } from "@/hooks/useFavorites";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import * as Notifications from 'expo-notifications';
+import { useEffect } from 'react';
+import { useRouter } from "expo-router";
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
 
 export default function RootLayout() {
   const [location, setLocation] = useLocation();
   const favoritesAndFunctions = useFavorites();
   const mode = useColorScheme();
+
+  const router = useRouter();
+
+  useEffect(() => {
+    const subscription = Notifications.addNotificationResponseReceivedListener((response) => {
+      console.log("Notification response received:", response); 
+      const data = response.notification.request.content.data;
+      if (data) {
+        router.push({
+          pathname: data.screen
+        });
+      }
+    });
+
+    return () => subscription.remove();
+  }, []);
 
   return (
     <GestureHandlerRootView>

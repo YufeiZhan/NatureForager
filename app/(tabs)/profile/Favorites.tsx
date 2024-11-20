@@ -15,6 +15,7 @@ import BottomSheet, {
 } from "@gorhom/bottom-sheet";
 import { useContext, useEffect, useRef, useState } from "react";
 import { StyleSheet } from "react-native";
+import { useRouter } from "expo-router";
 
 export default function Favorites() {
   const { location } = useContext(LocationContext);
@@ -73,6 +74,11 @@ export default function Favorites() {
     });
   };
 
+  const router = useRouter(); 
+  const handleAddFavorite = () => {
+    router.push("/(tabs)/profile/CreateFavorite");
+  };
+
   return (
     <>
       {!location && <ThemedText>Loading location...</ThemedText>}
@@ -96,7 +102,7 @@ export default function Favorites() {
             {/* if no favorite selected, show full list */}
             {favorites && !selectedFavorite && (
               <>
-                <ThemedButton title="Add Favorite" action="primary"/>
+                <ThemedButton title="Add a Favorite" onPress={handleAddFavorite} action="primary" />
                 <BottomSheetFlatList
                   style={styles.favList}
                   data={getSortedFavorites()}

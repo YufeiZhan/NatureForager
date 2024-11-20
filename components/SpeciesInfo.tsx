@@ -18,6 +18,9 @@ import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import RenderHTML from "react-native-render-html";
 import { oliveGreen, pureWhite } from "@/constants/Colors";
 import plantData from "@/data/edible_plants.json";
+import { ReminderSpecies, TempReminderSpecies } from "@/backend/Reminder";
+import speciesData from "@/data/edible_plants.json";
+import FrequencySelection from "./FrequencySelection";
 
 type Plant = (typeof plantData)[number];
 
@@ -36,14 +39,46 @@ LogBox.ignoreLogs([
 
 console.error = (error) => error.apply;
 
+const aggregateSpecies = (data: any[]): TempReminderSpecies[] => {
+  const speciesMap: { [key: number]: TempReminderSpecies & { monthsSet: Set<string> } } = {};
+
+  data.forEach((item) => {
+    const id = item["iNaturalist ID"];
+    const month = item["Month Ripe"];
+    const name = item["Common Name"];
+    const type = item.Type;
+
+    if (!speciesMap[id]) {
+      speciesMap[id] = {
+        id,
+        name,
+        type,
+        monthRipe: month,
+        monthsSet: new Set([month]),
+        months: [],
+      };
+    } else {
+      speciesMap[id].monthsSet.add(month);
+    }
+  });
+
+  return Object.values(speciesMap).map(({ monthsSet, ...species }) => ({
+    ...species,
+    months: Array.from(monthsSet),
+  }));
+};
+
 export default function SpeciesInfo({ taxonId }: { taxonId: string }) {
   const [plantInfo, setPlantInfo] = useState<Plant | null>(null);
   const [taxonData, setTaxonData] = useState<TaxonData | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const { width } = useWindowDimensions();
+  const [edibleInfo, setEdibleInfo] = useState<ReminderSpecies | null>(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   useEffect(() => {
+    const aggregatedData = aggregateSpecies(speciesData);
     // Find the plant by taxonId from the local JSON data
     const matchedPlant = plantData.find((plant) => {
       return String(plant["iNaturalist ID"]) === String(taxonId);
@@ -56,6 +91,16 @@ export default function SpeciesInfo({ taxonId }: { taxonId: string }) {
       console.error("No plant data found for this taxon.");
     }
 
+    const ediblePlant = aggregatedData.find((plant) => {
+      return String(plant.id) === String(taxonId);
+    });
+    
+    if (ediblePlant) {
+      setEdibleInfo(ediblePlant);
+    } else {
+      console.error("No edible plant data found for this taxon.");
+    }
+    
     // Fetch taxon details from iNaturalist API
     const fetchTaxonData = async () => {
       try {
@@ -97,8 +142,19 @@ export default function SpeciesInfo({ taxonId }: { taxonId: string }) {
     );
   }
 
+  const handleReminded = (species: ReminderSpecies) => {
+    setIsModalVisible(true);
+  };
+
+  function handleCloseModal(): void {
+    setIsModalVisible(false);
+  }
+
   return (
+    <>
     <ThemedScrollView contentContainerStyle={styles.mainContainer}>
+      <ThemedButton title="Get Reminded" onPress={() => handleReminded(edibleInfo!)} />
+
       <ThemedView style={styles.imageContainer}>
         <Image
           source={{ uri: taxonData?.photo_url }}
@@ -115,6 +171,7 @@ export default function SpeciesInfo({ taxonId }: { taxonId: string }) {
             {taxonData?.scientific_name}
           </ThemedText>
         </ThemedText>
+        <ThemedText>Months Ripe: {edibleInfo?.months.join(", ")}</ThemedText>
       </ThemedView>
 
       <ThemedView>
@@ -127,6 +184,15 @@ export default function SpeciesInfo({ taxonId }: { taxonId: string }) {
         </ThemedView>
       </ThemedView>
     </ThemedScrollView>
+
+    {isModalVisible && edibleInfo && (
+      <FrequencySelection
+        species={{ ...edibleInfo, frequency: "" }}
+        ifBack={false}
+        onClose={handleCloseModal}
+      />
+    )}
+    </>
   );
 }
 
