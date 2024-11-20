@@ -5,10 +5,17 @@ import { useEffect, useState } from "react";
 import * as Notifications from 'expo-notifications';
 import { useRouter } from 'expo-router';
 import { Reminder, loadReminders } from '@/backend/Reminder';
+import FrequencySelection from "@/components/FrequencySelection";
 
 export default function SaveForLater() {
   const router = useRouter();
   const [reminders, setReminders] = useState<Reminder[]>([]);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [selectedSpecies, setSelectedSpecies] = useState<Reminder | null>(null);
+
+  const handleCloseModal = () => {
+    setIsModalVisible(false);
+  };
 
   // Load reminders from AsyncStorage
   useEffect(() => {
@@ -27,16 +34,15 @@ export default function SaveForLater() {
 
     loadSpeciesReminder();
     requestNotificationPermission();
-  }, []);
+  });
 
   const handleItemPress = (item: Reminder) => {
-    router.push({
-      pathname: "/reminder/FrequencySelection",
-      params: { species: JSON.stringify(item) },
-    });
+    setSelectedSpecies(item);
+    setIsModalVisible(true);
   };
 
   return (
+    <>
     <ThemedView style={styles.container}>
       <ThemedFlatList
         data={reminders}
@@ -54,6 +60,15 @@ export default function SaveForLater() {
         onPress={() => router.push('/reminder/SetReminderScreen')}
       />
     </ThemedView>
+
+    {isModalVisible && (
+      <FrequencySelection
+        species={selectedSpecies!}
+        ifBack={false}
+        onClose={handleCloseModal}
+      />
+    )}
+    </>
   );
 }
 

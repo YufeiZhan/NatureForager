@@ -11,12 +11,16 @@ export default function ProfileStack() {
     >
       <Stack.Screen
         name="SaveForLater"
-        options={{ title: 'Save for Later' }}
+        options={{ title: 'Save for Later', headerBackVisible: false}}
       />
       <Stack.Screen 
         name="SetReminderScreen" 
         options={{ title: 'Set New Reminder' }}
       />
+      {/* <Stack.Screen 
+        name="FrequencySelection" 
+        options={{ title: 'Set New Reminder'}}
+      /> */}
     </Stack>
   );
 }
