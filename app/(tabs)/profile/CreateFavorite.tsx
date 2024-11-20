@@ -30,16 +30,6 @@ export default function CreateFavorite() {
   const [note, setNote] = useState(noteParam);
   const [photoUrls, setPhotoUrls] = useState<string[]>([]);
 
-  // when params change (screen is reopened), update state to match all params
-  // if we just used the params as initial state values, reopening the screen with new params wouldn't update anything
-  useEffect(() => {
-    setName(nameParam);
-    setLatitude(Number(latitudeParam));
-    setLongitude(Number(longitudeParam));
-    setNote(noteParam);
-    setPhotoUrls(photosParam.split(","));
-  }, [nameParam, latitudeParam, longitudeParam, photosParam, noteParam]);
-
   // Handle the create button click
   const handleCreateFavorite = async () => {
     // Prepare plant data

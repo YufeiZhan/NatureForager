@@ -28,7 +28,7 @@ export default function ObservationDetails({
   const router = useRouter();
 
   // keep track of whether this observation is favorited
-  const { favorites } = useContext(FavoritesContext);
+  const { favorites, addFavorite  } = useContext(FavoritesContext);
   const [isFavorited, setIsFavorited] = useState(false);
   useEffect(() => {
     const isInFavorites = Boolean(
@@ -39,23 +39,26 @@ export default function ObservationDetails({
     setIsFavorited(isInFavorites);
   }, [observation, favorites]);
 
-  const handleAddToFavorites = () => {
-    onClose();
-    router.push({
-      pathname: "/(tabs)/profile/CreateFavorite",
-      params: {
-        iNaturalistId: observation.id,
-        name:
-          observation.taxon?.preferred_common_name || observation.taxon?.name,
-        latitude: observation.location?.split(",")[0],
-        longitude: observation.location?.split(",")[1],
-        photos:
-          observation.photos?.map(
-            (p) => p.url?.replace("square", "medium") || ""
-          ) || "",
-        note: observation.description,
+  const handleAddToFavorites = async () => {
+    // Construct the favorite object based on the observation data
+    const favorite = {
+      iNaturalistId: observation.id,
+      name: observation.taxon?.preferred_common_name || observation.taxon?.name || "Unknown",
+      location: {
+        latitude: parseFloat(observation.location?.split(",")[0] || "0"),
+        longitude: parseFloat(observation.location?.split(",")[1] || "0"),
       },
-    });
+      photos: observation.photos?.map(
+        (p) => p.url?.replace("square", "medium") || ""
+      ),
+      note: observation.description,
+    };
+
+    // Add the favorite to the context
+    await addFavorite(favorite);
+
+    // Update UI to reflect favorited state
+    setIsFavorited(true);
   };
 
   return (
@@ -79,14 +82,17 @@ export default function ObservationDetails({
           <ThemedText>{observation.description || ""}</ThemedText>
         </ThemedView>
 
-        {/* Add to Favorite Button */}
-        {!isFavorited && (
+        {/* Add to Favorite Button or Favorited Text */}
+        {!isFavorited ? (
           <ThemedButton
             title="Add to Favorites"
             onPress={handleAddToFavorites}
           />
+        ) : (
+          <ThemedView style={styles.favoritedTextContainer}>
+            <ThemedText style={styles.favoritedText}>Favorited!</ThemedText>
+          </ThemedView>
         )}
-        {isFavorited && <ThemedText>Favorited!</ThemedText>}
 
         {/* Photos */}
         <ThemedView style={styles.photoContainer}>
@@ -139,5 +145,14 @@ const styles = StyleSheet.create({
   photo: {
     marginVertical: 10,
     borderRadius: 10,
+  },
+  favoritedTextContainer: {
+    alignItems: "center",
+    paddingVertical: 10,
+  },
+  favoritedText: {
+    fontSize: 18,
+    color: "green",
+    fontWeight: "bold",
   },
 });
