@@ -3,6 +3,9 @@
     "name": "Plant-Forager",
     "slug": "Plant-Forager",
     "version": "1.0.0",
+    "plugins": [
+      "expo-font"
+    ],
     "orientation": "portrait",
     "icon": "./assets/default/icon.png",
     "scheme": "Plant-Forager",

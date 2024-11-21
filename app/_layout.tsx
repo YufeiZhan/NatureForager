@@ -7,6 +7,8 @@ import { ThemeProvider } from "@react-navigation/native";
 import { FavoritesContext } from "@/hooks/FavoritesContext";
 import { useFavorites } from "@/hooks/useFavorites";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { useFonts } from 'expo-font';
+import { globalStyles } from "@/styles/globalStyles";
 import * as Notifications from 'expo-notifications';
 import { useEffect } from 'react';
 import { useRouter } from "expo-router";
@@ -24,6 +26,11 @@ export default function RootLayout() {
   const favoritesAndFunctions = useFavorites();
   const mode = useColorScheme();
 
+  
+  const [fontsLoaded] = useFonts({
+    Hubballi_400Regular : require('../assets/fonts/Hubballi-Regular.ttf')
+  });
+
   const router = useRouter();
 
   useEffect(() => {
@@ -40,17 +47,19 @@ export default function RootLayout() {
     return () => subscription.remove();
   }, []);
 
-  return (
-    <GestureHandlerRootView>
-      <ThemeProvider value={getTheme(mode === "dark")}>
-        <LocationContext.Provider value={{ location, setLocation }}>
-          <FavoritesContext.Provider value={favoritesAndFunctions}>
-            <Stack>
-              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            </Stack>
-          </FavoritesContext.Provider>
-        </LocationContext.Provider>
-      </ThemeProvider>
-    </GestureHandlerRootView>
-  );
+  if (fontsLoaded) {
+    return (
+      <GestureHandlerRootView>
+        <ThemeProvider value={getTheme(mode === "dark")}>
+          <LocationContext.Provider value={{ location, setLocation }}>
+            <FavoritesContext.Provider value={favoritesAndFunctions}>
+              <Stack>
+                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              </Stack>
+            </FavoritesContext.Provider>
+          </LocationContext.Provider>
+        </ThemeProvider>
+      </GestureHandlerRootView>
+    );
+  }
 }

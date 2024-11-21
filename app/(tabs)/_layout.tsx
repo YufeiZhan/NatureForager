@@ -7,9 +7,6 @@ export default function AppLayout() {
       screenOptions={{
         tabBarShowLabel: false,
         headerShown: false,
-        tabBarStyle: { borderRadius: 35,},
-        tabBarActiveTintColor: 'blue',
-        tabBarInactiveTintColor: 'gray',
       }}
     >
       <Tabs.Screen
@@ -25,8 +22,8 @@ export default function AppLayout() {
         name="favorites"
         options={{
           tabBarIcon: ({ focused, color, size }) => (
-            focused ? <Image source={require("@/assets/tab/profile-tab-selected.png")} style={styles.icon}/>
-                    : <Image source={require("@/assets/tab/profile-tab-unselected.png")} style={styles.icon}/>
+            focused ? <Image source={require("@/assets/tab/fav-tab-selected.png")} style={styles.icon}/>
+                    : <Image source={require("@/assets/tab/fav-tab-unselected.png")} style={styles.icon}/>
           ),
         }}
       />
@@ -34,8 +31,8 @@ export default function AppLayout() {
         name="reminder"
         options={{
           tabBarIcon: ({ focused, color, size }) => (
-            focused ? <Image source={require("@/assets/tab/profile-tab-selected.png")} style={styles.icon}/>
-                    : <Image source={require("@/assets/tab/profile-tab-unselected.png")} style={styles.icon}/>
+            focused ? <Image source={require("@/assets/tab/reminder-tab-selected.png")} style={styles.icon}/>
+                    : <Image source={require("@/assets/tab/reminder-tab-unselected.png")} style={styles.icon}/>
           ),
         }}
       />
@@ -43,8 +40,8 @@ export default function AppLayout() {
         name="recognition"
         options={{
           tabBarIcon: ({ focused, color, size }) => (
-            focused ? <Image source={require("@/assets/tab/camera-tab-selected.png")} style={styles.icon}/>
-                    : <Image source={require("@/assets/tab/camera-tab-unselected.png")} style={styles.icon}/>
+            focused ? <Image source={require("@/assets/tab/reminder-tab-selected.png")} style={styles.icon}/>
+                    : <Image source={require("@/assets/tab/reminder-tab-unselected.png")} style={styles.icon}/>
           ),
         }}
       />
