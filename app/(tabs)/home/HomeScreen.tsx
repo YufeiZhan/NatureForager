@@ -130,7 +130,7 @@ export default function HomeScreen() {
     <ThemedView style={styles.mainContainer}>
       <ThemedTextInput
         style={styles.searchBar}
-        placeholder="Search species list..."
+        placeholder="Search species here e.g. figs.."
         placeholderTextColor="gray"
         value={searchQuery}
         onChangeText={(text) => setSearchQuery(text)}
