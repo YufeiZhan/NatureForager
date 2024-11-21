@@ -51,7 +51,10 @@ export default function EditFavoriteScreen() {
 
   // Handle the update button
   const handleUpdate = async () => {
-    console.log(note);
+    if (!name) {
+      alert("The plant name cannot be empty.");
+      return;
+    }
     await updateFavorite(favorite.id, {
       name,
       location: { latitude, longitude },
