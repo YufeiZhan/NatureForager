@@ -11,9 +11,11 @@ import {
   Pressable,
   ButtonProps,
   TextInputProps,
-  TextInput
+  TextInput,
 } from "react-native";
-import { ivoryWhite, darkGreen } from "@/constants/Colors";
+import { ivoryWhite, darkGreen, pureWhite, yellowSand } from "@/constants/Colors";
+import DropDownPicker, { DropDownPickerProps } from "react-native-dropdown-picker";
+import { Month } from "@/app/(tabs)/home/HomeScreen";
 
 // Apply the default styling to the common components unless othersie defined to overwrite
 // Should not need to apply additional styles normally
@@ -50,6 +52,23 @@ export function ThemedButton(props: ButtonProps & { action?: "primary" | "second
 export function ThemedTextInput(props: TextInputProps){
   const { style, ...otherProps } = props;
   return <TextInput style={[styles.text, styles.textInput, style]} {...otherProps} /> // use same styling as text
+}
+
+export function ThemedDropDownPicker(props: DropDownPickerProps<Month>){
+  const { style, textStyle, containerStyle, dropDownContainerStyle, renderListItem, ...otherProps } = props;
+  return <DropDownPicker style={[styles.dropDown, style]}  //main dropdown box when collapsed
+                         containerStyle={[styles.dropDownContainer,containerStyle]} //outer dropdown container
+                         dropDownContainerStyle={[styles.dropDownDropDownContainer, dropDownContainerStyle]} //dropdown container
+                         textStyle={[, styles.text, styles.dropDownText, textStyle]} 
+                        //  renderListItem={(props) => {
+                        //   const { item, listItemContainerStyle, listItemLabelStyle } = props;
+                        //   return (
+                        //     <View style={[listItemContainerStyle]}>
+                        //       <Text style={[listItemLabelStyle, styles.text]}>{item.label}</Text>
+                        //     </View>
+                        //   );
+                        //  }}
+                         {...otherProps}/>
 }
 
 export function ThemedScrollView(props: ScrollViewProps) {
@@ -101,6 +120,25 @@ const styles = StyleSheet.create({
   },
   textInput: {
     opacity: 0.8
+  },
+  dropDown: {
+    alignSelf: 'center',
+    borderWidth: 0,
+    // backgroundColor: "transparent",
+    opacity: 0.95,
+  },
+  dropDownContainer: {
+    width: 180,
+    marginVertical: 20,
+  },
+  dropDownDropDownContainer: {
+    backgroundColor: pureWhite,
+    borderWidth: 0,
+    opacity: 0.95,
+  },
+  dropDownText: {
+    // fontSize: 25,
+    textAlign: 'center',
   },
   scrollView: {},
   flatList: {},
