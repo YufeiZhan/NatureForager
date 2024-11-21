@@ -1,6 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Alert } from "react-native";
 import * as Notifications from "expo-notifications";
+import { emitter } from "@/scripts/EventEmitter";
 
 export interface ReminderSpecies {
   id: number;
@@ -59,8 +60,10 @@ export const saveReminder = async (
         "https://via.placeholder.com/300x200.png?text=Image+Not+Available"
 
     savedPlants[speciesId] = { ...species, months: updatedMonths, frequency, imageURL};
-
+    
+    
     await AsyncStorage.setItem("savedPlants", JSON.stringify(savedPlants));
+    emitter.emit("remindersUpdated");
     Alert.alert("Reminder saved", `You'll be reminded about ${species.name}.`);
   } catch (error) {
     console.error("Error saving reminder:", error);
@@ -76,6 +79,7 @@ export const deleteReminder = async (speciesId: number): Promise<void> => {
     if (savedPlants[speciesId]) {
       delete savedPlants[speciesId];
       await AsyncStorage.setItem("savedPlants", JSON.stringify(savedPlants));
+      emitter.emit("remindersUpdated");
       Alert.alert(
         "Reminder deleted",
         "The reminder has been successfully removed."
