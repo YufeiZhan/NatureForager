@@ -98,19 +98,19 @@ const styles = StyleSheet.create({
   subContainer: {
     flexDirection: "column",
     alignItems: "flex-start",
-    marginHorizontal: 10,
-    marginVertical: 5,
+    marginRight: 10
   },
   button: {
-    backgroundColor: darkGreen,
+    backgroundColor: pureWhite,
     alignItems: "center",
     marginLeft: 10,
     padding: 10,
     borderRadius: 15,
+    color: darkGreen
   },
   icon: {
-    width: 50,
-    height: 50,
+    width: 60,
+    height: 60,
     borderRadius: 10 
   },
   title: {
