@@ -97,7 +97,8 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 20,
     letterSpacing: -1,
-    fontFamily: "Hubballi_400Regular"
+    fontFamily: "Hubballi_400Regular",
+    opacity: 0.8
   },
   scrollView: {},
   flatList: {},
