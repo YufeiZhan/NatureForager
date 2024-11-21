@@ -1,26 +1,36 @@
 // app/(tabs)/profile/SaveForLater.tsx
-import { ThemedFlatList, ThemedText, ThemedView, ThemedButton } from "@/components/Themed";
-import { StyleSheet, Alert, Pressable } from "react-native";
+import { ThemedFlatList, ThemedView, ThemedButton, ThemedText } from "@/components/Themed";
+import { StyleSheet, Alert } from "react-native";
 import { useEffect, useState } from "react";
 import * as Notifications from 'expo-notifications';
 import { useRouter } from 'expo-router';
 import { Reminder, loadReminders } from '@/backend/Reminder';
-import FrequencySelection from "@/components/FrequencySelection";
+import ReminderListItem from "@/components/ReminderListItem";
+import { pureWhite } from "@/constants/Colors";
+import { emitter } from "@/scripts/EventEmitter";
 
 export default function SaveForLater() {
   const router = useRouter();
   const [reminders, setReminders] = useState<Reminder[]>([]);
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [selectedSpecies, setSelectedSpecies] = useState<Reminder | null>(null);
-
-  const handleCloseModal = () => {
-    setIsModalVisible(false);
-  };
+  const [currentSeasonReminders, setCurrentSeasonReminders] = useState<Reminder[]>([]);
+  const [otherSeasonReminders, setOtherSeasonReminders] = useState<Reminder[]>([]);
 
   // Load reminders from AsyncStorage
   useEffect(() => {
     const loadSpeciesReminder = async () => {
       const remindersData = await loadReminders();
+      const currentMonth = new Date().toLocaleString('default', { month: 'short' });
+
+      const currentSeason = remindersData.filter(reminder => 
+        reminder.months.map(month => month.substring(0, 3)).includes(currentMonth)
+      );
+
+      const otherSeason = remindersData.filter(reminder =>
+        !reminder.months.map(month => month.substring(0, 3)).includes(currentMonth)
+      );
+
+      setCurrentSeasonReminders(currentSeason);
+      setOtherSeasonReminders(otherSeason);
       setReminders(remindersData)
     };
 
@@ -32,27 +42,52 @@ export default function SaveForLater() {
       }
     };
 
+
     loadSpeciesReminder();
     requestNotificationPermission();
-  });
 
-  const handleItemPress = (item: Reminder) => {
-    setSelectedSpecies(item);
-    setIsModalVisible(true);
-  };
+    const handleRemindersUpdated = () => {
+      loadSpeciesReminder();
+    };
+
+    emitter.on("remindersUpdated", handleRemindersUpdated);
+
+    return () => {
+      emitter.off("remindersUpdated", handleRemindersUpdated); // Clean up listener
+    };
+  }, []);
 
   return (
     <>
     <ThemedView style={styles.container}>
+      <ThemedText style={styles.sectionTitle}>Current Season</ThemedText>
       <ThemedFlatList
-        data={reminders}
+        data={currentSeasonReminders}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
-          <Pressable onPress={() => handleItemPress(item)}>
-            <ThemedText>
-              {item.name} - Ripe in {item.months.join(", ")} ({item.frequency})
-            </ThemedText>
-          </Pressable>
+          <ReminderListItem
+            id={item.id}
+            name={item.name}
+            months={item.months} 
+            type={item.type}
+            frequency={item.frequency}
+            imageURL={item.imageURL}        
+          />
+        )}
+      />
+      <ThemedText style={styles.sectionTitle}>Other Seasons</ThemedText>
+      <ThemedFlatList
+        data={otherSeasonReminders}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => (
+          <ReminderListItem
+            id={item.id}
+            name={item.name}
+            months={item.months} 
+            type={item.type}
+            frequency={item.frequency}
+            imageURL={item.imageURL}        
+          />
         )}
       />
       <ThemedButton
@@ -60,14 +95,6 @@ export default function SaveForLater() {
         onPress={() => router.push('/reminder/SetReminderScreen')}
       />
     </ThemedView>
-
-    {isModalVisible && (
-      <FrequencySelection
-        species={selectedSpecies!}
-        ifBack={false}
-        onClose={handleCloseModal}
-      />
-    )}
     </>
   );
 }
@@ -78,4 +105,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  sectionTitle: {
+    fontSize: 18,
+    color: pureWhite
+    // marginVertical: 10,
+  }
 });
