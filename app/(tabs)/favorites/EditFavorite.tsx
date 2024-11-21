@@ -26,8 +26,12 @@ export default function EditFavoriteScreen() {
   const [latitude, setLatitude] = useState(parseFloat(latitudeParam) || 0);
   const [longitude, setLongitude] = useState(parseFloat(longitudeParam) || 0);
   const [note, setNote] = useState(noteParam || "");
-  const [photoUrls, setPhotoUrls] = useState<string[]>(photosParam ? photosParam.split(",") : []);
-  const parsedINaturalistId = iNaturalistId ? parseInt(iNaturalistId, 10) : undefined;
+  const [photoUrls, setPhotoUrls] = useState<string[]>(
+    photosParam ? photosParam.split(",") : []
+  );
+  const parsedINaturalistId = iNaturalistId
+    ? parseInt(iNaturalistId, 10)
+    : undefined;
 
   // Construct the Favorite object based on current state
   const favorite: Favorite = {
@@ -70,12 +74,10 @@ export default function EditFavoriteScreen() {
   };
 
   const handleNoteChange = (newNote: string) => {
-    console.log("Note changed to:", newNote);
     setNote(newNote);
   };
 
   const handlePhotoUrlsChange = (newPhotoUrls: string[]) => {
-    console.log("Photo URLs changed to:", newPhotoUrls);
     setPhotoUrls(newPhotoUrls);
   };
 
@@ -92,9 +94,9 @@ export default function EditFavoriteScreen() {
 
       {/* Bottom Buttons */}
       <View style={styles.buttonContainer}>
-        <ThemedButton title="Delete" onPress={handleDelete}/>
-        <ThemedButton title="Cancel" onPress={handleCancel}/>
-        <ThemedButton title="Update" onPress={handleUpdate}/>
+        <ThemedButton title="Delete" onPress={handleDelete} />
+        <ThemedButton title="Cancel" onPress={handleCancel} />
+        <ThemedButton title="Update" onPress={handleUpdate} />
       </View>
     </View>
   );
