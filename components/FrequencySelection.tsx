@@ -7,11 +7,10 @@ Save and Delete Rule:
 2. When changing the frequency for an existing reminder, cancel the previous notifications for this species and reschedule for the new frequency.
 3. When deleting an existing reminder, cancel the previous notifications including this species. If there are species left for this month, reschedule the notification for this month.
 */
-import { SetStateAction, useEffect, useState } from "react";
-import { useRouter, useLocalSearchParams } from "expo-router";
+import { useEffect, useState } from "react";
+import { useRouter } from "expo-router";
 import { Modal, StyleSheet, View } from "react-native";
 import { ThemedButton, ThemedText, ThemedView } from "@/components/Themed";
-import { Picker } from "@react-native-picker/picker";
 import { Reminder, saveReminder, deleteReminder, loadReminders, cancelNotification, scheduleNotification } from '@/backend/Reminder';
 import { oliveGreen, pureWhite } from "@/constants/Colors";
 import DropDownPicker from "react-native-dropdown-picker";
@@ -51,6 +50,8 @@ export default function FrequencySelection({
 
     loadSpeciesReminder();
   }, [species.id]);
+
+
 
   const rescheduleNotifications = async () => {
     for (const month of species.months) {
