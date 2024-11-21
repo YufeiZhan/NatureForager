@@ -66,7 +66,7 @@ export default function FavoriteDetails({ favorite, onClose}: FavoriteDetailsPro
   // Function to handle edit button press, redirecting to the EditFavorite screen
   const handleEditPress = () => {
     router.push({
-      pathname: "/(tabs)/profile/EditFavorite", // Adjust the path based on your file structure
+      pathname: "/(tabs)/favorites/EditFavorite", // Adjust the path based on your file structure
       params: {
         id: favorite.id,
         iNaturalistId: favorite.iNaturalistId,
