@@ -1,7 +1,7 @@
 // app/SetReminderScreen.tsx
-import { ThemedView, ThemedText, ThemedFlatList } from "@/components/Themed";
+import { ThemedView, ThemedText, ThemedFlatList, ThemedTextInput } from "@/components/Themed";
 import { useState, useEffect } from "react";
-import { TextInput, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
 import speciesData from "@/data/edible_plants.json";
 import SuggestionListItem from "@/components/SuggestionListItem";
@@ -57,7 +57,7 @@ export default function SetReminderScreen() {
 
   return (
     <ThemedView style={styles.container}>
-      <TextInput
+      <ThemedTextInput
         style={styles.searchBar}
         placeholder="Search for species..."
         value={searchQuery}

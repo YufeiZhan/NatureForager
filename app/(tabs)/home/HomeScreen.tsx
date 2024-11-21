@@ -1,8 +1,8 @@
 // app/home/HomeScreen.tsx
-import { ThemedFlatList, ThemedView, ThemedText } from "@/components/Themed";
+import { ThemedFlatList, ThemedView, ThemedText, ThemedTextInput } from "@/components/Themed";
 import { useEffect, useState, useMemo, useContext } from "react";
 import DropDownPicker from "react-native-dropdown-picker";
-import { TextInput, ActivityIndicator, StyleSheet } from "react-native";
+import { ActivityIndicator, StyleSheet } from "react-native";
 import { LocationContext } from "@/hooks/LocationContext";
 import HomeListItem from "@/components/HomeListItem";
 import { fetchMinimumDistancesForSpecies } from "@/scripts/minSpeciesDistances";
@@ -128,7 +128,7 @@ export default function HomeScreen() {
   // todo: why justifyContent here doesn't take any effects?
   return (
     <ThemedView style={styles.mainContainer}>
-      <TextInput
+      <ThemedTextInput
         style={styles.searchBar}
         placeholder="Search species list..."
         placeholderTextColor="gray"

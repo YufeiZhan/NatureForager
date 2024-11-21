@@ -1,7 +1,7 @@
 import { useRouter } from "expo-router";
 import React, { useState, useContext, useEffect } from "react";
-import { Image, StyleSheet, TextInput, View, ScrollView, Pressable, KeyboardAvoidingView, Platform } from "react-native";
-import { ThemedText, ThemedView, ThemedButton } from "./Themed";
+import { Image, StyleSheet, View, ScrollView, Pressable, KeyboardAvoidingView, Platform } from "react-native";
+import { ThemedText, ThemedView, ThemedButton,ThemedTextInput } from "./Themed";
 import { Favorite } from "@/hooks/useFavorites";
 import EditLocationModal from "@/components/EditLocationModal";
 import { DEFAULT_LOCATION } from "@/hooks/useLocation";
@@ -70,7 +70,7 @@ return (
     keyboardShouldPersistTaps="handled"
   >
     {/* Editable Name */}
-    <TextInput
+    <ThemedTextInput
       style={styles.nameInput}
       value={favorite.name}
       onChangeText={setName}
@@ -90,7 +90,7 @@ return (
     </ThemedView>
 
     {/* Note Section */}
-    <TextInput
+    <ThemedTextInput
       style={styles.noteInput}
       placeholder="Tap to add some note about this plant..."
       placeholderTextColor="white"

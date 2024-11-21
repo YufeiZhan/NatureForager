@@ -4,16 +4,20 @@ import {
   ViewProps,
   Text,
   TextProps,
-  Button,
-  PressableProps,
   ScrollView,
   ScrollViewProps,
   FlatList,
   FlatListProps,
   Pressable,
   ButtonProps,
+  TextInputProps,
+  TextInput
 } from "react-native";
-import { ivoryWhite, darkGreen, yellowSand } from "@/constants/Colors";
+import { ivoryWhite, darkGreen } from "@/constants/Colors";
+
+// Apply the default styling to the common components unless othersie defined to overwrite
+// Should not need to apply additional styles normally
+// Use primary/secondary property to choose stylings
 
 export function ThemedView(props: ViewProps) {
   const { style, ...otherProps } = props;
@@ -24,12 +28,8 @@ export function ThemedText(props: TextProps) {
   return <Text style={[styles.text, style]} {...otherProps}></Text>;
 }
 
-// maybe create our custom button using a Pressable View?
-// because it will be hard to make system default look aesthetic nature-wise
-// don't take ButtonProps if we do that, probably will be ViewProps
-export function ThemedButton({
-  ...props
-}: ButtonProps & { action?: "primary" | "secondary" }) {
+// Provide 1) title, 2) onPress behavior, and 3) action (primary or secondary)
+export function ThemedButton(props: ButtonProps & { action?: "primary" | "secondary" }) {
   const { action = "primary", title, onPress, ...otherProps } = props;
 
   if (action === "primary") {
@@ -47,9 +47,10 @@ export function ThemedButton({
   }
 }
 
-// export function ThemedButton(props: ButtonProps) {
-//   return <Button {...props}></Button>;
-// }
+export function ThemedTextInput(props: TextInputProps){
+  const { style, ...otherProps } = props;
+  return <TextInput style={[styles.text, style]} {...otherProps} /> // use same styling as text
+}
 
 export function ThemedScrollView(props: ScrollViewProps) {
   const { style, ...otherProps } = props;
