@@ -13,7 +13,9 @@ export default function HomeStack() {
     >
       <Stack.Screen
         name="HomeScreen"
-        options={{ title: 'Nature Forager' }}
+        options={{ 
+          title: 'Nature Forager' 
+        }}
       />
       <Stack.Screen
         name="PlantLocation"

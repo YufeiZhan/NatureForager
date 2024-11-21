@@ -17,6 +17,7 @@ import { ivoryWhite, darkGreen, pureWhite, yellowSand } from "@/constants/Colors
 import DropDownPicker, { DropDownPickerProps } from "react-native-dropdown-picker";
 import { Month } from "@/app/(tabs)/home/HomeScreen";
 
+
 // Apply the default styling to the common components unless othersie defined to overwrite
 // Should not need to apply additional styles normally
 // Use primary/secondary property to choose stylings

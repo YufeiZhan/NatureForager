@@ -7,7 +7,7 @@ import { ThemeProvider } from "@react-navigation/native";
 import { FavoritesContext } from "@/hooks/FavoritesContext";
 import { useFavorites } from "@/hooks/useFavorites";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { useFonts, Hubballi_400Regular } from '@expo-google-fonts/hubballi';
+import { useFonts } from 'expo-font';
 import { globalStyles } from "@/styles/globalStyles";
 import * as Notifications from 'expo-notifications';
 import { useEffect } from 'react';
@@ -28,7 +28,7 @@ export default function RootLayout() {
 
   
   const [fontsLoaded] = useFonts({
-    Hubballi_400Regular,
+    Hubballi_400Regular : require('../assets/fonts/Hubballi-Regular.ttf')
   });
 
   const router = useRouter();
