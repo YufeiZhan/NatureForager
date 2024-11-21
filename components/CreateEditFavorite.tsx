@@ -1,6 +1,6 @@
 import { useRouter } from "expo-router";
 import React, { useState, useContext, useEffect } from "react";
-import { Image, StyleSheet, TextInput, View, ScrollView, Pressable } from "react-native";
+import { Image, StyleSheet, TextInput, View, ScrollView, Pressable, KeyboardAvoidingView, Platform } from "react-native";
 import { ThemedText, ThemedView, ThemedButton } from "./Themed";
 import { Favorite } from "@/hooks/useFavorites";
 import EditLocationModal from "@/components/EditLocationModal";
@@ -60,57 +60,77 @@ const handleAddPhoto = async () => {
 };
 
 return (
-    <ScrollView contentContainerStyle={styles.container}>
+  <KeyboardAvoidingView
+  style={{ flex: 1 }}
+  behavior={Platform.OS === "ios" ? "padding" : "height"}
+  keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0} // Adjust for iOS if needed
+  >
+  <ScrollView
+    contentContainerStyle={styles.container}
+    keyboardShouldPersistTaps="handled"
+  >
     {/* Editable Name */}
     <TextInput
-        style={styles.nameInput}
-        value={favorite.name}
-        onChangeText={setName}
-        placeholder="Favorite Name"
+      style={styles.nameInput}
+      value={favorite.name}
+      onChangeText={setName}
+      placeholder="Favorite Name"
     />
 
     {/* Map Section with Editable Location */}
     <ThemedView style={styles.mapContainer}>
-        <ThemedText style={styles.mapText}>
-        Location: {favorite.location.latitude.toFixed(2)}, {favorite.location.longitude.toFixed(2)}
-        </ThemedText>
-        <ThemedButton title="Edit" onPress={() => setEditLocationModalVisible(true)} />
+      <ThemedText style={styles.mapText}>
+        Location: {favorite.location.latitude.toFixed(2)},{" "}
+        {favorite.location.longitude.toFixed(2)}
+      </ThemedText>
+      <ThemedButton
+        title="Edit"
+        onPress={() => setEditLocationModalVisible(true)}
+      />
     </ThemedView>
 
     {/* Note Section */}
     <TextInput
-        style={styles.noteInput}
-        placeholder="Tap to add some note about this plant..."
-        placeholderTextColor="white"
-        multiline
-        value={favorite.note}
-        onChangeText={setNote}
+      style={styles.noteInput}
+      placeholder="Tap to add some note about this plant..."
+      placeholderTextColor="white"
+      multiline
+      value={favorite.note}
+      onChangeText={setNote}
     />
 
     {/* Photos Section */}
     <ThemedView style={styles.photosContainer}>
-        <Pressable style={styles.addPhotoButton} onPress={handleAddPhoto}>
+      <Pressable style={styles.addPhotoButton} onPress={handleAddPhoto}>
         <ThemedText style={styles.addPhotoText}>+</ThemedText>
-        </Pressable>
-        {favorite.photos?.map((photoUri, index) => (
+      </Pressable>
+      {favorite.photos?.map((photoUri, index) => (
         <View key={index} style={styles.photoWrapper}>
-            <Image source={{ uri: photoUri }} style={styles.photo} resizeMode="cover" />
-            <Pressable style={styles.removePhotoButton} onPress={() => handleRemovePhoto(index)}>
+          <Image
+            source={{ uri: photoUri }}
+            style={styles.photo}
+            resizeMode="cover"
+          />
+          <Pressable
+            style={styles.removePhotoButton}
+            onPress={() => handleRemovePhoto(index)}
+          >
             <ThemedText style={styles.removePhotoText}>X</ThemedText>
-            </Pressable>
+          </Pressable>
         </View>
-        ))}
+      ))}
     </ThemedView>
 
     {/* Edit Location Modal */}
     <EditLocationModal
-        visible={editLocationModalVisible}
-        latitude={favorite.location.latitude}
-        longitude={favorite.location.longitude}
-        onClose={() => setEditLocationModalVisible(false)}
-        onConfirmLocation={handleLocationChoice}
+      visible={editLocationModalVisible}
+      latitude={favorite.location.latitude}
+      longitude={favorite.location.longitude}
+      onClose={() => setEditLocationModalVisible(false)}
+      onConfirmLocation={handleLocationChoice}
     />
-    </ScrollView>
+  </ScrollView>
+  </KeyboardAvoidingView>
 );
 }
 

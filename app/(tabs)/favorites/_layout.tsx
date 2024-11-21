@@ -11,10 +11,6 @@ export default function ProfileStack() {
       }}
     >
       <Stack.Screen
-        name="ProfileScreen"
-        options={{ title: 'My Plants' }}
-      />
-      <Stack.Screen
         name="Favorites"
         options={{ title: 'Favorites' }}
       />
