@@ -217,7 +217,8 @@ const styles = StyleSheet.create({
   },
   secondaryTitle: {
     fontSize: 18,
-    marginVertical: 2
+    marginVertical: 2,
+    marginHorizontal: 5
   },
   divider: {
     height: 1,
