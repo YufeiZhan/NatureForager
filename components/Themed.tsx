@@ -49,7 +49,7 @@ export function ThemedButton(props: ButtonProps & { action?: "primary" | "second
 
 export function ThemedTextInput(props: TextInputProps){
   const { style, ...otherProps } = props;
-  return <TextInput style={[styles.text, style]} {...otherProps} /> // use same styling as text
+  return <TextInput style={[styles.text, styles.textInput, style]} {...otherProps} /> // use same styling as text
 }
 
 export function ThemedScrollView(props: ScrollViewProps) {
@@ -98,6 +98,8 @@ const styles = StyleSheet.create({
     fontSize: 20,
     letterSpacing: -1,
     fontFamily: "Hubballi_400Regular",
+  },
+  textInput: {
     opacity: 0.8
   },
   scrollView: {},
