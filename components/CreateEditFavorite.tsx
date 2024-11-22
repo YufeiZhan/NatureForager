@@ -1,7 +1,7 @@
 import { useRouter } from "expo-router";
 import React, { useState, useContext, useEffect, useRef } from "react";
 import { Image, StyleSheet, TextInput, View, ScrollView, Pressable, KeyboardAvoidingView, Platform } from "react-native";
-import { ThemedText, ThemedView, ThemedButton } from "./Themed";
+import { ThemedText, ThemedTextInput, ThemedView, ThemedButton } from "./Themed";
 import { Favorite } from "@/hooks/useFavorites";
 import EditLocationModal from "@/components/EditLocationModal";
 import * as ImagePicker from "expo-image-picker";
