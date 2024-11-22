@@ -22,6 +22,7 @@ import { ReminderSpecies, TempReminderSpecies } from "@/backend/Reminder";
 import speciesData from "@/data/edible_plants.json";
 import FrequencySelection from "./FrequencySelection";
 import { View } from "react-native";
+import { globalStyles } from "@/styles/globalStyles";
 
 type Plant = (typeof plantData)[number];
 
@@ -137,7 +138,7 @@ export default function SpeciesInfo({ taxonId }: { taxonId: string }) {
 
   if (loading) {
     return (
-      <ThemedScrollView contentContainerStyle={styles.mainContainer}>
+      <ThemedScrollView contentContainerStyle={globalStyles.infoPageContainer}>
         <ThemedText>Loading plant information...</ThemedText>
       </ThemedScrollView>
     );
@@ -152,91 +153,51 @@ export default function SpeciesInfo({ taxonId }: { taxonId: string }) {
   }
 
   return (
-    <>
-      <ThemedScrollView contentContainerStyle={styles.mainContainer}>
-        <ThemedScrollView contentContainerStyle={styles.subContainer}>
-          <ThemedText style={styles.primaryTitle}>{taxonData?.common_name}</ThemedText>
-          <ThemedText style={styles.secondaryTitle}>{taxonData?.scientific_name}</ThemedText>
-          <View style={styles.divider}></View>
+      <SafeAreaView style={globalStyles.infoPageContainer}>
+        <ThemedScrollView contentContainerStyle={globalStyles.infoPageSubContainer}>
+          <ThemedText style={globalStyles.infoPrimaryTitle}>{taxonData?.common_name}</ThemedText>
+          <ThemedText style={globalStyles.infoSecondaryTitle}>{taxonData?.scientific_name}</ThemedText>
+          <View style={globalStyles.divider}></View>
 
-          <Image resizeMode="contain" source={require('../assets/icons/reminder-off.png')} style={styles.icon} />
+          <Image resizeMode="contain" source={require('../assets/icons/reminder-off.png')} style={globalStyles.icon} />
           <ThemedButton title="Get Reminded" onPress={() => handleReminded(edibleInfo!)} />
 
-          <ThemedText style={styles.secondaryTitle}>Months Ripe: {edibleInfo?.months.join(", ")}</ThemedText>
-          <ThemedText style={styles.secondaryTitle}>PartsEdible: TBA</ThemedText>
-
-          <ThemedView style={styles.imageContainer}>
-            <Image
-              source={{ uri: taxonData?.photo_url }}
-              style={styles.image}
-              resizeMode="cover"
-            />
+          <ThemedView style={globalStyles.secondaryGroup}>
+            <ThemedText style={globalStyles.infoUnderlinedTitle}>Months Ripe</ThemedText>
+            <ThemedText style={globalStyles.infoSecondaryTitle}>{edibleInfo?.months.join(", ")}</ThemedText>
           </ThemedView>
+          <ThemedView style={globalStyles.secondaryGroup}>
+            <ThemedText style={globalStyles.infoUnderlinedTitle}>PartsEdible</ThemedText>
+            <ThemedText style={globalStyles.infoSecondaryTitle}>TBA</ThemedText>
+          </ThemedView>
+          
+          <Image
+            source={{ uri: taxonData?.photo_url }}
+            style={globalStyles.image}
+          />
             
-          <ThemedView style = {{marginHorizontal: 20}}>
+          <ThemedView style = {globalStyles.html}>
             <RenderHTML
-                    contentWidth={width * 0.8}
+                    contentWidth={width}
                     source={{ html: taxonData?.wikipedia_summary || "" }}
-                    // defaultTextProps={{ style: { color: pureWhite } }}
               />
+              <ThemedText>Testtest</ThemedText>
+              <ThemedText>Testtest</ThemedText>
+              <ThemedText>Testtest</ThemedText>
+              <ThemedText>Testtest</ThemedText>
+              <ThemedText>Testtest</ThemedText>
+              <ThemedText>Testtest</ThemedText>
           </ThemedView>
 
         </ThemedScrollView>
-      </ThemedScrollView>
 
-      {isModalVisible && edibleInfo && (
-        <FrequencySelection
-          species={{ ...edibleInfo, frequency: "" }}
-          ifBack={false}
-          onClose={handleCloseModal}
-        />
-      )}
-    </>
+        {isModalVisible && edibleInfo && (
+          <FrequencySelection
+            species={{ ...edibleInfo, frequency: "" }}
+            ifBack={false}
+            onClose={handleCloseModal}
+          />
+        )}
+      </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  mainContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    padding: 20,
-    backgroundColor: oliveGreen
-  },
-  subContainer: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    backgroundColor: ivoryWhite,
-    borderRadius: 20,
-    opacity: 0.9
-  },
-  primaryTitle: {
-    fontSize: 30,
-    marginTop: 10
-  },
-  secondaryTitle: {
-    fontSize: 18,
-    marginVertical: 2,
-    marginHorizontal: 5
-  },
-  divider: {
-    height: 1,
-    width: '90%',
-    backgroundColor: oliveGreen,
-    marginVertical: 10, 
-  },
-  icon: {
-    width: 25,
-    height: 20
-  },
-  imageContainer: {
-    alignItems: "center",
-  },
-  image: {
-    width: 300,
-    height: 200,
-    borderRadius: 10,
-    marginVertical: 20
-  },
-});

@@ -96,7 +96,6 @@ const styles = StyleSheet.create({
   primaryButtonText: {
     color: darkGreen,
     fontSize: 18,
-    fontWeight: "700",
     alignItems: "center",
   },
   secondaryButton: {
@@ -110,7 +109,6 @@ const styles = StyleSheet.create({
   secondaryButtonText: {
     color: ivoryWhite,
     fontSize: 18,
-    fontWeight: "700",
     alignItems: "center",
   },
   view: {},
