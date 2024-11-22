@@ -95,7 +95,7 @@ return (
     keyboardShouldPersistTaps="handled"
   >
     {/* Editable Name */}
-    <TextInput
+    <ThemedTextInput
       style={styles.nameInput}
       value={favorite.name}
       onChangeText={setName}
@@ -136,7 +136,7 @@ return (
 
 
     {/* Note Section */}
-    <TextInput
+    <ThemedTextInput
       style={styles.noteInput}
       placeholder="Tap to add some note about this plant..."
       placeholderTextColor="white"

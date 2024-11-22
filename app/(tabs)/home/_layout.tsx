@@ -6,13 +6,16 @@ export default function HomeStack() {
   return (
     <Stack
       screenOptions ={{
-        headerTitleStyle: { ...globalStyles.headerTitleStyle},
-        headerBackTitle: "Back"
+        headerTitleStyle: { ...globalStyles.headerTitleStyle },
+        headerBackTitleVisible: false,
+        headerTintColor: 'white'
       }}
     >
       <Stack.Screen
         name="HomeScreen"
-        options={{ title: 'Nature Forager' }}
+        options={{ 
+          title: 'Nature Forager' 
+        }}
       />
       <Stack.Screen
         name="PlantLocation"

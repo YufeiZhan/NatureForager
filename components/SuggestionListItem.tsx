@@ -1,24 +1,13 @@
 import { Pressable, StyleSheet, Image, Dimensions } from "react-native";
 import { ThemedView, ThemedText } from "@/components/Themed";
-import { useRouter } from "expo-router";
-import { pureWhite } from "@/constants/Colors";
+import { oliveGreen, pureWhite } from "@/constants/Colors";
 import { ReminderSpecies } from '@/backend/Reminder';
 import FrequencySelection from "@/components/FrequencySelection";
 import { useState } from "react";
 
 export default function SuggestionListItem(item: ReminderSpecies) {
-  const router = useRouter();
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-//   const handleSelectSpecies = (species: ReminderSpecies) => {
-//     router.push({
-//       pathname: "/reminder/FrequencySelection",
-//       params: { 
-//         species: JSON.stringify(species),
-//         ifBack: "false"
-//       },
-//     });
-//   };
   const handleSelectSpecies = () => {
     setIsModalVisible(true);
   };
@@ -41,7 +30,13 @@ export default function SuggestionListItem(item: ReminderSpecies) {
       </ThemedView>
 
       <ThemedView style={styles.subContainer}>
-        <ThemedText>Ripe in: {abbreviatedMonths.join(", ")}</ThemedText>
+        <ThemedText 
+        style={{color: oliveGreen, flexShrink: 1}}
+        numberOfLines={1}
+        ellipsizeMode="tail"
+        >
+          Ripe in: {abbreviatedMonths.join(", ")}
+        </ThemedText>
       </ThemedView>
     </Pressable>
 

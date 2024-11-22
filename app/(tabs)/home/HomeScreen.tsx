@@ -1,8 +1,8 @@
 // app/home/HomeScreen.tsx
-import { ThemedFlatList, ThemedView, ThemedText } from "@/components/Themed";
+import { ThemedFlatList, ThemedView, ThemedText, ThemedTextInput, ThemedDropDownPicker } from "@/components/Themed";
 import { useEffect, useState, useMemo, useContext } from "react";
 import DropDownPicker from "react-native-dropdown-picker";
-import { TextInput, ActivityIndicator, StyleSheet } from "react-native";
+import { ActivityIndicator, StyleSheet } from "react-native";
 import { LocationContext } from "@/hooks/LocationContext";
 import HomeListItem from "@/components/HomeListItem";
 import { fetchMinimumDistancesForSpecies } from "@/scripts/minSpeciesDistances";
@@ -24,7 +24,7 @@ const allMonths = [
   "December",
 ] as const;
 
-type Month = (typeof allMonths)[number];
+export type Month = (typeof allMonths)[number];
 
 type TaxaByMonth = {
   [key in Month]?: { [taxonId: number]: string };
@@ -128,37 +128,24 @@ export default function HomeScreen() {
   // todo: why justifyContent here doesn't take any effects?
   return (
     <ThemedView style={styles.mainContainer}>
-      <TextInput
+      <ThemedTextInput
         style={styles.searchBar}
-        placeholder="Search species list..."
+        placeholder="Search species here e.g. figs.."
         placeholderTextColor="gray"
         value={searchQuery}
         onChangeText={(text) => setSearchQuery(text)}
       />
 
-      <DropDownPicker
+      <ThemedDropDownPicker
         open={open}
         value={selectedMonth}
-        items={allMonths.map((month) => ({
+        items ={allMonths.map((month) => ({
           label: month,
           value: month,
         }))}
         setOpen={setOpen}
         setValue={setSelectedMonth}
-        style={{
-          width: 280,
-          marginVertical: 20,
-          borderWidth: 0,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: pureWhite,
-          opacity: 0.8,
-        }}
         placeholder="Select Month"
-        containerStyle={{ width: 275 }}
-        dropDownContainerStyle={{
-          backgroundColor: pureWhite,
-        }}
       />
 
       {shown && (

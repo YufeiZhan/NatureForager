@@ -187,7 +187,7 @@ export default function SpeciesInfo({ taxonId }: { taxonId: string }) {
 
     {isModalVisible && edibleInfo && (
       <FrequencySelection
-        species={{ ...edibleInfo, frequency: "" }}
+        species={{ ...edibleInfo, frequency: "", imageURL: ""}}
         ifBack={false}
         onClose={handleCloseModal}
       />

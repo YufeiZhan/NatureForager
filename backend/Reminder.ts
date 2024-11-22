@@ -1,6 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Alert } from "react-native";
 import * as Notifications from "expo-notifications";
+import { emitter } from "@/scripts/EventEmitter";
 
 export interface ReminderSpecies {
   id: number;
@@ -15,13 +16,14 @@ export interface TempReminderSpecies extends ReminderSpecies {
 
 export interface Reminder extends ReminderSpecies {
   frequency: string;
+  imageURL: string;
 }
 
 // Function to load all reminders from AsyncStorage
 export const loadReminders = async (): Promise<Reminder[]> => {
   try {
     const storedData = await AsyncStorage.getItem("savedPlants");
-    // console.log(storedData)
+    console.log(storedData)
     const reminders = storedData ? JSON.parse(storedData) : {};
     return Object.values(reminders);
   } catch (error) {
@@ -49,9 +51,19 @@ export const saveReminder = async (
       new Set([...existingMonths, ...speciesMonths])
     );
 
-    savedPlants[speciesId] = { ...species, months: updatedMonths, frequency };
+    const response = await fetch(
+      `https://api.inaturalist.org/v1/taxa/${species.id}`
+    );
+    const data = await response.json();
+    const taxon = data.results[0];
+    const imageURL = taxon.taxon_photos[0]?.photo.medium_url ||
+        "https://via.placeholder.com/300x200.png?text=Image+Not+Available"
 
+    savedPlants[speciesId] = { ...species, months: updatedMonths, frequency, imageURL};
+    
+    
     await AsyncStorage.setItem("savedPlants", JSON.stringify(savedPlants));
+    emitter.emit("remindersUpdated");
     Alert.alert("Reminder saved", `You'll be reminded about ${species.name}.`);
   } catch (error) {
     console.error("Error saving reminder:", error);
@@ -67,6 +79,7 @@ export const deleteReminder = async (speciesId: number): Promise<void> => {
     if (savedPlants[speciesId]) {
       delete savedPlants[speciesId];
       await AsyncStorage.setItem("savedPlants", JSON.stringify(savedPlants));
+      emitter.emit("remindersUpdated");
       Alert.alert(
         "Reminder deleted",
         "The reminder has been successfully removed."
