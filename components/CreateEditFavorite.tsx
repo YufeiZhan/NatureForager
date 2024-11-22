@@ -1,11 +1,14 @@
 import { useRouter } from "expo-router";
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import { Image, StyleSheet, TextInput, View, ScrollView, Pressable, KeyboardAvoidingView, Platform } from "react-native";
 import { ThemedText, ThemedView, ThemedButton } from "./Themed";
 import { Favorite } from "@/hooks/useFavorites";
 import EditLocationModal from "@/components/EditLocationModal";
-import { DEFAULT_LOCATION } from "@/hooks/useLocation";
 import * as ImagePicker from "expo-image-picker";
+import Map from "@/components/Map";
+import { LocationContext } from "@/hooks/LocationContext";
+import { DEFAULT_LOCATION } from "@/hooks/useLocation";
+import MapView, { Marker } from "react-native-maps";
 
 interface EditFavoriteProps {
     favorite: Favorite;
@@ -24,46 +27,68 @@ setLongitude,
 setNote,
 setPhotoUrls,
 }: EditFavoriteProps) {
-const [editLocationModalVisible, setEditLocationModalVisible] = useState(false);
+  const [editLocationModalVisible, setEditLocationModalVisible] = useState(false);
+  const { location: userLocation } = useContext(LocationContext);
 
-// Update the location when confirmed in the EditLocationModal
-const handleLocationChoice = (newLat: number, newLng: number) => {
+  const [markerLocation, setMarkerLocation] = useState({
+    latitude: favorite.location.latitude,
+    longitude: favorite.location.longitude
+  });
+
+  const mapRef = useRef<MapView>(null);
+
+  const handleLocationChoice = (newLat: number, newLng: number) => {
+    setMarkerLocation({ latitude: newLat, longitude: newLng });
     setLatitude(newLat);
     setLongitude(newLng);
+  
+    // Center the map on the new marker location
+    mapRef.current?.animateToRegion({
+      latitude: newLat,
+      longitude: newLng,
+      latitudeDelta: 0.05,
+      longitudeDelta: 0.05,
+    }, 500); // Duration in ms
+  
     setEditLocationModalVisible(false);
-};
+  };
 
-// Remove a photo from the list
-const handleRemovePhoto = (index: number) => {
-    const updatedPhotos = favorite.photos ? [...favorite.photos] : [];
-    updatedPhotos.splice(index, 1);
-    setPhotoUrls(updatedPhotos);
-};
-
-// Add a new photo (dummy button)
-const handleAddPhoto = async () => {
-  const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-  if (status !== 'granted') {
-    return;
-  }
-
-  const result = await ImagePicker.launchImageLibraryAsync({
-    allowsMultipleSelection: false,
-    quality: 1,
-  });
   
 
-  if (!result.canceled) {
-    const updatedPhotos = [...(favorite.photos ?? []), result.assets[0].uri];
-    setPhotoUrls(updatedPhotos);
-  }
-};
+  // Remove a photo from the list
+  const handleRemovePhoto = (index: number) => {
+      const updatedPhotos = favorite.photos ? [...favorite.photos] : [];
+      updatedPhotos.splice(index, 1);
+      setPhotoUrls(updatedPhotos);
+  };
+
+  // Add a new photo (dummy button)
+  const handleAddPhoto = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      allowsMultipleSelection: false,
+      quality: 1,
+    });
+    
+
+    if (!result.canceled) {
+      const updatedPhotos = [...(favorite.photos ?? []), result.assets[0].uri];
+      setPhotoUrls(updatedPhotos);
+    }
+  };
+
+  const hasValidLocation =
+    markerLocation.latitude !== 0 && markerLocation.longitude !== 0;
 
 return (
   <KeyboardAvoidingView
   style={{ flex: 1 }}
   behavior={Platform.OS === "ios" ? "padding" : "height"}
-  keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0} // Adjust for iOS if needed
+  keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}
   >
   <ScrollView
     contentContainerStyle={styles.container}
@@ -79,15 +104,36 @@ return (
 
     {/* Map Section with Editable Location */}
     <ThemedView style={styles.mapContainer}>
-      <ThemedText style={styles.mapText}>
-        Location: {favorite.location.latitude.toFixed(2)},{" "}
-        {favorite.location.longitude.toFixed(2)}
-      </ThemedText>
-      <ThemedButton
-        title="Edit"
-        onPress={() => setEditLocationModalVisible(true)}
-      />
+      {hasValidLocation ? (
+        <View style={styles.mapWrapper}>
+          <MapView
+            ref={mapRef}
+            style={styles.map}
+            initialRegion={{
+              latitude: markerLocation.latitude,
+              longitude: markerLocation.longitude,
+              latitudeDelta: 0.05,
+              longitudeDelta: 0.05,
+            }}
+          >
+            {/* Marker at the selected location */}
+            <Marker coordinate={markerLocation} />
+          </MapView>
+        </View>
+      ) : (
+        <ThemedText style={styles.noLocationText}>
+          No location set yet
+        </ThemedText>
+      )}
+      <View style={styles.editLocationButtonContainer}>
+        <ThemedButton
+          title="Edit"
+          onPress={() => setEditLocationModalVisible(true)}
+        />
+      </View>
     </ThemedView>
+
+
 
     {/* Note Section */}
     <TextInput
@@ -147,15 +193,39 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   mapContainer: {
-    height: 150,
+    height: 200,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#e0e0e0",
     marginBottom: 16,
     borderRadius: 8,
+    overflow: "hidden",
   },
   mapText: {
     marginBottom: 8,
+  },
+  mapWrapper: {
+    flex: 1,
+    width: "100%",
+    height: "100%",
+  },
+  map: {
+    flex: 1,
+  },
+  editLocationButtonContainer: {
+    position: "absolute",
+    top: 3,
+    right: 3,
+    zIndex: 1,
+    paddingVertical: 1,
+    paddingHorizontal: 1,
+    borderRadius: 8,
+  },
+  noLocationText: {
+    textAlign: "center",
+    color: "gray",
+    fontSize: 16,
+    padding: 20,
   },
   noteInput: {
     height: 100,
