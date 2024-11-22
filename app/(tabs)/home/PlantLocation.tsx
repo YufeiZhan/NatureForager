@@ -12,6 +12,7 @@ import BottomSheet, {
 } from "@gorhom/bottom-sheet";
 import { yellowSand } from "@/constants/Colors";
 import SpeciesInfo from "@/components/SpeciesInfo";
+import { globalStyles } from "@/styles/globalStyles";
 
 type SpeciesInfoNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -70,7 +71,7 @@ export default function PlantLocation() {
         initialLngExtent={initialLngExtent}
       />
       <BottomSheet
-        backgroundStyle={styles.bottomSheet}
+        backgroundStyle={globalStyles.bottomSheet}
         enableDynamicSizing={false}
         snapPoints={["5%", "35%", "100%"]}
         index={1}
@@ -86,8 +87,5 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-  },
-  bottomSheet: {
-    backgroundColor: yellowSand,
   },
 });

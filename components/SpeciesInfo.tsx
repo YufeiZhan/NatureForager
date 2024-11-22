@@ -23,6 +23,7 @@ import speciesData from "@/data/edible_plants.json";
 import FrequencySelection from "./FrequencySelection";
 import { View } from "react-native";
 import { globalStyles } from "@/styles/globalStyles";
+import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 
 type Plant = (typeof plantData)[number];
 
@@ -154,7 +155,7 @@ export default function SpeciesInfo({ taxonId }: { taxonId: string }) {
 
   return (
       <SafeAreaView style={globalStyles.infoPageContainer}>
-        <ThemedScrollView contentContainerStyle={globalStyles.infoPageSubContainer}>
+        <BottomSheetScrollView contentContainerStyle={globalStyles.infoPageSubContainer}>
           <ThemedText style={globalStyles.infoPrimaryTitle}>{taxonData?.common_name}</ThemedText>
           <ThemedText style={globalStyles.infoSecondaryTitle}>{taxonData?.scientific_name}</ThemedText>
           <View style={globalStyles.divider}></View>
@@ -181,15 +182,9 @@ export default function SpeciesInfo({ taxonId }: { taxonId: string }) {
                     contentWidth={width}
                     source={{ html: taxonData?.wikipedia_summary || "" }}
               />
-              <ThemedText>Testtest</ThemedText>
-              <ThemedText>Testtest</ThemedText>
-              <ThemedText>Testtest</ThemedText>
-              <ThemedText>Testtest</ThemedText>
-              <ThemedText>Testtest</ThemedText>
-              <ThemedText>Testtest</ThemedText>
           </ThemedView>
 
-        </ThemedScrollView>
+        </BottomSheetScrollView>
 
         {isModalVisible && edibleInfo && (
           <FrequencySelection

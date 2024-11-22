@@ -9,6 +9,10 @@ export const globalStyles = StyleSheet.create({
         fontFamily: 'Hubballi_400Regular', 
         fontSize:25
     },
+    //bottom sheet
+    bottomSheet: {
+        backgroundColor: oliveGreen,
+    },
     // content page (e.g. plant info, observation info) styling
     infoPageContainer: {
         flex: 1,
@@ -19,8 +23,6 @@ export const globalStyles = StyleSheet.create({
     },
     infoPageSubContainer:{
         alignItems: 'center',
-        marginTop: 20,
-        marginBottom: 20,
         paddingBottom: 20,
         backgroundColor: ivoryWhite,
         borderRadius: 20,
