@@ -39,6 +39,7 @@ export default function FavoritesMap({
   return (
     <Map
       markers={markers}
+      panToMarkerEnabled={true}
       selectedMarkerId={selectedFavoriteId}
       onPress={onDeselectFavorites}
       {...mapProps}

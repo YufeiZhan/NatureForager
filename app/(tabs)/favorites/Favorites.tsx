@@ -40,6 +40,8 @@ export default function Favorites() {
     }
   }, [favoriteIdToShow]);
 
+  // event handlers -----------------------------------------------------------
+
   const handleSelectFavorite = (fav: Favorite, mapTriggered = false) => {
     setSelectedFavorite(fav);
     if (!mapTriggered) {
@@ -74,7 +76,7 @@ export default function Favorites() {
     });
   };
 
-  const router = useRouter(); 
+  const router = useRouter();
   const handleAddFavorite = () => {
     router.push("/(tabs)/favorites/CreateFavorite");
   };
@@ -102,7 +104,11 @@ export default function Favorites() {
             {/* if no favorite selected, show full list */}
             {favorites && !selectedFavorite && (
               <>
-                <ThemedButton title="Add a Favorite" onPress={handleAddFavorite} action="primary" />
+                <ThemedButton
+                  title="Add a Favorite"
+                  onPress={handleAddFavorite}
+                  action="primary"
+                />
                 <BottomSheetFlatList
                   style={styles.favList}
                   data={getSortedFavorites()}

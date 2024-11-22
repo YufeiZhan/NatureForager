@@ -17,6 +17,7 @@ export interface MapProps {
   initialLngExtent?: number;
   selectedMarkerId?: string;
   markers?: Markers;
+  panToMarkerEnabled?: boolean;
   onBoundsChangeComplete?: (bounds: BoundingBox) => void;
   onRegionChange?: (region: Region) => void;
   onPress?: (e: MapPressEvent) => void;
@@ -37,6 +38,7 @@ export default function Map({
   initialLngExtent = 0.05,
   selectedMarkerId,
   markers = {},
+  panToMarkerEnabled = false,
   onBoundsChangeComplete,
   onRegionChange,
   onPress,
@@ -59,6 +61,7 @@ export default function Map({
   };
 
   const panToMarker = (markerId: string, duration: number) => {
+    if (!panToMarkerEnabled) return;
     const { latitude, longitude } = markers[markerId].coordinate;
     map.current?.animateCamera(
       {
@@ -92,6 +95,7 @@ export default function Map({
       onRegionChangeComplete={updateMapBounds}
       onRegionChange={onRegionChange}
       showsUserLocation={true}
+      moveOnMarkerPress={false}
       onPress={onPress}
       onMarkerPress={(e) =>
         panToMarker(e.nativeEvent.id, PAN_ANIMATION_DURATION)
@@ -105,6 +109,11 @@ export default function Map({
             m ? (markerRefs.current[key] = m) : delete markerRefs.current[key]
           }
           stopPropagation // so we can detect if just pressing on the map background, not a marker
+          image={
+            key === selectedMarkerId
+              ? require("@/assets/pin/selected.png")
+              : require("@/assets/pin/normal.png")
+          }
           {...props}
         />
       ))}

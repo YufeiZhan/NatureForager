@@ -37,7 +37,10 @@ export default function HomeListItem(item: ItemData) {
       </ThemedView>
 
       <ThemedView style={styles.subContainerRight}>
-        <Image source={require("@/assets/pin/home.png")}></Image>
+        <Image
+          style={styles.imagePin}
+          source={require("@/assets/pin/normal.png")}
+        ></Image>
         <ThemedText style={styles.distance}>
           {item.distance ? `${Number(item.distance).toFixed(2)} km` : "None"}
         </ThemedText>
@@ -78,5 +81,9 @@ export const styles = StyleSheet.create({
   distance: {
     textAlign: "right",
     minWidth: 2,
+  },
+  imagePin: {
+    height: 36,
+    width: 24,
   },
 });
