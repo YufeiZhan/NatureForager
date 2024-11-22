@@ -1,15 +1,11 @@
-import { Pressable, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import INaturalistMap from "@/components/INaturalistMap";
 import { useNavigation } from "expo-router";
 import { useEffect } from "react";
 import { useNonArraySearchParams } from "@/hooks/useNonArraySearchParams";
 import { RootStackParamList } from "../../../NavigationTypes";
 import { StackNavigationProp } from "@react-navigation/stack";
-import Icon from 'react-native-vector-icons/FontAwesome';
-import BottomSheet, {
-  BottomSheetFlatList,
-  BottomSheetFlatListMethods,
-} from "@gorhom/bottom-sheet";
+import BottomSheet from "@gorhom/bottom-sheet";
 import { yellowSand } from "@/constants/Colors";
 import SpeciesInfo from "@/components/SpeciesInfo";
 
@@ -31,17 +27,6 @@ export default function PlantLocation() {
   const nav = useNavigation<SpeciesInfoNavigationProp>();
   useEffect(() => {
     // Here instead of in main navigation because it updates based on this page's iNaturalistTaxonId
-    // nav.setOptions({
-    //   title: commonName,
-    //   headerRight: () => (
-    //     <Pressable onPress={() =>
-    //       nav.navigate("SpeciesInfoModal", { taxonId: iNaturalistTaxonId })
-    //     }>
-    //         <Icon name="info-circle" size={20} color="white"/>
-    //     </Pressable>
-
-    //   ),
-    // });
     nav.setOptions({ title: commonName });
   }, [commonName, iNaturalistTaxonId]);
 

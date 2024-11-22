@@ -15,7 +15,7 @@ import BottomSheet, {
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
-import Map, { MapProps, Markers } from "@/components/Map";
+import Map, { Markers } from "@/components/Map";
 
 export default function Favorites() {
   const { location } = useContext(LocationContext);

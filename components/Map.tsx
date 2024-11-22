@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useContext, useEffect, useMemo, useRef } from "react";
 import { View, StyleSheet } from "react-native";
 import MapView, {
   UrlTile,
@@ -9,6 +9,7 @@ import MapView, {
   MapPressEvent,
   Region,
 } from "react-native-maps";
+import { FavoritesContext } from "@/hooks/FavoritesContext";
 
 export interface MapProps {
   initialLat: number;
@@ -86,6 +87,29 @@ export default function Map({
     }, PAN_ANIMATION_DURATION + 50);
   }, [selectedMarkerId]);
 
+  // map pin logic -----------------------
+
+  // include favorites so we can show the favorited version of map pins
+  const { favorites } = useContext(FavoritesContext);
+  const favoriteIds = useMemo(() => {
+    if (!favorites) return new Set<string>();
+    const ids = new Set<string>();
+    favorites.forEach((f) => {
+      ids.add(f.id);
+      if (f.iNaturalistId) ids.add(String(f.iNaturalistId));
+    });
+    return ids;
+  }, [favorites]);
+
+  const getMarkerImage = (key: string) => {
+    const isFavorite = favoriteIds.has(key);
+    const selected = key === selectedMarkerId;
+    if (isFavorite && selected) return require("@/assets/pin/fav-selected.png");
+    if (isFavorite && !selected) return require("@/assets/pin/fav-normal.png");
+    if (!isFavorite && selected) return require("@/assets/pin/selected.png");
+    return require("@/assets/pin/normal.png");
+  };
+
   return (
     <MapView
       style={styles.map}
@@ -109,11 +133,7 @@ export default function Map({
             m ? (markerRefs.current[key] = m) : delete markerRefs.current[key]
           }
           stopPropagation // so we can detect if just pressing on the map background, not a marker
-          image={
-            key === selectedMarkerId
-              ? require("@/assets/pin/selected.png")
-              : require("@/assets/pin/normal.png")
-          }
+          image={getMarkerImage(key)}
           {...props}
         />
       ))}
