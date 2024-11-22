@@ -15,6 +15,7 @@ import { useRouter } from "expo-router";
 import { useContext, useEffect, useState } from "react";
 import { FavoritesContext } from "@/hooks/FavoritesContext";
 import { globalStyles } from "@/styles/globalStyles";
+import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 
 interface ObservationDetailsProps {
   observation: Observation;
@@ -81,27 +82,22 @@ export default function ObservationDetails({
             </ThemedView>
           )}
 
-          <ThemedText style={globalStyles.infoSecondaryTitle}>Observed on: {observation.observed_on || "Date not available"}</ThemedText>
+          <ThemedText style={globalStyles.infoUnderlinedTitle}>Observed on</ThemedText>
+          <ThemedText style={globalStyles.infoSecondaryTitle}>{observation.observed_on || "Date Not Available"}</ThemedText>
 
-          
-          {/* Photos */}
-          <ThemedView style={styles.photoContainer}>
-            {observation.photos && observation.photos.length > 0 ? (
-              observation.photos.map((photo, index) => (
+          { observation.photos && observation.photos.length > 0 
+            ? (observation.photos.map((photo, index) => (
                 <Image
                   key={index}
                   source={{ uri: photo.url?.replace("square", "medium") }}
                   style={[
-                    styles.photo,
-                    { width: width - 32, height: width - 32 },
+                    globalStyles.image,
+                    { width: width * 0.9, height: width * 0.9 },
                   ]}
-                  resizeMode="cover"
-                />
-              ))
-            ) : (
-              <ThemedText>No photos available</ThemedText>
-            )}
-          </ThemedView>
+                />))) 
+            : (<ThemedText>No photos available</ThemedText>)
+          }
+
         </ThemedScrollView>
 
       <ThemedButton title="Back to Map" onPress={onClose} action="secondary" />
@@ -110,10 +106,6 @@ export default function ObservationDetails({
 }
 
 const styles = StyleSheet.create({
-  photoContainer: {
-    alignItems: "center",
-    marginVertical: 20,
-  },
   photo: {
     marginVertical: 10,
     borderRadius: 10,

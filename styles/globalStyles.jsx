@@ -22,6 +22,8 @@ export const globalStyles = StyleSheet.create({
         backgroundColor: oliveGreen
     },
     infoPageSubContainer:{
+        flex: 1,
+        width: '100%',
         alignItems: 'center',
         paddingBottom: 20,
         backgroundColor: ivoryWhite,
