@@ -17,11 +17,12 @@ import { globalStyles } from "@/styles/globalStyles";
 
 interface ObservationDetailsProps {
   observation: Observation;
+  updateBottomSheet: () => void;
   // onClose: () => void;
 }
 
 export default function ObservationDetails({
-  observation,
+  observation, updateBottomSheet
   // onClose,
 }: ObservationDetailsProps) {
   // keep track of whether this observation is favorited
@@ -59,7 +60,6 @@ export default function ObservationDetails({
   };
 
   return (
-    <SafeAreaView style={globalStyles.infoPageContainer}>
         <ThemedScrollView contentContainerStyle={globalStyles.infoPageSubContainer}>
           <ThemedText style={globalStyles.infoPrimaryTitle}>{observation.taxon?.preferred_common_name}</ThemedText>
           <ThemedText style={globalStyles.infoSecondaryTitle}>{observation.taxon?.name}</ThemedText>
@@ -89,11 +89,8 @@ export default function ObservationDetails({
                 />))) 
             : (<ThemedText>No photos available</ThemedText>)
           }
-
+        <ThemedButton title="Back to Map" onPress={updateBottomSheet} action="secondary" />
         </ThemedScrollView>
-
-      {/* <ThemedButton title="Back to Map" onPress={onClose} action="secondary" /> */}
-    </SafeAreaView>
   );
 }
 

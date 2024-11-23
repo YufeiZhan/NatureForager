@@ -1,13 +1,12 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, ImageStyle } from "react-native";
 import { oliveGreen, ivoryWhite } from "@/constants/Colors";
 
 export const globalStyles = StyleSheet.create({
     // header title styling for each tab stack
     headerTitleStyle: { 
-        fontSize: 20,
+        fontSize: 25,
         fontWeight: 'bold',
         fontFamily: 'Hubballi_400Regular', 
-        fontSize:25
     },
     //bottom sheet
     bottomSheet: {
@@ -60,12 +59,18 @@ export const globalStyles = StyleSheet.create({
         height: 25,
     },
     image: {
-        width: '90%',
+        width: '90%',  
         height: 220,
         borderRadius: 10,
-        marginVertical: 20
-    },
+        marginTop: 20
+    } ,
     html: {
         marginHorizontal: 20
+    },
+    flowingButton: {
+        margin: 10,
+        position: 'absolute',
+        bottom: 20,
+        zIndex: 22
     }
 })

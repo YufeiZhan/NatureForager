@@ -12,6 +12,7 @@ import {
   ButtonProps,
   TextInputProps,
   TextInput,
+  PressableProps,
 } from "react-native";
 import { ivoryWhite, darkGreen, pureWhite, yellowSand } from "@/constants/Colors";
 import DropDownPicker, { DropDownPickerProps } from "react-native-dropdown-picker";
@@ -31,14 +32,15 @@ export function ThemedText(props: TextProps) {
   return <Text style={[styles.text, style]} {...otherProps}></Text>;
 }
 
-// Provide 1) title, 2) onPress behavior, and 3) action (primary or secondary)
-export function ThemedButton(props: ButtonProps & { action?: "primary" | "secondary" }) {
+// Provide 1) title, 2) onPress behavior, 3) action (primary or secondary)
+// Optional: style
+export function ThemedButton(props: PressableProps & { title: string, action?: "primary" | "secondary"}) {
   const { action = "primary", title, onPress, ...otherProps } = props;
 
   if (action === "primary") {
     return (
       <Pressable style={styles.primaryButton} onPress={onPress}>
-        <ThemedText style={styles.primaryButtonText}>{title}</ThemedText>
+        <ThemedText style={[styles.primaryButtonText]}>{title}</ThemedText>
       </Pressable>
     );
   } else {
@@ -49,6 +51,10 @@ export function ThemedButton(props: ButtonProps & { action?: "primary" | "second
     );
   }
 }
+
+// export function ThemedIcon(props: PressableProps & {icon:}){
+
+// }
 
 export function ThemedTextInput(props: TextInputProps){
   const { style, ...otherProps } = props;
