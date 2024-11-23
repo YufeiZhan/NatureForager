@@ -11,24 +11,19 @@ import {
   ThemedButton,
 } from "./Themed";
 import { Observation } from "../iNaturalistTypes";
-import { useRouter } from "expo-router";
 import { useContext, useEffect, useState } from "react";
 import { FavoritesContext } from "@/hooks/FavoritesContext";
 import { globalStyles } from "@/styles/globalStyles";
-import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 
 interface ObservationDetailsProps {
   observation: Observation;
-  onClose: () => void;
+  // onClose: () => void;
 }
 
 export default function ObservationDetails({
   observation,
-  onClose,
+  // onClose,
 }: ObservationDetailsProps) {
-  // const { width } = useWindowDimensions();
-  const router = useRouter();
-
   // keep track of whether this observation is favorited
   const { favorites, addFavorite  } = useContext(FavoritesContext);
   const [isFavorited, setIsFavorited] = useState(false);
@@ -97,7 +92,7 @@ export default function ObservationDetails({
 
         </ThemedScrollView>
 
-      <ThemedButton title="Back to Map" onPress={onClose} action="secondary" />
+      {/* <ThemedButton title="Back to Map" onPress={onClose} action="secondary" /> */}
     </SafeAreaView>
   );
 }

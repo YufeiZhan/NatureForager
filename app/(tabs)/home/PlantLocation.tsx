@@ -1,18 +1,15 @@
-import { Pressable, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import INaturalistMap from "@/components/INaturalistMap";
 import { useNavigation } from "expo-router";
-import { useEffect, useRef } from "react";
+import { useEffect, useState } from "react";
 import { useNonArraySearchParams } from "@/hooks/useNonArraySearchParams";
 import { RootStackParamList } from "../../../NavigationTypes";
 import { StackNavigationProp } from "@react-navigation/stack";
-import BottomSheet, {
-  BottomSheetFlatList,
-  BottomSheetFlatListMethods,
-  BottomSheetScrollView,
-} from "@gorhom/bottom-sheet";
+import BottomSheet from "@gorhom/bottom-sheet";
 import { globalStyles } from "@/styles/globalStyles";
-import { ThemedText } from "@/components/Themed";
 import SpeciesInfo from "@/components/SpeciesInfo";
+import ObservationDetails from "@/components/ObservationDetails";
+import { Observation } from "@/iNaturalistTypes";
 
 type SpeciesInfoNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -61,6 +58,8 @@ export default function PlantLocation() {
     initialLngExtent = 4 * degLngToNearest;
   }
 
+  // obaservation detail if pin clicked
+  const [observationDetail, setObservationDetail] = useState<Observation | null>(null)
   return (
     <>
       <INaturalistMap
@@ -69,23 +68,22 @@ export default function PlantLocation() {
         initialLng={Number(initialLng)}
         initialLatExtent={initialLatExtent}
         initialLngExtent={initialLngExtent}
+        updateBottomSheet ={(obs) => setObservationDetail(obs)}
       />
       <BottomSheet
         backgroundStyle={globalStyles.bottomSheet}
         enableDynamicSizing={false}
         snapPoints={["5%", "35%", "100%"]}
         index={0} //initialize to the first snappoint
-      >
-        <SpeciesInfo taxonId={iNaturalistTaxonId} />
+      > 
+        { observationDetail 
+          ? <ObservationDetails
+              observation={observationDetail}
+              ></ObservationDetails>
+          : <SpeciesInfo taxonId={iNaturalistTaxonId} />
+        }
+        
       </BottomSheet>
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-});
