@@ -1,18 +1,18 @@
 import { Pressable, StyleSheet } from "react-native";
 import INaturalistMap from "@/components/INaturalistMap";
 import { useNavigation } from "expo-router";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useNonArraySearchParams } from "@/hooks/useNonArraySearchParams";
 import { RootStackParamList } from "../../../NavigationTypes";
 import { StackNavigationProp } from "@react-navigation/stack";
-import Icon from 'react-native-vector-icons/FontAwesome';
 import BottomSheet, {
   BottomSheetFlatList,
   BottomSheetFlatListMethods,
+  BottomSheetScrollView,
 } from "@gorhom/bottom-sheet";
-import { yellowSand } from "@/constants/Colors";
-import SpeciesInfo from "@/components/SpeciesInfo";
 import { globalStyles } from "@/styles/globalStyles";
+import { ThemedText } from "@/components/Themed";
+import SpeciesInfo from "@/components/SpeciesInfo";
 
 type SpeciesInfoNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -74,7 +74,7 @@ export default function PlantLocation() {
         backgroundStyle={globalStyles.bottomSheet}
         enableDynamicSizing={false}
         snapPoints={["5%", "35%", "100%"]}
-        index={1}
+        index={0} //initialize to the first snappoint
       >
         <SpeciesInfo taxonId={iNaturalistTaxonId} />
       </BottomSheet>

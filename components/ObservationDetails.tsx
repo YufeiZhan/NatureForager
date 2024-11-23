@@ -26,7 +26,7 @@ export default function ObservationDetails({
   observation,
   onClose,
 }: ObservationDetailsProps) {
-  const { width } = useWindowDimensions();
+  // const { width } = useWindowDimensions();
   const router = useRouter();
 
   // keep track of whether this observation is favorited
@@ -90,10 +90,7 @@ export default function ObservationDetails({
                 <Image
                   key={index}
                   source={{ uri: photo.url?.replace("square", "medium") }}
-                  style={[
-                    globalStyles.image,
-                    { width: width * 0.9, height: width * 0.9 },
-                  ]}
+                  style={globalStyles.image}
                 />))) 
             : (<ThemedText>No photos available</ThemedText>)
           }

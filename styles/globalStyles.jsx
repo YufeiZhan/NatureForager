@@ -16,16 +16,16 @@ export const globalStyles = StyleSheet.create({
     // content page (e.g. plant info, observation info) styling
     infoPageContainer: {
         flex: 1,
-        alignItems: 'center',
+        width: '100%',
+        // alignItems: 'center',
         justifyContent: 'flex-start',
         paddingHorizontal: 20,
         backgroundColor: oliveGreen
     },
     infoPageSubContainer:{
-        flex: 1,
-        width: '100%',
         alignItems: 'center',
         paddingBottom: 20,
+        marginHorizontal:20,
         backgroundColor: ivoryWhite,
         borderRadius: 20,
         opacity: 0.9

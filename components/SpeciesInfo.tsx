@@ -154,7 +154,6 @@ export default function SpeciesInfo({ taxonId }: { taxonId: string }) {
   }
 
   return (
-      <SafeAreaView style={globalStyles.infoPageContainer}>
         <BottomSheetScrollView contentContainerStyle={globalStyles.infoPageSubContainer}>
           <ThemedText style={globalStyles.infoPrimaryTitle}>{taxonData?.common_name}</ThemedText>
           <ThemedText style={globalStyles.infoSecondaryTitle}>{taxonData?.scientific_name}</ThemedText>
@@ -176,6 +175,7 @@ export default function SpeciesInfo({ taxonId }: { taxonId: string }) {
             source={{ uri: taxonData?.photo_url }}
             style={globalStyles.image}
           />
+          
             
           <ThemedView style = {globalStyles.html}>
             <RenderHTML
@@ -184,15 +184,13 @@ export default function SpeciesInfo({ taxonId }: { taxonId: string }) {
               />
           </ThemedView>
 
+          {isModalVisible && edibleInfo &&
+            (<FrequencySelection
+              species={{ ...edibleInfo, frequency: "" }}
+              ifBack={false}
+              onClose={handleCloseModal}
+            />)
+          } 
         </BottomSheetScrollView>
-
-        {isModalVisible && edibleInfo && (
-          <FrequencySelection
-            species={{ ...edibleInfo, frequency: "" }}
-            ifBack={false}
-            onClose={handleCloseModal}
-          />
-        )}
-      </SafeAreaView>
   );
 }
