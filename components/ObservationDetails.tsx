@@ -1,8 +1,6 @@
 import {
   Image,
-  SafeAreaView,
   StyleSheet,
-  useWindowDimensions,
 } from "react-native";
 import {
   ThemedScrollView,
@@ -14,6 +12,7 @@ import { Observation } from "../iNaturalistTypes";
 import { useContext, useEffect, useState } from "react";
 import { FavoritesContext } from "@/hooks/FavoritesContext";
 import { globalStyles } from "@/styles/globalStyles";
+import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 
 interface ObservationDetailsProps {
   observation: Observation;
@@ -59,8 +58,15 @@ export default function ObservationDetails({
     setIsFavorited(true);
   };
 
+  const handleScroll = () => {}
+
+
   return (
-        <ThemedScrollView contentContainerStyle={globalStyles.infoPageSubContainer}>
+    <>
+        <BottomSheetScrollView 
+          onScroll={handleScroll}
+          contentContainerStyle={globalStyles.infoPageSubContainer}
+        >
           <ThemedText style={globalStyles.infoPrimaryTitle}>{observation.taxon?.preferred_common_name}</ThemedText>
           <ThemedText style={globalStyles.infoSecondaryTitle}>{observation.taxon?.name}</ThemedText>
           <ThemedView style={globalStyles.divider} />
@@ -89,8 +95,10 @@ export default function ObservationDetails({
                 />))) 
             : (<ThemedText>No photos available</ThemedText>)
           }
-        <ThemedButton title="Back to Map" onPress={updateBottomSheet} action="secondary" />
-        </ThemedScrollView>
+
+        </BottomSheetScrollView>
+        <ThemedButton style={globalStyles.flowingButton} title="Back to Map" onPress={updateBottomSheet} action="primary" />
+    </>
   );
 }
 

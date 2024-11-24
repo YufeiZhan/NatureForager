@@ -1,4 +1,3 @@
-import { StyleSheet } from "react-native";
 import INaturalistMap from "@/components/INaturalistMap";
 import { useNavigation } from "expo-router";
 import { useEffect, useState } from "react";

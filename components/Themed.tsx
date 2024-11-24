@@ -9,14 +9,15 @@ import {
   FlatList,
   FlatListProps,
   Pressable,
-  ButtonProps,
   TextInputProps,
   TextInput,
   PressableProps,
+  ViewStyle,
 } from "react-native";
-import { ivoryWhite, darkGreen, pureWhite, yellowSand } from "@/constants/Colors";
+import { ivoryWhite, darkGreen, pureWhite } from "@/constants/Colors";
 import DropDownPicker, { DropDownPickerProps } from "react-native-dropdown-picker";
 import { Month } from "@/app/(tabs)/home/HomeScreen";
+import { globalStyles } from "@/styles/globalStyles";
 
 
 // Apply the default styling to the common components unless othersie defined to overwrite
@@ -35,17 +36,17 @@ export function ThemedText(props: TextProps) {
 // Provide 1) title, 2) onPress behavior, 3) action (primary or secondary)
 // Optional: style
 export function ThemedButton(props: PressableProps & { title: string, action?: "primary" | "secondary"}) {
-  const { action = "primary", title, onPress, ...otherProps } = props;
+  const { action = "primary", title, onPress, style, ...otherProps } = props;
 
   if (action === "primary") {
     return (
-      <Pressable style={styles.primaryButton} onPress={onPress}>
+      <Pressable style={[styles.primaryButton, style as ViewStyle]} onPress={onPress}>
         <ThemedText style={[styles.primaryButtonText]}>{title}</ThemedText>
       </Pressable>
     );
   } else {
     return (
-      <Pressable style={styles.secondaryButton} onPress={onPress}>
+      <Pressable style={[styles.secondaryButton, style as ViewStyle]} onPress={onPress}>
         <ThemedText style={styles.secondaryButtonText}>{title}</ThemedText>
       </Pressable>
     );
@@ -92,7 +93,7 @@ export function ThemedFlatList<T>(props: FlatListProps<T>) {
 
 const styles = StyleSheet.create({
   primaryButton: {
-    backgroundColor: ivoryWhite,
+    backgroundColor: pureWhite,
     alignSelf: "center",
     justifyContent: "center",
     paddingVertical: 18,

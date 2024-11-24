@@ -1,12 +1,8 @@
 import { useEffect, useState } from "react";
 import {
   Image,
-  StyleSheet,
-  Pressable,
   useWindowDimensions,
   LogBox,
-  TextProps,
-  SafeAreaView,
 } from "react-native";
 import {
   ThemedScrollView,
@@ -14,9 +10,7 @@ import {
   ThemedText,
   ThemedButton,
 } from "../components/Themed";
-import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import RenderHTML from "react-native-render-html";
-import { ivoryWhite, oliveGreen, pureWhite } from "@/constants/Colors";
 import plantData from "@/data/edible_plants.json";
 import { ReminderSpecies, TempReminderSpecies } from "@/backend/Reminder";
 import speciesData from "@/data/edible_plants.json";
@@ -75,7 +69,6 @@ export default function SpeciesInfo({ taxonId }: { taxonId: string }) {
   const [plantInfo, setPlantInfo] = useState<Plant | null>(null);
   const [taxonData, setTaxonData] = useState<TaxonData | null>(null);
   const [loading, setLoading] = useState(true);
-  const router = useRouter();
   const { width } = useWindowDimensions();
   const [edibleInfo, setEdibleInfo] = useState<ReminderSpecies | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);

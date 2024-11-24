@@ -63,14 +63,14 @@ export const globalStyles = StyleSheet.create({
         height: 220,
         borderRadius: 10,
         marginTop: 20
-    } ,
+    } as ImageStyle,
     html: {
-        marginHorizontal: 20
+        marginHorizontal: 20,
+        marginTop: 20
     },
     flowingButton: {
-        margin: 10,
         position: 'absolute',
         bottom: 20,
-        zIndex: 22
+        zIndex: 2
     }
 })
