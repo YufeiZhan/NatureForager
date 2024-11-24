@@ -7,13 +7,13 @@ Save and Delete Rule:
 2. When changing the frequency for an existing reminder, cancel the previous notifications for this species and reschedule for the new frequency.
 3. When deleting an existing reminder, cancel the previous notifications including this species. If there are species left for this month, reschedule the notification for this month.
 */
-import { SetStateAction, useEffect, useState } from "react";
-import { useRouter, useLocalSearchParams } from "expo-router";
+import { useEffect, useState } from "react";
+import { useRouter } from "expo-router";
 import { Modal, StyleSheet, View } from "react-native";
 import { ThemedButton, ThemedText, ThemedView } from "@/components/Themed";
-import { Picker } from "@react-native-picker/picker";
 import { Reminder, saveReminder, deleteReminder, loadReminders, cancelNotification, scheduleNotification } from '@/backend/Reminder';
-import { oliveGreen } from "@/constants/Colors";
+import { oliveGreen, pureWhite } from "@/constants/Colors";
+import DropDownPicker from "react-native-dropdown-picker";
 
 interface FrequencySelectionProps {
   species: Reminder;
@@ -28,8 +28,14 @@ export default function FrequencySelection({
   onClose,
 }: FrequencySelectionProps){
   const router = useRouter();
+  const [open, setOpen] = useState(false);
   const [frequency, setFrequency] = useState("monthly");
   const [isExistingReminder, setIsExistingReminder] = useState(false);
+  const [items, setItems] = useState([
+    { label: "Monthly", value: "monthly" },
+    { label: "Biweekly", value: "biweekly" },
+    { label: "Weekly", value: "weekly" },
+  ]);
 
   useEffect(() => {
     const loadSpeciesReminder = async () => {
@@ -44,6 +50,8 @@ export default function FrequencySelection({
 
     loadSpeciesReminder();
   }, [species.id]);
+
+
 
   const rescheduleNotifications = async () => {
     for (const month of species.months) {
@@ -102,14 +110,32 @@ export default function FrequencySelection({
     >
       <ThemedView style={styles.container}>
         <ThemedText>Select Frequency for {species.name}</ThemedText>
-
+        
         <View style={styles.pickerContainer}>
-          <Picker selectedValue={frequency} onValueChange={(itemValue: SetStateAction<string>) => setFrequency(itemValue)} style={styles.picker}>
-            <Picker.Item label="Monthly" value="monthly" />
-            <Picker.Item label="Biweekly" value="biweekly" />
-            <Picker.Item label="Weekly" value="weekly" />
-          </Picker>
+          <DropDownPicker
+            open={open}
+            value={frequency}
+            items={items}
+            setOpen={setOpen}
+            setValue={setFrequency}
+            setItems={setItems}
+            onChangeValue={(value) => setFrequency(value!)}
+            style={{
+              width: 280,
+              marginVertical: 20,
+              borderWidth: 0,
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: pureWhite,
+              opacity: 0.8,
+            }}
+            dropDownContainerStyle={{
+              backgroundColor: pureWhite,
+            }}
+            dropDownDirection="AUTO"
+          />
         </View>
+        
 
         <ThemedButton title="Save Reminder" onPress={handleSaveReminder} />
         {isExistingReminder && (
@@ -131,10 +157,8 @@ const styles = StyleSheet.create({
   },
   pickerContainer: {
     width: "100%",
-    paddingHorizontal: 10,
+    paddingHorizontal: 30,
     marginVertical: 20,
-  },
-  picker: {
-    width: "100%",
-  },
+    zIndex: 1,
+  }
 });

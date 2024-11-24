@@ -73,7 +73,7 @@ export default function PlantLocation() {
         backgroundStyle={globalStyles.bottomSheet}
         enableDynamicSizing={false}
         snapPoints={["5%", "35%", "100%"]}
-        index={0} //initialize to the first snappoint
+        index={1} //initialize to the first snappoint
       > 
         { observationDetail 
           ? <ObservationDetails

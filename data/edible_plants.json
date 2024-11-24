@@ -1,5 +1,77 @@
 [
   {
+    "iNaturalist ID": 59921,
+    "Scientific Name": "Pinus taeda",
+    "Common Name": "Loblolly Pine",
+    "Type": "leaf tea",
+    "Month Ripe": "January",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 75371,
+    "Scientific Name": "Allium vineale",
+    "Common Name": "Onion Grass",
+    "Type": "leaf, root",
+    "Month Ripe": "January",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 49652,
+    "Scientific Name": "Cardamine",
+    "Common Name": "Bittercress",
+    "Type": "leaf",
+    "Month Ripe": "January",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 49157,
+    "Scientific Name": "Betula lenta",
+    "Common Name": "Sweet Birch",
+    "Type": "twig tea",
+    "Month Ripe": "January",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 54795,
+    "Scientific Name": "Sassafras albidum",
+    "Common Name": "Sassafras",
+    "Type": "root",
+    "Month Ripe": "January",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 47602,
+    "Scientific Name": "Taraxacum officinale",
+    "Common Name": "Dandelion",
+    "Type": "flower, leaf, root",
+    "Month Ripe": "January",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 59921,
+    "Scientific Name": "Pinus taeda",
+    "Common Name": "Loblolly Pine",
+    "Type": "leaf tea",
+    "Month Ripe": "February",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 59921,
+    "Scientific Name": "Pinus taeda",
+    "Common Name": "Loblolly Pine",
+    "Type": "leaf tea",
+    "Month Ripe": "March",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 59921,
+    "Scientific Name": "Pinus taeda",
+    "Common Name": "Loblolly Pine",
+    "Type": "leaf tea",
+    "Month Ripe": "April",
+    "Notes": ""
+  },
+  {
     "iNaturalist ID": 133686,
     "Scientific Name": "Morchella angusticeps",
     "Common Name": "Black Morel",
@@ -288,6 +360,46 @@
     "Notes": ""
   },
   {
+    "iNaturalist ID": 59921,
+    "Scientific Name": "Pinus taeda",
+    "Common Name": "Loblolly Pine",
+    "Type": "leaf tea",
+    "Month Ripe": "May",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 59921,
+    "Scientific Name": "Pinus taeda",
+    "Common Name": "Loblolly Pine",
+    "Type": "leaf tea",
+    "Month Ripe": "June",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 59921,
+    "Scientific Name": "Pinus taeda",
+    "Common Name": "Loblolly Pine",
+    "Type": "leaf tea",
+    "Month Ripe": "July",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 59921,
+    "Scientific Name": "Pinus taeda",
+    "Common Name": "Loblolly Pine",
+    "Type": "leaf tea",
+    "Month Ripe": "August",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 59921,
+    "Scientific Name": "Pinus taeda",
+    "Common Name": "Loblolly Pine",
+    "Type": "leaf tea",
+    "Month Ripe": "September",
+    "Notes": ""
+  },
+  {
     "iNaturalist ID": 82529,
     "Scientific Name": "Vitis rotundifolia",
     "Common Name": "Muscadine",
@@ -301,6 +413,14 @@
     "Common Name": "Purple Passionflower",
     "Type": "fruit",
     "Month Ripe": "September",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 59921,
+    "Scientific Name": "Pinus taeda",
+    "Common Name": "Loblolly Pine",
+    "Type": "leaf tea",
+    "Month Ripe": "October",
     "Notes": ""
   },
   {
@@ -365,7 +485,7 @@
     "Common Name": "Chickweed",
     "Type": "leaf",
     "Month Ripe": "October",
-    "Notes": "species?"
+    "Notes": ""
   },
   {
     "iNaturalist ID": 49193,
@@ -421,7 +541,7 @@
     "Common Name": "Prickly Pear",
     "Type": "fruit",
     "Month Ripe": "October",
-    "Notes": "tiny spines must be removed"
+    "Notes": "species?"
   },
   {
     "iNaturalist ID": 167829,
@@ -469,7 +589,7 @@
     "Common Name": "Evening Primrose",
     "Type": "seed",
     "Month Ripe": "October",
-    "Notes": "species?"
+    "Notes": ""
   },
   {
     "iNaturalist ID": 58127,
@@ -477,6 +597,14 @@
     "Common Name": "Lambsquarters",
     "Type": "seed",
     "Month Ripe": "October",
+    "Notes": "tiny spines must be removed"
+  },
+  {
+    "iNaturalist ID": 59921,
+    "Scientific Name": "Pinus taeda",
+    "Common Name": "Loblolly Pine",
+    "Type": "leaf tea",
+    "Month Ripe": "November",
     "Notes": ""
   },
   {
@@ -517,7 +645,7 @@
     "Common Name": "Lesser Burdock",
     "Type": "root",
     "Month Ripe": "November",
-    "Notes": ""
+    "Notes": "species?"
   },
   {
     "iNaturalist ID": 47602,
@@ -581,6 +709,14 @@
     "Common Name": "Staghorn Sumac",
     "Type": "berry",
     "Month Ripe": "November",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 59921,
+    "Scientific Name": "Pinus taeda",
+    "Common Name": "Loblolly Pine",
+    "Type": "leaf tea",
+    "Month Ripe": "December",
     "Notes": ""
   },
   {
@@ -637,46 +773,6 @@
     "Common Name": "Oyster Mushroom",
     "Type": "mushroom",
     "Month Ripe": "December",
-    "Notes": ""
-  },
-  {
-    "iNaturalist ID": 75371,
-    "Scientific Name": "Allium vineale",
-    "Common Name": "Onion Grass",
-    "Type": "leaf, root",
-    "Month Ripe": "January",
-    "Notes": ""
-  },
-  {
-    "iNaturalist ID": 49652,
-    "Scientific Name": "Cardamine",
-    "Common Name": "Bittercress",
-    "Type": "leaf",
-    "Month Ripe": "January",
-    "Notes": ""
-  },
-  {
-    "iNaturalist ID": 49157,
-    "Scientific Name": "Betula lenta",
-    "Common Name": "Sweet Birch",
-    "Type": "twig tea",
-    "Month Ripe": "January",
-    "Notes": ""
-  },
-  {
-    "iNaturalist ID": 54795,
-    "Scientific Name": "Sassafras albidum",
-    "Common Name": "Sassafras",
-    "Type": "root",
-    "Month Ripe": "January",
-    "Notes": ""
-  },
-  {
-    "iNaturalist ID": 47602,
-    "Scientific Name": "Taraxacum officinale",
-    "Common Name": "Dandelion",
-    "Type": "flower, leaf, root",
-    "Month Ripe": "January",
     "Notes": ""
   }
 ]
