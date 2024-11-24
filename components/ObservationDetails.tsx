@@ -7,6 +7,7 @@ import {
   ThemedView,
   ThemedText,
   ThemedButton,
+  ThemedIcon,
 } from "./Themed";
 import { Observation } from "../iNaturalistTypes";
 import { useContext, useEffect, useState } from "react";
@@ -70,17 +71,12 @@ export default function ObservationDetails({
           <ThemedText style={globalStyles.infoPrimaryTitle}>{observation.taxon?.preferred_common_name}</ThemedText>
           <ThemedText style={globalStyles.infoSecondaryTitle}>{observation.taxon?.name}</ThemedText>
           <ThemedView style={globalStyles.divider} />
-          <Image resizeMode="contain" source={require('../assets/icons/favorite-off.png')} style={globalStyles.icon} />
+          
           {/* Add to Favorite Button or Favorited Text */}
           {!isFavorited ? (
-            <ThemedButton
-              title="Add to Favorites"
-              onPress={handleAddToFavorites}
-            />
+            <ThemedIcon iconName="unfav" onPress={handleAddToFavorites}></ThemedIcon>
           ) : (
-            <ThemedView style={styles.favoritedTextContainer}>
-              <ThemedText style={styles.favoritedText}>Favorited!</ThemedText>
-            </ThemedView>
+            <ThemedIcon iconName="fav"></ThemedIcon> //Q: allow user to unfav here?
           )}
 
           <ThemedText style={globalStyles.infoUnderlinedTitle}>Observed on</ThemedText>

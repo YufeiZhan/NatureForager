@@ -8,11 +8,11 @@ import {
   ThemedScrollView,
   ThemedView,
   ThemedText,
-  ThemedButton,
+  ThemedIcon,
 } from "../components/Themed";
 import RenderHTML from "react-native-render-html";
 import plantData from "@/data/edible_plants.json";
-import { ReminderSpecies, TempReminderSpecies } from "@/backend/Reminder";
+import { loadReminders, ReminderSpecies, TempReminderSpecies } from "@/backend/Reminder";
 import speciesData from "@/data/edible_plants.json";
 import FrequencySelection from "./FrequencySelection";
 import { View } from "react-native";
@@ -72,6 +72,7 @@ export default function SpeciesInfo({ taxonId }: { taxonId: string }) {
   const { width } = useWindowDimensions();
   const [edibleInfo, setEdibleInfo] = useState<ReminderSpecies | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isReminded, setIsReminded] = useState(false);
 
   useEffect(() => {
     const aggregatedData = aggregateSpecies(speciesData);
@@ -79,7 +80,7 @@ export default function SpeciesInfo({ taxonId }: { taxonId: string }) {
     const matchedPlant = plantData.find((plant) => {
       return String(plant["iNaturalist ID"]) === String(taxonId);
     });
-    // console.log(matchedPlant);
+    // console.log("matched:", matchedPlant);
 
     if (matchedPlant) {
       setPlantInfo(matchedPlant);
@@ -130,6 +131,16 @@ export default function SpeciesInfo({ taxonId }: { taxonId: string }) {
     fetchTaxonData();
   }, [taxonId]);
 
+  useEffect(() => {
+    async function getReminder(){
+      const result = await loadReminders();
+      const reminded = result.filter(item => item.name === plantInfo?.["Common Name"]).length > 0
+      setIsReminded(reminded)
+    }
+
+    getReminder()
+  })
+
   if (loading) {
     return (
       <ThemedScrollView contentContainerStyle={globalStyles.infoPageContainer}>
@@ -146,15 +157,17 @@ export default function SpeciesInfo({ taxonId }: { taxonId: string }) {
     setIsModalVisible(false);
   }
 
+
   return (
         <BottomSheetScrollView contentContainerStyle={globalStyles.infoPageSubContainer}>
           <ThemedText style={globalStyles.infoPrimaryTitle}>{taxonData?.common_name}</ThemedText>
           <ThemedText style={globalStyles.infoSecondaryTitle}>{taxonData?.scientific_name}</ThemedText>
           <View style={globalStyles.divider}></View>
 
-          <Image resizeMode="contain" source={require('../assets/icons/reminder-off.png')} style={globalStyles.icon} />
-          <ThemedButton title="Get Reminded" onPress={() => handleReminded(edibleInfo!)} />
-
+          { isReminded ? <ThemedIcon iconName="reminded"></ThemedIcon>
+                       : <ThemedIcon iconName="unreminded" onPress={() => handleReminded(edibleInfo!)}></ThemedIcon>
+          }
+          
           <ThemedView style={globalStyles.secondaryGroup}>
             <ThemedText style={globalStyles.infoUnderlinedTitle}>Months Ripe</ThemedText>
             <ThemedText style={globalStyles.infoSecondaryTitle}>{edibleInfo?.months.join(", ")}</ThemedText>

@@ -13,6 +13,7 @@ import {
   TextInput,
   PressableProps,
   ViewStyle,
+  Image
 } from "react-native";
 import { ivoryWhite, darkGreen, pureWhite } from "@/constants/Colors";
 import DropDownPicker, { DropDownPickerProps } from "react-native-dropdown-picker";
@@ -53,9 +54,18 @@ export function ThemedButton(props: PressableProps & { title: string, action?: "
   }
 }
 
-// export function ThemedIcon(props: PressableProps & {icon:}){
-
-// }
+const iconMapping = {
+  reminded: require("../assets/icons/reminder-on.png"),
+  unreminded: require("../assets/icons/reminder-off.png"),
+  fav: require("../assets/icons/favorite-on.png"),
+  unfav: require("../assets/icons/favorite-off.png"),
+};
+export function ThemedIcon(props: PressableProps & {iconName: keyof typeof iconMapping}){
+  const { iconName, onPress } = props;
+  return (<Pressable onPress={onPress}>
+            <Image resizeMode="contain" source={iconMapping[iconName]} style={globalStyles.icon} />
+         </Pressable>)
+}
 
 export function ThemedTextInput(props: TextInputProps){
   const { style, ...otherProps } = props;
