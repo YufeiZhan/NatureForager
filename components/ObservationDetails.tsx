@@ -8,6 +8,7 @@ import {
   ThemedText,
   ThemedButton,
   ThemedIcon,
+  ThemedImage,
 } from "./Themed";
 import { Observation } from "../iNaturalistTypes";
 import { useContext, useEffect, useState } from "react";
@@ -84,10 +85,9 @@ export default function ObservationDetails({
 
           { observation.photos && observation.photos.length > 0 
             ? (observation.photos.map((photo, index) => (
-                <Image
+                <ThemedImage 
                   key={index}
-                  source={{ uri: photo.url?.replace("square", "medium") }}
-                  style={globalStyles.image}
+                  uri={photo.url?.replace("square", "medium")}
                 />))) 
             : (<ThemedText>No photos available</ThemedText>)
           }

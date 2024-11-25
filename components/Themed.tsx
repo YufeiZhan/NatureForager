@@ -19,6 +19,8 @@ import { ivoryWhite, darkGreen, pureWhite } from "@/constants/Colors";
 import DropDownPicker, { DropDownPickerProps } from "react-native-dropdown-picker";
 import { Month } from "@/app/(tabs)/home/HomeScreen";
 import { globalStyles } from "@/styles/globalStyles";
+import ImageView from "react-native-image-viewing";
+import { useState } from "react";
 
 
 // Apply the default styling to the common components unless othersie defined to overwrite
@@ -65,6 +67,28 @@ export function ThemedIcon(props: PressableProps & {iconName: keyof typeof iconM
   return (<Pressable onPress={onPress}>
             <Image resizeMode="contain" source={iconMapping[iconName]} style={globalStyles.icon} />
          </Pressable>)
+}
+
+// Image that can be enlarged
+export function ThemedImage(props: {uri: string | undefined}){
+  const {uri} = props
+  const [enlargeImage, setEnlargeImage] = useState(false)
+
+  return (
+    <Pressable style={{width: '100%', alignItems: 'center'}} onPress={()=>setEnlargeImage(true)}>
+      <Image
+            source={{ uri: uri }}
+            style={globalStyles.image}
+      />
+
+      <ImageView
+        images={[{uri: uri}]}
+        imageIndex={0}
+        visible={enlargeImage}
+        onRequestClose={() => setEnlargeImage(false)}
+      />
+    </Pressable>
+  )
 }
 
 export function ThemedTextInput(props: TextInputProps){

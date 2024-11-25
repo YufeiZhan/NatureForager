@@ -9,6 +9,7 @@ import {
   ThemedView,
   ThemedText,
   ThemedIcon,
+  ThemedImage,
 } from "../components/Themed";
 import RenderHTML from "react-native-render-html";
 import plantData from "@/data/edible_plants.json";
@@ -18,6 +19,7 @@ import FrequencySelection from "./FrequencySelection";
 import { View } from "react-native";
 import { globalStyles } from "@/styles/globalStyles";
 import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
+import ImageView from "react-native-image-viewing";
 
 type Plant = (typeof plantData)[number];
 
@@ -73,6 +75,7 @@ export default function SpeciesInfo({ taxonId }: { taxonId: string }) {
   const [edibleInfo, setEdibleInfo] = useState<ReminderSpecies | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isReminded, setIsReminded] = useState(false);
+  
 
   useEffect(() => {
     const aggregatedData = aggregateSpecies(speciesData);
@@ -106,7 +109,7 @@ export default function SpeciesInfo({ taxonId }: { taxonId: string }) {
         );
         const data = await response.json();
         const taxon = data.results[0];
-        // console.log(response);
+        // console.log("taxon:",taxon);
 
         const displayCommonName =
           matchedPlant?.["Common Name"] ||
@@ -157,6 +160,7 @@ export default function SpeciesInfo({ taxonId }: { taxonId: string }) {
     setIsModalVisible(false);
   }
 
+  
 
   return (
         <BottomSheetScrollView contentContainerStyle={globalStyles.infoPageSubContainer}>
@@ -177,12 +181,8 @@ export default function SpeciesInfo({ taxonId }: { taxonId: string }) {
             <ThemedText style={globalStyles.infoSecondaryTitle}>TBA</ThemedText>
           </ThemedView>
           
-          <Image
-            source={{ uri: taxonData?.photo_url }}
-            style={globalStyles.image}
-          />
+          <ThemedImage uri={taxonData?.photo_url}/>
           
-            
           <ThemedView style = {globalStyles.html}>
             <RenderHTML
                     contentWidth={width}
