@@ -71,6 +71,14 @@ export const globalStyles = StyleSheet.create({
     flowingButton: {
         position: 'absolute',
         bottom: 20,
-        zIndex: 2
+        zIndex: 2,
+        // iOS Shadow
+        shadowColor: "#000",
+        shadowOpacity: 0.5,
+        shadowOffset: { width: 0, height: 4 },
+        shadowRadius: 2,
+
+        // Android Shadow
+        elevation: 5,
     }
 })
