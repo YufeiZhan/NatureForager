@@ -61,6 +61,7 @@ const iconMapping = {
   unreminded: require("../assets/icons/reminder-off.png"),
   fav: require("../assets/icons/favorite-on.png"),
   unfav: require("../assets/icons/favorite-off.png"),
+  edit: require("../assets/icons/edit-icon.png")
 };
 export function ThemedIcon(props: PressableProps & {iconName: keyof typeof iconMapping}){
   const { iconName, onPress } = props;

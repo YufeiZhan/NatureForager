@@ -60,15 +60,9 @@ export default function ObservationDetails({
     setIsFavorited(true);
   };
 
-  const handleScroll = () => {}
-
-
   return (
     <>
-        <BottomSheetScrollView 
-          onScroll={handleScroll}
-          contentContainerStyle={globalStyles.infoPageSubContainer}
-        >
+        <BottomSheetScrollView contentContainerStyle={globalStyles.infoPageSubContainer}>
           <ThemedText style={globalStyles.infoPrimaryTitle}>{observation.taxon?.preferred_common_name}</ThemedText>
           <ThemedText style={globalStyles.infoSecondaryTitle}>{observation.taxon?.name}</ThemedText>
           <ThemedView style={globalStyles.divider} />
@@ -97,19 +91,3 @@ export default function ObservationDetails({
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  photo: {
-    marginVertical: 10,
-    borderRadius: 10,
-  },
-  favoritedTextContainer: {
-    alignItems: "center",
-    paddingVertical: 10,
-  },
-  favoritedText: {
-    fontSize: 18,
-    color: "green",
-    fontWeight: "bold",
-  },
-});

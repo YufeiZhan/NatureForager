@@ -68,6 +68,14 @@ export const globalStyles = StyleSheet.create({
         marginHorizontal: 20,
         marginTop: 20
     },
+    note:{
+        width: '90%', 
+        paddingHorizontal: 10,
+        marginTop: 10,
+        borderWidth: 1,
+        borderStyle: "dashed",
+        
+    },
     flowingButton: {
         position: 'absolute',
         bottom: 20,
