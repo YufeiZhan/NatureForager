@@ -1,6 +1,6 @@
 import INaturalistMap from "@/components/INaturalistMap";
 import { useNavigation } from "expo-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNonArraySearchParams } from "@/hooks/useNonArraySearchParams";
 import { RootStackParamList } from "../../../NavigationTypes";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -9,6 +9,7 @@ import { globalStyles } from "@/styles/globalStyles";
 import SpeciesInfo from "@/components/SpeciesInfo";
 import ObservationDetails from "@/components/ObservationDetails";
 import { Observation } from "@/iNaturalistTypes";
+import { BottomSheetMethods } from "@gorhom/bottom-sheet/lib/typescript/types";
 
 type SpeciesInfoNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -57,6 +58,11 @@ export default function PlantLocation() {
     initialLngExtent = 4 * degLngToNearest;
   }
 
+  // ref for the bottom sheet
+  const bottomSheetRef = useRef<BottomSheetMethods>(null)
+  const snapTo = (index : number) => {
+    bottomSheetRef.current?.snapToIndex(index);
+  }
   // obaservation detail if pin clicked
   const [observationDetail, setObservationDetail] = useState<Observation | null>(null)
   return (
@@ -67,13 +73,17 @@ export default function PlantLocation() {
         initialLng={Number(initialLng)}
         initialLatExtent={initialLatExtent}
         initialLngExtent={initialLngExtent}
-        updateBottomSheet ={(obs) => setObservationDetail(obs)}
+        updateBottomSheet ={(obs) => {
+          setObservationDetail(obs);
+          snapTo(1);
+        }}
       />
       <BottomSheet
+        ref={bottomSheetRef}
         backgroundStyle={globalStyles.bottomSheet}
         enableDynamicSizing={false}
         snapPoints={["5%", "35%", "100%"]}
-        index={1} //initialize to the first snappoint
+        index={1} //initialize to the second snappoint
       > 
         { observationDetail 
           ? <ObservationDetails
