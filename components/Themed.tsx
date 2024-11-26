@@ -39,7 +39,7 @@ export function ThemedText(props: TextProps) {
 // Provide 1) title, 2) onPress behavior, 3) action (primary or secondary)
 // Optional: style
 export function ThemedButton(props: PressableProps & { title: string, action?: "primary" | "secondary"}) {
-  const { action = "primary", title, onPress, style, ...otherProps } = props;
+  const { action = "primary", title, onPress, style } = props;
 
   if (action === "primary") {
     return (
@@ -131,8 +131,8 @@ const styles = StyleSheet.create({
     backgroundColor: pureWhite,
     alignSelf: "center",
     justifyContent: "center",
-    paddingVertical: 18,
-    paddingHorizontal: 40,
+    paddingVertical: 13,
+    paddingHorizontal: 25,
     borderRadius: 20,
   },
   primaryButtonText: {
