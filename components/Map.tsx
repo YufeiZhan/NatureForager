@@ -23,11 +23,8 @@ export interface MapProps {
   onRegionChange?: (region: Region) => void;
   onPress?: (e: MapPressEvent) => void;
 }
-interface MarkerProps extends MapMarkerProps {
-  callout?: JSX.Element;
-}
 // string is the key/id of a marker
-export type Markers = Record<string, MarkerProps>;
+export type Markers = Record<string, MapMarkerProps>;
 
 const PAN_ANIMATION_DURATION = 300; //ms
 
@@ -72,7 +69,7 @@ export default function Map({
     );
   };
 
-  // when new marker should be selected, pan the map and show a callout
+  // when new marker should be selected, pan the map
   useEffect(() => {
     if (!map.current) return;
     if (!selectedMarkerId) {
@@ -81,10 +78,6 @@ export default function Map({
       return;
     }
     panToMarker(selectedMarkerId, PAN_ANIMATION_DURATION);
-    // also show its callout (only after the animation finishes, to prevent weirdness)
-    // setTimeout(() => {
-    //   markerRefs.current?.[selectedMarkerId].showCallout();
-    // }, PAN_ANIMATION_DURATION + 50);
   }, [selectedMarkerId]);
 
   // map pin logic -----------------------
@@ -125,7 +118,7 @@ export default function Map({
         panToMarker(e.nativeEvent.id, PAN_ANIMATION_DURATION)
       }
     >
-      {Object.entries(markers).map(([key, { callout, ...props }]) => (
+      {Object.entries(markers).map(([key, props]) => (
         <Marker
           key={key} // for the .map()
           identifier={key} // for MapView event handling

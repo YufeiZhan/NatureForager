@@ -6,7 +6,6 @@ import { yellowSand } from "@/constants/Colors";
 import { FavoritesContext } from "@/hooks/FavoritesContext";
 import { LocationContext } from "@/hooks/LocationContext";
 import { Favorite } from "@/hooks/useFavorites";
-import { useNonArraySearchParams } from "@/hooks/useNonArraySearchParams";
 import { calculateDistance } from "@/scripts/minSpeciesDistances";
 import BottomSheet, {
   BottomSheetFlatList,
@@ -61,7 +60,6 @@ export default function Favorites() {
           latitude: fav.location.latitude,
           longitude: fav.location.longitude,
         },
-        title: fav.name,
         onSelect: () => {
           handleSelectFavorite(fav);
         },
@@ -69,15 +67,6 @@ export default function Favorites() {
     });
     return newMarkers;
   }, [favorites]);
-
-  // if search param passed to show a favorite, select it
-  const { favoriteIdToShow } = useNonArraySearchParams();
-  useEffect(() => {
-    const fav = favorites?.find((fav) => fav.id === favoriteIdToShow);
-    if (fav) {
-      setSelectedId(fav.id);
-    }
-  }, [favoriteIdToShow]);
 
   // event handlers ------------------------------------------
 
