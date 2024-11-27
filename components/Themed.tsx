@@ -9,13 +9,18 @@ import {
   FlatList,
   FlatListProps,
   Pressable,
-  ButtonProps,
   TextInputProps,
   TextInput,
+  PressableProps,
+  ViewStyle,
+  Image
 } from "react-native";
-import { ivoryWhite, darkGreen, pureWhite, yellowSand } from "@/constants/Colors";
+import { ivoryWhite, darkGreen, pureWhite } from "@/constants/Colors";
 import DropDownPicker, { DropDownPickerProps } from "react-native-dropdown-picker";
 import { Month } from "@/app/(tabs)/home/HomeScreen";
+import { globalStyles } from "@/styles/globalStyles";
+import ImageView from "react-native-image-viewing";
+import { useState } from "react";
 
 
 // Apply the default styling to the common components unless othersie defined to overwrite
@@ -31,23 +36,60 @@ export function ThemedText(props: TextProps) {
   return <Text style={[styles.text, style]} {...otherProps}></Text>;
 }
 
-// Provide 1) title, 2) onPress behavior, and 3) action (primary or secondary)
-export function ThemedButton(props: ButtonProps & { action?: "primary" | "secondary" }) {
-  const { action = "primary", title, onPress, ...otherProps } = props;
+// Provide 1) title, 2) onPress behavior, 3) action (primary or secondary)
+// Optional: style
+export function ThemedButton(props: PressableProps & { title: string, action?: "primary" | "secondary"}) {
+  const { action = "primary", title, onPress, style } = props;
 
   if (action === "primary") {
     return (
-      <Pressable style={styles.primaryButton} onPress={onPress}>
-        <ThemedText style={styles.primaryButtonText}>{title}</ThemedText>
+      <Pressable style={[styles.primaryButton, style as ViewStyle]} onPress={onPress}>
+        <ThemedText style={[styles.primaryButtonText]}>{title}</ThemedText>
       </Pressable>
     );
   } else {
     return (
-      <Pressable style={styles.secondaryButton} onPress={onPress}>
+      <Pressable style={[styles.secondaryButton, style as ViewStyle]} onPress={onPress}>
         <ThemedText style={styles.secondaryButtonText}>{title}</ThemedText>
       </Pressable>
     );
   }
+}
+
+const iconMapping = {
+  reminded: require("../assets/icons/reminder-on.png"),
+  unreminded: require("../assets/icons/reminder-off.png"),
+  fav: require("../assets/icons/favorite-on.png"),
+  unfav: require("../assets/icons/favorite-off.png"),
+  edit: require("../assets/icons/edit-icon.png")
+};
+export function ThemedIcon(props: PressableProps & {iconName: keyof typeof iconMapping}){
+  const { iconName, onPress } = props;
+  return (<Pressable onPress={onPress}>
+            <Image resizeMode="contain" source={iconMapping[iconName]} style={globalStyles.icon} />
+         </Pressable>)
+}
+
+// Image that can be enlarged
+export function ThemedImage(props: {uri: string | undefined}){
+  const {uri} = props
+  const [enlargeImage, setEnlargeImage] = useState(false)
+
+  return (
+    <Pressable style={{width: '100%', alignItems: 'center'}} onPress={()=>setEnlargeImage(true)}>
+      <Image
+            source={{ uri: uri }}
+            style={globalStyles.image}
+      />
+
+      <ImageView
+        images={[{uri: uri}]}
+        imageIndex={0}
+        visible={enlargeImage}
+        onRequestClose={() => setEnlargeImage(false)}
+      />
+    </Pressable>
+  )
 }
 
 export function ThemedTextInput(props: TextInputProps){
@@ -86,17 +128,16 @@ export function ThemedFlatList<T>(props: FlatListProps<T>) {
 
 const styles = StyleSheet.create({
   primaryButton: {
-    backgroundColor: ivoryWhite,
+    backgroundColor: pureWhite,
     alignSelf: "center",
     justifyContent: "center",
-    paddingVertical: 18,
-    paddingHorizontal: 40,
+    paddingVertical: 13,
+    paddingHorizontal: 25,
     borderRadius: 20,
   },
   primaryButtonText: {
     color: darkGreen,
     fontSize: 18,
-    fontWeight: "700",
     alignItems: "center",
   },
   secondaryButton: {
@@ -110,7 +151,6 @@ const styles = StyleSheet.create({
   secondaryButtonText: {
     color: ivoryWhite,
     fontSize: 18,
-    fontWeight: "700",
     alignItems: "center",
   },
   view: {},

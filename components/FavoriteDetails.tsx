@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { SafeAreaView, StyleSheet, Image, ScrollView, Pressable } from "react-native";
-import { ThemedText, ThemedView, ThemedButton } from "../components/Themed";
+import { ThemedText, ThemedView, ThemedButton, ThemedImage, ThemedIcon } from "../components/Themed";
 import { Favorite } from "@/hooks/useFavorites";
 import { useRouter } from "expo-router";
+import { globalStyles } from "@/styles/globalStyles";
+import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 
 interface FavoriteDetailsProps {
   favorite: Favorite;
@@ -13,6 +15,7 @@ export default function FavoriteDetails({ favorite, onClose}: FavoriteDetailsPro
   const [city, setCity] = useState("Loading...");
   const [state, setState] = useState("");
   const [zipCode, setZipCode] = useState("");
+  console.log(favorite)
 
   const fetchLocationDetails = async (latitude : number, longitude : number) => {
     const GEO_API_KEY = "0fc7eb37c0ab4842a00ec10e9ec3661a";
@@ -80,31 +83,19 @@ export default function FavoriteDetails({ favorite, onClose}: FavoriteDetailsPro
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <ScrollView contentContainerStyle={styles.container}>
+    <>
+      <BottomSheetScrollView contentContainerStyle={globalStyles.infoPageSubContainer}>
         {/* Header Section */}
-        <ThemedView style={styles.header}>
-          <ThemedText style={styles.favoriteName}>{favorite.name}</ThemedText>
-
-          {/* Edit and Close Buttons */}
-          <ThemedView style={styles.headerButtons}>
-            <Pressable style={styles.iconButton} onPress={handleEditPress}>
-              <ThemedText>Edit</ThemedText>
-            </Pressable>
-            <Pressable onPress={onClose} style={styles.iconButton}>
-              <ThemedText>Close</ThemedText>
-            </Pressable>
-          </ThemedView>
-        </ThemedView>
+        <ThemedText style={globalStyles.infoPrimaryTitle}>{favorite.name}</ThemedText>
+        <ThemedView style={globalStyles.divider} />
+        <ThemedIcon iconName="edit" onPress={handleEditPress}></ThemedIcon>
 
         {/* Location Section */}
-        <ThemedView style={styles.locationContainer}>
-          <ThemedText>{`${city}, ${state}`}</ThemedText>
-          <ThemedText> {zipCode}</ThemedText>
-        </ThemedView>
+        <ThemedText style={globalStyles.infoPrimaryTitle}>{`${city}, ${state}`}</ThemedText>
+        <ThemedText style={globalStyles.infoSecondaryTitle}>{`(${zipCode})`}</ThemedText>
 
         {/* Note Section */}
-        <ThemedView style={styles.noteContainer}>
+        <ThemedView style={globalStyles.note}>
           <ThemedText>{favorite.note || "No note available"}</ThemedText>
         </ThemedView>
 
@@ -112,19 +103,18 @@ export default function FavoriteDetails({ favorite, onClose}: FavoriteDetailsPro
         <ThemedView style={styles.photosContainer}>
           {favorite.photos && favorite.photos.length > 0 ? (
             favorite.photos.map((photoUri, index) => (
-              <Image
+              <ThemedImage 
                 key={index}
-                source={{ uri: photoUri }}
-                style={styles.photo}
-                resizeMode="cover"
+                uri = {photoUri}
               />
             ))
           ) : (
             <ThemedText>No photos available</ThemedText>
           )}
         </ThemedView>
-      </ScrollView>
-    </SafeAreaView>
+      </BottomSheetScrollView>
+      <ThemedButton style={globalStyles.flowingButton} title="Back" onPress={onClose} action="primary" />
+    </>
   );
 }
 
@@ -140,21 +130,11 @@ const styles = StyleSheet.create({
     width: "100%",
     marginBottom: 16,
   },
-  favoriteName: {
-    fontSize: 24,
-    flex: 1,
-  },
   headerButtons: {
     flexDirection: "row",
   },
   iconButton: {
     marginLeft: 10,
-  },
-  locationContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    width: "100%",
-    marginBottom: 16,
   },
   noteContainer: {
     width: "100%",

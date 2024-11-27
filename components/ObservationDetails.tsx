@@ -1,32 +1,31 @@
 import {
   Image,
-  SafeAreaView,
   StyleSheet,
-  useWindowDimensions,
 } from "react-native";
 import {
   ThemedScrollView,
   ThemedView,
   ThemedText,
   ThemedButton,
+  ThemedIcon,
+  ThemedImage,
 } from "./Themed";
 import { Observation } from "../iNaturalistTypes";
-import { useRouter } from "expo-router";
 import { useContext, useEffect, useState } from "react";
 import { FavoritesContext } from "@/hooks/FavoritesContext";
+import { globalStyles } from "@/styles/globalStyles";
+import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 
 interface ObservationDetailsProps {
   observation: Observation;
-  onClose: () => void;
+  updateBottomSheet: () => void;
+  // onClose: () => void;
 }
 
 export default function ObservationDetails({
-  observation,
-  onClose,
+  observation, updateBottomSheet
+  // onClose,
 }: ObservationDetailsProps) {
-  const { width } = useWindowDimensions();
-  const router = useRouter();
-
   // keep track of whether this observation is favorited
   const { favorites, addFavorite  } = useContext(FavoritesContext);
   const [isFavorited, setIsFavorited] = useState(false);
@@ -62,97 +61,33 @@ export default function ObservationDetails({
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      <ThemedScrollView>
-        {/* Header with common name */}
-        <ThemedView style={styles.headerContainer}>
-          <ThemedText style={styles.commonName}>
-            {observation.taxon?.preferred_common_name || "Observation Details"}
-          </ThemedText>
-          <ThemedText style={styles.scientificName}>
-            {observation.taxon?.name}
-          </ThemedText>
-        </ThemedView>
-
-        {/* Observation Date and Note */}
-        <ThemedView style={styles.detailsContainer}>
-          <ThemedText>
-            Observed on: {observation.observed_on || "Date not available"}
-          </ThemedText>
-          <ThemedText>{observation.description || ""}</ThemedText>
-        </ThemedView>
-
-        {/* Add to Favorite Button or Favorited Text */}
-        {!isFavorited ? (
-          <ThemedButton
-            title="Add to Favorites"
-            onPress={handleAddToFavorites}
-          />
-        ) : (
-          <ThemedView style={styles.favoritedTextContainer}>
-            <ThemedText style={styles.favoritedText}>Favorited!</ThemedText>
-          </ThemedView>
-        )}
-
-        {/* Photos */}
-        <ThemedView style={styles.photoContainer}>
-          {observation.photos && observation.photos.length > 0 ? (
-            observation.photos.map((photo, index) => (
-              <Image
-                key={index}
-                source={{ uri: photo.url?.replace("square", "medium") }}
-                style={[
-                  styles.photo,
-                  { width: width - 32, height: width - 32 },
-                ]}
-                resizeMode="cover"
-              />
-            ))
+    <>
+        <BottomSheetScrollView contentContainerStyle={globalStyles.infoPageSubContainer}>
+          <ThemedText style={globalStyles.infoPrimaryTitle}>{observation.taxon?.preferred_common_name}</ThemedText>
+          <ThemedText style={globalStyles.infoSecondaryTitle}>{observation.taxon?.name}</ThemedText>
+          <ThemedView style={globalStyles.divider} />
+          
+          {/* Add to Favorite Button or Favorited Text */}
+          {!isFavorited ? (
+            <ThemedIcon iconName="unfav" onPress={handleAddToFavorites}></ThemedIcon>
           ) : (
-            <ThemedText>No photos available</ThemedText>
+            <ThemedIcon iconName="fav"></ThemedIcon> //Q: allow user to unfav here?
           )}
-        </ThemedView>
-      </ThemedScrollView>
-      <ThemedButton title="Back to Map" onPress={onClose} action="secondary" />
-      <ThemedText></ThemedText>
-    </SafeAreaView>
+
+          <ThemedText style={globalStyles.infoUnderlinedTitle}>Observed on</ThemedText>
+          <ThemedText style={globalStyles.infoSecondaryTitle}>{observation.observed_on || "Date Not Available"}</ThemedText>
+
+          { observation.photos && observation.photos.length > 0 
+            ? (observation.photos.map((photo, index) => (
+                <ThemedImage 
+                  key={index}
+                  uri={photo.url?.replace("square", "medium")}
+                />))) 
+            : (<ThemedText>No photos available</ThemedText>)
+          }
+
+        </BottomSheetScrollView>
+        <ThemedButton style={globalStyles.flowingButton} title="Back to Map" onPress={updateBottomSheet} action="primary" />
+    </>
   );
 }
-
-const styles = StyleSheet.create({
-  headerContainer: {
-    padding: 16,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  commonName: {
-    fontSize: 24,
-    textAlign: "center",
-  },
-  scientificName: {
-    fontSize: 24,
-    textAlign: "center",
-    fontStyle: "italic",
-  },
-  detailsContainer: {
-    paddingHorizontal: 16,
-    marginVertical: 8,
-  },
-  photoContainer: {
-    alignItems: "center",
-    marginVertical: 20,
-  },
-  photo: {
-    marginVertical: 10,
-    borderRadius: 10,
-  },
-  favoritedTextContainer: {
-    alignItems: "center",
-    paddingVertical: 10,
-  },
-  favoritedText: {
-    fontSize: 18,
-    color: "green",
-    fontWeight: "bold",
-  },
-});

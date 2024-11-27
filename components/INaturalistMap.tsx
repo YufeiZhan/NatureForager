@@ -1,16 +1,15 @@
 import { Observation, ObservationsResponse } from "@/iNaturalistTypes";
 import Map, { MapProps, Markers } from "./Map";
 import { useEffect, useState } from "react";
-import { Modal } from "react-native";
-import ObservationDetails from "./ObservationDetails";
 import { BoundingBox } from "react-native-maps";
 
 interface iNaturalistMapProps extends MapProps {
   iNaturalistTaxonId?: string;
+  updateBottomSheet: (obs:Observation|null)=>void;
 }
 
 export default function INaturalistMap({
-  iNaturalistTaxonId,
+  iNaturalistTaxonId, updateBottomSheet,
   ...mapProps
 }: iNaturalistMapProps) {
   const [markers, setMarkers] = useState<Markers>({});
@@ -18,15 +17,6 @@ export default function INaturalistMap({
     undefined
   );
 
-  // state for iNaturalist observation details modal
-  const [modalVisible, setModalVisible] = useState(false);
-  const [modalObservation, setModalObservation] = useState<
-    Observation | undefined
-  >();
-  const openDetailsModal = (observation: Observation) => {
-    setModalObservation(observation);
-    setModalVisible(true);
-  };
 
   // when taxon id changes, reset markers
   useEffect(() => {
@@ -63,7 +53,7 @@ export default function INaturalistMap({
         if (observation.id !== undefined) {
           newMarkers[observation.id] = {
             coordinate: { latitude: latlng[0], longitude: latlng[1] },
-            onPress: () => openDetailsModal(observation),
+            onPress: () => updateBottomSheet(observation),
           };
         }
       });
@@ -73,20 +63,10 @@ export default function INaturalistMap({
   }, [iNaturalistTaxonId, mapBounds]);
 
   return (
-    <>
       <Map
         markers={markers}
         onBoundsChangeComplete={setMapBounds}
         {...mapProps}
       ></Map>
-      <Modal visible={modalVisible} animationType="slide">
-        {modalObservation && (
-          <ObservationDetails
-            observation={modalObservation}
-            onClose={() => setModalVisible(false)}
-          ></ObservationDetails>
-        )}
-      </Modal>
-    </>
   );
 }
