@@ -82,9 +82,9 @@ export default function Map({
     }
     panToMarker(selectedMarkerId, PAN_ANIMATION_DURATION);
     // also show its callout (only after the animation finishes, to prevent weirdness)
-    setTimeout(() => {
-      markerRefs.current?.[selectedMarkerId].showCallout();
-    }, PAN_ANIMATION_DURATION + 50);
+    // setTimeout(() => {
+    //   markerRefs.current?.[selectedMarkerId].showCallout();
+    // }, PAN_ANIMATION_DURATION + 50);
   }, [selectedMarkerId]);
 
   // map pin logic -----------------------
