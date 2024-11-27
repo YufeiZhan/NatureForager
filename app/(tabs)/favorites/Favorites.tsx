@@ -15,6 +15,7 @@ import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
 import Map, { Markers } from "@/components/Map";
+import { globalStyles } from "@/styles/globalStyles";
 
 export default function Favorites() {
   const { location } = useContext(LocationContext);
@@ -100,7 +101,7 @@ export default function Favorites() {
           />
 
           <BottomSheet
-            backgroundStyle={styles.bottomSheet}
+            backgroundStyle={globalStyles.bottomSheet}
             enableDynamicSizing={false}
             snapPoints={["5%", "35%", "100%"]}
             index={1}

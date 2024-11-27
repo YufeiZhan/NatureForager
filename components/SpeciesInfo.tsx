@@ -1,26 +1,25 @@
 import { useEffect, useState } from "react";
 import {
   Image,
-  StyleSheet,
-  Pressable,
   useWindowDimensions,
   LogBox,
-  TextProps,
-  SafeAreaView,
 } from "react-native";
 import {
   ThemedScrollView,
   ThemedView,
   ThemedText,
-  ThemedButton,
+  ThemedIcon,
+  ThemedImage,
 } from "../components/Themed";
-import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import RenderHTML from "react-native-render-html";
-import { oliveGreen, pureWhite } from "@/constants/Colors";
 import plantData from "@/data/edible_plants.json";
-import { ReminderSpecies, TempReminderSpecies } from "@/backend/Reminder";
+import { loadReminders, ReminderSpecies, TempReminderSpecies } from "@/backend/Reminder";
 import speciesData from "@/data/edible_plants.json";
 import FrequencySelection from "./FrequencySelection";
+import { View } from "react-native";
+import { globalStyles } from "@/styles/globalStyles";
+import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
+import ImageView from "react-native-image-viewing";
 
 type Plant = (typeof plantData)[number];
 
@@ -72,10 +71,11 @@ export default function SpeciesInfo({ taxonId }: { taxonId: string }) {
   const [plantInfo, setPlantInfo] = useState<Plant | null>(null);
   const [taxonData, setTaxonData] = useState<TaxonData | null>(null);
   const [loading, setLoading] = useState(true);
-  const router = useRouter();
   const { width } = useWindowDimensions();
   const [edibleInfo, setEdibleInfo] = useState<ReminderSpecies | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isReminded, setIsReminded] = useState(false);
+  
 
   useEffect(() => {
     const aggregatedData = aggregateSpecies(speciesData);
@@ -83,7 +83,7 @@ export default function SpeciesInfo({ taxonId }: { taxonId: string }) {
     const matchedPlant = plantData.find((plant) => {
       return String(plant["iNaturalist ID"]) === String(taxonId);
     });
-    // console.log(matchedPlant);
+    // console.log("matched:", matchedPlant);
 
     if (matchedPlant) {
       setPlantInfo(matchedPlant);
@@ -109,7 +109,7 @@ export default function SpeciesInfo({ taxonId }: { taxonId: string }) {
         );
         const data = await response.json();
         const taxon = data.results[0];
-        // console.log(response);
+        // console.log("taxon:",taxon);
 
         const displayCommonName =
           matchedPlant?.["Common Name"] ||
@@ -134,9 +134,19 @@ export default function SpeciesInfo({ taxonId }: { taxonId: string }) {
     fetchTaxonData();
   }, [taxonId]);
 
+  useEffect(() => {
+    async function getReminder(){
+      const result = await loadReminders();
+      const reminded = result.filter(item => item.name === plantInfo?.["Common Name"]).length > 0
+      setIsReminded(reminded)
+    }
+
+    getReminder()
+  })
+
   if (loading) {
     return (
-      <ThemedScrollView contentContainerStyle={styles.mainContainer}>
+      <ThemedScrollView contentContainerStyle={globalStyles.infoPageContainer}>
         <ThemedText>Loading plant information...</ThemedText>
       </ThemedScrollView>
     );
@@ -150,64 +160,43 @@ export default function SpeciesInfo({ taxonId }: { taxonId: string }) {
     setIsModalVisible(false);
   }
 
+  
+
   return (
-    <>
-    <ThemedScrollView contentContainerStyle={styles.mainContainer}>
-      <ThemedButton title="Get Reminded" onPress={() => handleReminded(edibleInfo!)} />
+        <BottomSheetScrollView contentContainerStyle={globalStyles.infoPageSubContainer}>
+          <ThemedText style={globalStyles.infoPrimaryTitle}>{taxonData?.common_name}</ThemedText>
+          <ThemedText style={globalStyles.infoSecondaryTitle}>{taxonData?.scientific_name}</ThemedText>
+          <View style={globalStyles.divider}></View>
 
-      <ThemedView style={styles.imageContainer}>
-        <Image
-          source={{ uri: taxonData?.photo_url }}
-          style={styles.image}
-          resizeMode="cover"
-        />
-      </ThemedView>
+          { isReminded ? <ThemedIcon iconName="reminded"></ThemedIcon>
+                       : <ThemedIcon iconName="unreminded" onPress={() => handleReminded(edibleInfo!)}></ThemedIcon>
+          }
+          
+          <ThemedView style={globalStyles.secondaryGroup}>
+            <ThemedText style={globalStyles.infoUnderlinedTitle}>Months Ripe</ThemedText>
+            <ThemedText style={globalStyles.infoSecondaryTitle}>{edibleInfo?.months.join(", ")}</ThemedText>
+          </ThemedView>
+          <ThemedView style={globalStyles.secondaryGroup}>
+            <ThemedText style={globalStyles.infoUnderlinedTitle}>PartsEdible</ThemedText>
+            <ThemedText style={globalStyles.infoSecondaryTitle}>TBA</ThemedText>
+          </ThemedView>
+          
+          <ThemedImage uri={taxonData?.photo_url}/>
+          
+          <ThemedView style = {globalStyles.html}>
+            <RenderHTML
+                    contentWidth={width}
+                    source={{ html: taxonData?.wikipedia_summary || "" }}
+              />
+          </ThemedView>
 
-      <ThemedView>
-        <ThemedText>Common Name: {taxonData?.common_name}</ThemedText>
-        <ThemedText>
-          Scientific Name:{" "}
-          <ThemedText style={{ fontStyle: "italic" }}>
-            {taxonData?.scientific_name}
-          </ThemedText>
-        </ThemedText>
-        <ThemedText>Months Ripe: {edibleInfo?.months.join(", ")}</ThemedText>
-      </ThemedView>
-
-      <ThemedView>
-        <ThemedView>
-          <RenderHTML
-            contentWidth={width}
-            source={{ html: taxonData?.wikipedia_summary || "" }}
-            // defaultTextProps={{ style: { color: pureWhite } }}
-          />
-        </ThemedView>
-      </ThemedView>
-    </ThemedScrollView>
-
-    {isModalVisible && edibleInfo && (
-      <FrequencySelection
-        species={{ ...edibleInfo, frequency: "", imageURL: ""}}
-        ifBack={false}
-        onClose={handleCloseModal}
-      />
-    )}
-    </>
+          {isModalVisible && edibleInfo &&
+            (<FrequencySelection
+              species={{ ...edibleInfo, frequency: "", imageURL: ""}}
+              ifBack={false}
+              onClose={handleCloseModal}
+            />)
+          } 
+        </BottomSheetScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  mainContainer: {
-    flex: 1,
-    gap: 20,
-    padding: 20,
-  },
-  imageContainer: {
-    alignItems: "center",
-  },
-  image: {
-    width: 300,
-    height: 200,
-    borderRadius: 10,
-  },
-});
