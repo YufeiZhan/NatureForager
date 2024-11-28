@@ -56,15 +56,20 @@ export default function PlantLocation() {
     const kmPerDegLng = circumKmAtLatitude / 360;
     const degLngToNearest = Number(distanceKmToNearest) / kmPerDegLng;
     initialLngExtent = 4 * degLngToNearest;
+
+    // don't zoom in too much
+    initialLatExtent = Math.max(0.001, initialLatExtent);
+    initialLngExtent = Math.max(0.001, initialLngExtent);
   }
 
   // ref for the bottom sheet
-  const bottomSheetRef = useRef<BottomSheetMethods>(null)
-  const snapTo = (index : number) => {
+  const bottomSheetRef = useRef<BottomSheetMethods>(null);
+  const snapTo = (index: number) => {
     bottomSheetRef.current?.snapToIndex(index);
-  }
+  };
   // obaservation detail if pin clicked
-  const [observationDetail, setObservationDetail] = useState<Observation | null>(null)
+  const [observationDetail, setObservationDetail] =
+    useState<Observation | null>(null);
   return (
     <>
       <INaturalistMap
@@ -73,7 +78,7 @@ export default function PlantLocation() {
         initialLng={Number(initialLng)}
         initialLatExtent={initialLatExtent}
         initialLngExtent={initialLngExtent}
-        updateBottomSheet ={(obs) => {
+        updateBottomSheet={(obs) => {
           setObservationDetail(obs);
           snapTo(1);
         }}
@@ -84,15 +89,15 @@ export default function PlantLocation() {
         enableDynamicSizing={false}
         snapPoints={["5%", "35%", "100%"]}
         index={1} //initialize to the second snappoint
-      > 
-        { observationDetail 
-          ? <ObservationDetails
-              observation={observationDetail}
-              updateBottomSheet ={() => setObservationDetail(null)}
-              ></ObservationDetails>
-          : <SpeciesInfo taxonId={iNaturalistTaxonId} />
-        }
-        
+      >
+        {observationDetail ? (
+          <ObservationDetails
+            observation={observationDetail}
+            updateBottomSheet={() => setObservationDetail(null)}
+          ></ObservationDetails>
+        ) : (
+          <SpeciesInfo taxonId={iNaturalistTaxonId} />
+        )}
       </BottomSheet>
     </>
   );
