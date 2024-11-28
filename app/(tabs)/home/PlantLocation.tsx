@@ -47,14 +47,28 @@ export default function PlantLocation() {
     initialLngExtent = 4 * degLngToNearest;
   }
 
+  // selected observation id
+  const [selectedId, setSelectedId] = useState("");
+
   // ref for the bottom sheet
   const bottomSheetRef = useRef<BottomSheetMethods>(null);
   const snapTo = (index: number) => {
     bottomSheetRef.current?.snapToIndex(index);
   };
-  // obaservation detail if pin clicked
+  // observation detail if pin clicked
   const [observationDetail, setObservationDetail] =
     useState<Observation | null>(null);
+
+  const selectObservation = (obs: Observation) => {
+    setObservationDetail(obs);
+    snapTo(1);
+    setSelectedId(obs.id ? String(obs.id) : "");
+  };
+  const deselectObservation = () => {
+    setObservationDetail(null);
+    setSelectedId("");
+  };
+
   return (
     <>
       <INaturalistMap
@@ -63,10 +77,9 @@ export default function PlantLocation() {
         initialLng={Number(initialLng)}
         initialLatExtent={initialLatExtent}
         initialLngExtent={initialLngExtent}
-        updateBottomSheet={(obs) => {
-          setObservationDetail(obs);
-          snapTo(1);
-        }}
+        selectedMarkerId={selectedId}
+        onPressObservation={selectObservation}
+        onPressMapBackground={deselectObservation}
       />
       <BottomSheet
         ref={bottomSheetRef}
@@ -78,7 +91,7 @@ export default function PlantLocation() {
         {observationDetail ? (
           <ObservationDetails
             observation={observationDetail}
-            updateBottomSheet={() => setObservationDetail(null)}
+            onCloseDetails={deselectObservation}
           ></ObservationDetails>
         ) : (
           <SpeciesInfo taxonId={iNaturalistTaxonId} />

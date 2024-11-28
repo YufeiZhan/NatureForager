@@ -1,7 +1,4 @@
-import {
-  Image,
-  StyleSheet,
-} from "react-native";
+import { Image, StyleSheet } from "react-native";
 import {
   ThemedScrollView,
   ThemedView,
@@ -18,16 +15,16 @@ import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 
 interface ObservationDetailsProps {
   observation: Observation;
-  updateBottomSheet: () => void;
-  // onClose: () => void;
+  onCloseDetails: () => void;
 }
 
 export default function ObservationDetails({
-  observation, updateBottomSheet
-  // onClose,
-}: ObservationDetailsProps) {
+  observation,
+  onCloseDetails,
+}: // onClose,
+ObservationDetailsProps) {
   // keep track of whether this observation is favorited
-  const { favorites, addFavorite  } = useContext(FavoritesContext);
+  const { favorites, addFavorite } = useContext(FavoritesContext);
   const [isFavorited, setIsFavorited] = useState(false);
   useEffect(() => {
     const isInFavorites = Boolean(
@@ -42,7 +39,10 @@ export default function ObservationDetails({
     // Construct the favorite object based on the observation data
     const favorite = {
       iNaturalistId: observation.id,
-      name: observation.taxon?.preferred_common_name || observation.taxon?.name || "Unknown",
+      name:
+        observation.taxon?.preferred_common_name ||
+        observation.taxon?.name ||
+        "Unknown",
       location: {
         latitude: parseFloat(observation.location?.split(",")[0] || "0"),
         longitude: parseFloat(observation.location?.split(",")[1] || "0"),
@@ -62,32 +62,51 @@ export default function ObservationDetails({
 
   return (
     <>
-        <BottomSheetScrollView contentContainerStyle={globalStyles.infoPageSubContainer}>
-          <ThemedText style={globalStyles.infoPrimaryTitle}>{observation.taxon?.preferred_common_name}</ThemedText>
-          <ThemedText style={globalStyles.infoSecondaryTitle}>{observation.taxon?.name}</ThemedText>
-          <ThemedView style={globalStyles.divider} />
-          
-          {/* Add to Favorite Button or Favorited Text */}
-          {!isFavorited ? (
-            <ThemedIcon iconName="unfav" onPress={handleAddToFavorites}></ThemedIcon>
-          ) : (
-            <ThemedIcon iconName="fav"></ThemedIcon> //Q: allow user to unfav here?
-          )}
+      <BottomSheetScrollView
+        contentContainerStyle={globalStyles.infoPageSubContainer}
+      >
+        <ThemedText style={globalStyles.infoPrimaryTitle}>
+          {observation.taxon?.preferred_common_name}
+        </ThemedText>
+        <ThemedText style={globalStyles.infoSecondaryTitle}>
+          {observation.taxon?.name}
+        </ThemedText>
+        <ThemedView style={globalStyles.divider} />
 
-          <ThemedText style={globalStyles.infoUnderlinedTitle}>Observed on</ThemedText>
-          <ThemedText style={globalStyles.infoSecondaryTitle}>{observation.observed_on || "Date Not Available"}</ThemedText>
+        {/* Add to Favorite Button or Favorited Text */}
+        {!isFavorited ? (
+          <ThemedIcon
+            iconName="unfav"
+            onPress={handleAddToFavorites}
+          ></ThemedIcon>
+        ) : (
+          <ThemedIcon iconName="fav"></ThemedIcon> //Q: allow user to unfav here?
+        )}
 
-          { observation.photos && observation.photos.length > 0 
-            ? (observation.photos.map((photo, index) => (
-                <ThemedImage 
-                  key={index}
-                  uri={photo.url?.replace("square", "medium")}
-                />))) 
-            : (<ThemedText>No photos available</ThemedText>)
-          }
+        <ThemedText style={globalStyles.infoUnderlinedTitle}>
+          Observed on
+        </ThemedText>
+        <ThemedText style={globalStyles.infoSecondaryTitle}>
+          {observation.observed_on || "Date Not Available"}
+        </ThemedText>
 
-        </BottomSheetScrollView>
-        <ThemedButton style={globalStyles.flowingButton} title="Back to Map" onPress={updateBottomSheet} action="primary" />
+        {observation.photos && observation.photos.length > 0 ? (
+          observation.photos.map((photo, index) => (
+            <ThemedImage
+              key={index}
+              uri={photo.url?.replace("square", "medium")}
+            />
+          ))
+        ) : (
+          <ThemedText>No photos available</ThemedText>
+        )}
+      </BottomSheetScrollView>
+      <ThemedButton
+        style={globalStyles.flowingButton}
+        title="Back to Map"
+        onPress={onCloseDetails}
+        action="primary"
+      />
     </>
   );
 }
