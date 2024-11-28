@@ -3,6 +3,7 @@ import {
   Image,
   useWindowDimensions,
   LogBox,
+  ActivityIndicator,
 } from "react-native";
 import {
   ThemedScrollView,
@@ -13,13 +14,18 @@ import {
 } from "../components/Themed";
 import RenderHTML from "react-native-render-html";
 import plantData from "@/data/edible_plants.json";
-import { loadReminders, ReminderSpecies, TempReminderSpecies } from "@/backend/Reminder";
+import {
+  loadReminders,
+  ReminderSpecies,
+  TempReminderSpecies,
+} from "@/backend/Reminder";
 import speciesData from "@/data/edible_plants.json";
 import FrequencySelection from "./FrequencySelection";
 import { View } from "react-native";
 import { globalStyles } from "@/styles/globalStyles";
 import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import ImageView from "react-native-image-viewing";
+import { darkGreen } from "@/constants/Colors";
 
 type Plant = (typeof plantData)[number];
 
@@ -39,7 +45,9 @@ LogBox.ignoreLogs([
 console.error = (error) => error.apply;
 
 const aggregateSpecies = (data: any[]): TempReminderSpecies[] => {
-  const speciesMap: { [key: number]: TempReminderSpecies & { monthsSet: Set<string> } } = {};
+  const speciesMap: {
+    [key: number]: TempReminderSpecies & { monthsSet: Set<string> };
+  } = {};
 
   data.forEach((item) => {
     const id = item["iNaturalist ID"];
@@ -75,7 +83,6 @@ export default function SpeciesInfo({ taxonId }: { taxonId: string }) {
   const [edibleInfo, setEdibleInfo] = useState<ReminderSpecies | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isReminded, setIsReminded] = useState(false);
-  
 
   useEffect(() => {
     const aggregatedData = aggregateSpecies(speciesData);
@@ -94,13 +101,13 @@ export default function SpeciesInfo({ taxonId }: { taxonId: string }) {
     const ediblePlant = aggregatedData.find((plant) => {
       return String(plant.id) === String(taxonId);
     });
-    
+
     if (ediblePlant) {
       setEdibleInfo(ediblePlant);
     } else {
       console.error("No edible plant data found for this taxon.");
     }
-    
+
     // Fetch taxon details from iNaturalist API
     const fetchTaxonData = async () => {
       try {
@@ -135,20 +142,28 @@ export default function SpeciesInfo({ taxonId }: { taxonId: string }) {
   }, [taxonId]);
 
   useEffect(() => {
-    async function getReminder(){
+    async function getReminder() {
       const result = await loadReminders();
-      const reminded = result.filter(item => item.name === plantInfo?.["Common Name"]).length > 0
-      setIsReminded(reminded)
+      const reminded =
+        result.filter((item) => item.name === plantInfo?.["Common Name"])
+          .length > 0;
+      setIsReminded(reminded);
     }
 
-    getReminder()
-  })
+    getReminder();
+  });
 
   if (loading) {
     return (
-      <ThemedScrollView contentContainerStyle={globalStyles.infoPageContainer}>
-        <ThemedText>Loading plant information...</ThemedText>
-      </ThemedScrollView>
+      <BottomSheetScrollView
+        contentContainerStyle={globalStyles.infoPageSubContainer}
+      >
+        <ActivityIndicator
+          color={darkGreen}
+          size="large"
+          style={{ marginTop: 50 }}
+        ></ActivityIndicator>
+      </BottomSheetScrollView>
     );
   }
 
@@ -160,43 +175,58 @@ export default function SpeciesInfo({ taxonId }: { taxonId: string }) {
     setIsModalVisible(false);
   }
 
-  
-
   return (
-        <BottomSheetScrollView contentContainerStyle={globalStyles.infoPageSubContainer}>
-          <ThemedText style={globalStyles.infoPrimaryTitle}>{taxonData?.common_name}</ThemedText>
-          <ThemedText style={globalStyles.infoSecondaryTitle}>{taxonData?.scientific_name}</ThemedText>
-          <View style={globalStyles.divider}></View>
+    <BottomSheetScrollView
+      contentContainerStyle={globalStyles.infoPageSubContainer}
+    >
+      <ThemedText style={globalStyles.infoPrimaryTitle}>
+        {taxonData?.common_name}
+      </ThemedText>
+      <ThemedText style={globalStyles.infoSecondaryTitle}>
+        {taxonData?.scientific_name}
+      </ThemedText>
+      <View style={globalStyles.divider}></View>
 
-          { isReminded ? <ThemedIcon iconName="reminded"></ThemedIcon>
-                       : <ThemedIcon iconName="unreminded" onPress={() => handleReminded(edibleInfo!)}></ThemedIcon>
-          }
-          
-          <ThemedView style={globalStyles.secondaryGroup}>
-            <ThemedText style={globalStyles.infoUnderlinedTitle}>Months Ripe</ThemedText>
-            <ThemedText style={globalStyles.infoSecondaryTitle}>{edibleInfo?.months.join(", ")}</ThemedText>
-          </ThemedView>
-          <ThemedView style={globalStyles.secondaryGroup}>
-            <ThemedText style={globalStyles.infoUnderlinedTitle}>PartsEdible</ThemedText>
-            <ThemedText style={globalStyles.infoSecondaryTitle}>TBA</ThemedText>
-          </ThemedView>
-          
-          <ThemedImage uri={taxonData?.photo_url}/>
-          
-          <ThemedView style = {globalStyles.html}>
-            <RenderHTML
-                    contentWidth={width}
-                    source={{ html: taxonData?.wikipedia_summary || "" }}
-              />
-          </ThemedView>
+      {isReminded ? (
+        <ThemedIcon iconName="reminded"></ThemedIcon>
+      ) : (
+        <ThemedIcon
+          iconName="unreminded"
+          onPress={() => handleReminded(edibleInfo!)}
+        ></ThemedIcon>
+      )}
 
-          {isModalVisible && edibleInfo &&
-            (<FrequencySelection
-              species={{ ...edibleInfo, frequency: "", imageURL: ""}}
-              ifBack={false}
-              onClose={handleCloseModal}
-            />)
-          } 
-        </BottomSheetScrollView>
+      <ThemedView style={globalStyles.secondaryGroup}>
+        <ThemedText style={globalStyles.infoUnderlinedTitle}>
+          Months Ripe
+        </ThemedText>
+        <ThemedText style={globalStyles.infoSecondaryTitle}>
+          {edibleInfo?.months.join(", ")}
+        </ThemedText>
+      </ThemedView>
+      <ThemedView style={globalStyles.secondaryGroup}>
+        <ThemedText style={globalStyles.infoUnderlinedTitle}>
+          PartsEdible
+        </ThemedText>
+        <ThemedText style={globalStyles.infoSecondaryTitle}>TBA</ThemedText>
+      </ThemedView>
+
+      <ThemedImage uri={taxonData?.photo_url} />
+
+      <ThemedView style={globalStyles.html}>
+        <RenderHTML
+          contentWidth={width}
+          source={{ html: taxonData?.wikipedia_summary || "" }}
+        />
+      </ThemedView>
+
+      {isModalVisible && edibleInfo && (
+        <FrequencySelection
+          species={{ ...edibleInfo, frequency: "", imageURL: "" }}
+          ifBack={false}
+          onClose={handleCloseModal}
+        />
+      )}
+    </BottomSheetScrollView>
   );
 }
