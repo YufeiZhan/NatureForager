@@ -182,7 +182,9 @@ export default function SpeciesInfo({ taxonId }: { taxonId: string }) {
       <ThemedText style={globalStyles.infoPrimaryTitle}>
         {taxonData?.common_name}
       </ThemedText>
-      <ThemedText style={globalStyles.infoSecondaryTitle}>
+      <ThemedText
+        style={[globalStyles.infoSecondaryTitle, { fontStyle: "italic" }]}
+      >
         {taxonData?.scientific_name}
       </ThemedText>
       <View style={globalStyles.divider}></View>
@@ -206,7 +208,7 @@ export default function SpeciesInfo({ taxonId }: { taxonId: string }) {
       </ThemedView>
       <ThemedView style={globalStyles.secondaryGroup}>
         <ThemedText style={globalStyles.infoUnderlinedTitle}>
-          PartsEdible
+          Parts Edible
         </ThemedText>
         <ThemedText style={globalStyles.infoSecondaryTitle}>TBA</ThemedText>
       </ThemedView>
