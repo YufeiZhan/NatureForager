@@ -1,12 +1,6 @@
 import { useEffect, useState } from "react";
+import { useWindowDimensions, LogBox, ActivityIndicator } from "react-native";
 import {
-  Image,
-  useWindowDimensions,
-  LogBox,
-  ActivityIndicator,
-} from "react-native";
-import {
-  ThemedScrollView,
   ThemedView,
   ThemedText,
   ThemedIcon,
@@ -23,8 +17,6 @@ import speciesData from "@/data/edible_plants.json";
 import FrequencySelection from "./FrequencySelection";
 import { View } from "react-native";
 import { globalStyles } from "@/styles/globalStyles";
-import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
-import ImageView from "react-native-image-viewing";
 import { darkGreen } from "@/constants/Colors";
 
 type Plant = (typeof plantData)[number];
@@ -75,7 +67,16 @@ const aggregateSpecies = (data: any[]): TempReminderSpecies[] => {
   }));
 };
 
-export default function SpeciesInfo({ taxonId }: { taxonId: string }) {
+export default function SpeciesInfo({
+  taxonId,
+  hide = false,
+}: {
+  taxonId: string;
+  hide?: boolean;
+}) {
+  // note "hide" is for not displaying this component while not unmounting it
+  // this avoids needing to re-fetch iNaturalist data / show an activity indicator
+
   const [plantInfo, setPlantInfo] = useState<Plant | null>(null);
   const [taxonData, setTaxonData] = useState<TaxonData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -153,20 +154,6 @@ export default function SpeciesInfo({ taxonId }: { taxonId: string }) {
     getReminder();
   });
 
-  if (loading) {
-    return (
-      <BottomSheetScrollView
-        contentContainerStyle={globalStyles.infoPageSubContainer}
-      >
-        <ActivityIndicator
-          color={darkGreen}
-          size="large"
-          style={{ marginTop: 50 }}
-        ></ActivityIndicator>
-      </BottomSheetScrollView>
-    );
-  }
-
   const handleReminded = (species: ReminderSpecies) => {
     setIsModalVisible(true);
   };
@@ -175,10 +162,23 @@ export default function SpeciesInfo({ taxonId }: { taxonId: string }) {
     setIsModalVisible(false);
   }
 
+  // if just hiding this component, don't unmount it (so don't have to refetch)
+  if (hide) {
+    return <></>;
+  }
+
+  if (loading) {
+    return (
+      <ActivityIndicator
+        color={darkGreen}
+        size="large"
+        style={{ marginTop: 50 }}
+      />
+    );
+  }
+
   return (
-    <BottomSheetScrollView
-      contentContainerStyle={globalStyles.infoPageSubContainer}
-    >
+    <>
       <ThemedText style={globalStyles.infoPrimaryTitle}>
         {taxonData?.common_name}
       </ThemedText>
@@ -229,6 +229,6 @@ export default function SpeciesInfo({ taxonId }: { taxonId: string }) {
           onClose={handleCloseModal}
         />
       )}
-    </BottomSheetScrollView>
+    </>
   );
 }

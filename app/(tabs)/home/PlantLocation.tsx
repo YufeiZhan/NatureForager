@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useNonArraySearchParams } from "@/hooks/useNonArraySearchParams";
 import { RootStackParamList } from "../../../NavigationTypes";
 import { StackNavigationProp } from "@react-navigation/stack";
-import BottomSheet from "@gorhom/bottom-sheet";
+import BottomSheet, { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { globalStyles } from "@/styles/globalStyles";
 import SpeciesInfo from "@/components/SpeciesInfo";
 import ObservationDetails from "@/components/ObservationDetails";
@@ -88,14 +88,20 @@ export default function PlantLocation() {
         snapPoints={["5%", "35%", "100%"]}
         index={1} //initialize to the second snappoint
       >
-        {observationDetail ? (
-          <ObservationDetails
-            observation={observationDetail}
-            onCloseDetails={deselectObservation}
-          ></ObservationDetails>
-        ) : (
-          <SpeciesInfo taxonId={iNaturalistTaxonId} />
-        )}
+        <BottomSheetScrollView
+          contentContainerStyle={globalStyles.infoPageSubContainer}
+        >
+          <SpeciesInfo
+            taxonId={iNaturalistTaxonId}
+            hide={Boolean(observationDetail)}
+          />
+          {observationDetail && (
+            <ObservationDetails
+              observation={observationDetail}
+              onCloseDetails={deselectObservation}
+            ></ObservationDetails>
+          )}
+        </BottomSheetScrollView>
       </BottomSheet>
     </>
   );

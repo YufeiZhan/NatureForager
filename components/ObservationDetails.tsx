@@ -1,6 +1,4 @@
-import { Image, StyleSheet } from "react-native";
 import {
-  ThemedScrollView,
   ThemedView,
   ThemedText,
   ThemedButton,
@@ -11,7 +9,6 @@ import { Observation } from "../iNaturalistTypes";
 import { useContext, useEffect, useState } from "react";
 import { FavoritesContext } from "@/hooks/FavoritesContext";
 import { globalStyles } from "@/styles/globalStyles";
-import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 
 interface ObservationDetailsProps {
   observation: Observation;
@@ -62,45 +59,41 @@ ObservationDetailsProps) {
 
   return (
     <>
-      <BottomSheetScrollView
-        contentContainerStyle={globalStyles.infoPageSubContainer}
-      >
-        <ThemedText style={globalStyles.infoPrimaryTitle}>
-          {observation.taxon?.preferred_common_name}
-        </ThemedText>
-        <ThemedText style={globalStyles.infoSecondaryTitle}>
-          {observation.taxon?.name}
-        </ThemedText>
-        <ThemedView style={globalStyles.divider} />
+      <ThemedText style={globalStyles.infoPrimaryTitle}>
+        {observation.taxon?.preferred_common_name}
+      </ThemedText>
+      <ThemedText style={globalStyles.infoSecondaryTitle}>
+        {observation.taxon?.name}
+      </ThemedText>
+      <ThemedView style={globalStyles.divider} />
 
-        {/* Add to Favorite Button or Favorited Text */}
-        {!isFavorited ? (
-          <ThemedIcon
-            iconName="unfav"
-            onPress={handleAddToFavorites}
-          ></ThemedIcon>
-        ) : (
-          <ThemedIcon iconName="fav"></ThemedIcon> //Q: allow user to unfav here?
-        )}
+      {/* Add to Favorite Button or Favorited Text */}
+      {!isFavorited ? (
+        <ThemedIcon
+          iconName="unfav"
+          onPress={handleAddToFavorites}
+        ></ThemedIcon>
+      ) : (
+        <ThemedIcon iconName="fav"></ThemedIcon> //Q: allow user to unfav here?
+      )}
 
-        <ThemedText style={globalStyles.infoUnderlinedTitle}>
-          Observed on
-        </ThemedText>
-        <ThemedText style={globalStyles.infoSecondaryTitle}>
-          {observation.observed_on || "Date Not Available"}
-        </ThemedText>
+      <ThemedText style={globalStyles.infoUnderlinedTitle}>
+        Observed on
+      </ThemedText>
+      <ThemedText style={globalStyles.infoSecondaryTitle}>
+        {observation.observed_on || "Date Not Available"}
+      </ThemedText>
 
-        {observation.photos && observation.photos.length > 0 ? (
-          observation.photos.map((photo, index) => (
-            <ThemedImage
-              key={index}
-              uri={photo.url?.replace("square", "medium")}
-            />
-          ))
-        ) : (
-          <ThemedText>No photos available</ThemedText>
-        )}
-      </BottomSheetScrollView>
+      {observation.photos && observation.photos.length > 0 ? (
+        observation.photos.map((photo, index) => (
+          <ThemedImage
+            key={index}
+            uri={photo.url?.replace("square", "medium")}
+          />
+        ))
+      ) : (
+        <ThemedText>No photos available</ThemedText>
+      )}
       <ThemedButton
         style={globalStyles.flowingButton}
         title="Back to Map"
