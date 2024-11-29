@@ -1,5 +1,11 @@
 // app/home/HomeScreen.tsx
-import { ThemedFlatList, ThemedView, ThemedText, ThemedTextInput, ThemedDropDownPicker } from "@/components/Themed";
+import {
+  ThemedFlatList,
+  ThemedView,
+  ThemedText,
+  ThemedTextInput,
+  ThemedDropDownPicker,
+} from "@/components/Themed";
 import { useEffect, useState, useMemo, useContext } from "react";
 import DropDownPicker from "react-native-dropdown-picker";
 import { ActivityIndicator, StyleSheet } from "react-native";
@@ -130,7 +136,7 @@ export default function HomeScreen() {
     <ThemedView style={styles.mainContainer}>
       <ThemedTextInput
         style={styles.searchBar}
-        placeholder="Search species here e.g. figs.."
+        placeholder="Search species here e.g. blackberry.."
         placeholderTextColor="gray"
         value={searchQuery}
         onChangeText={(text) => setSearchQuery(text)}
@@ -139,7 +145,7 @@ export default function HomeScreen() {
       <ThemedDropDownPicker
         open={open}
         value={selectedMonth}
-        items ={allMonths.map((month) => ({
+        items={allMonths.map((month) => ({
           label: month,
           value: month,
         }))}
