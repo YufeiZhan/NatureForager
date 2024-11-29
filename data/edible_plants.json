@@ -43,7 +43,15 @@
     "iNaturalist ID": 47602,
     "Scientific Name": "Taraxacum officinale",
     "Common Name": "Dandelion",
-    "Type": "flower, leaf, root",
+    "Type": "root",
+    "Month Ripe": "January",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 54793,
+    "Scientific Name": "Lindera benzoin",
+    "Common Name": "Northern Spicebush",
+    "Type": "twig tea",
     "Month Ripe": "January",
     "Notes": ""
   },
@@ -56,10 +64,162 @@
     "Notes": ""
   },
   {
+    "iNaturalist ID": 75371,
+    "Scientific Name": "Allium vineale",
+    "Common Name": "Onion Grass",
+    "Type": "leaf, root",
+    "Month Ripe": "February",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 49652,
+    "Scientific Name": "Cardamine",
+    "Common Name": "Bittercress",
+    "Type": "leaf",
+    "Month Ripe": "February",
+    "Notes": "all species in genus are edible"
+  },
+  {
+    "iNaturalist ID": 49157,
+    "Scientific Name": "Betula lenta",
+    "Common Name": "Sweet Birch",
+    "Type": "twig tea",
+    "Month Ripe": "February",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 54793,
+    "Scientific Name": "Lindera benzoin",
+    "Common Name": "Northern Spicebush",
+    "Type": "twig tea",
+    "Month Ripe": "February",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 47602,
+    "Scientific Name": "Taraxacum officinale",
+    "Common Name": "Dandelion",
+    "Type": "root",
+    "Month Ripe": "February",
+    "Notes": ""
+  },
+  {
     "iNaturalist ID": 59921,
     "Scientific Name": "Pinus taeda",
     "Common Name": "Loblolly Pine",
     "Type": "leaf tea",
+    "Month Ripe": "March",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 49157,
+    "Scientific Name": "Betula lenta",
+    "Common Name": "Sweet Birch",
+    "Type": "twig tea",
+    "Month Ripe": "March",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 54793,
+    "Scientific Name": "Lindera benzoin",
+    "Common Name": "Northern Spicebush",
+    "Type": "twig tea",
+    "Month Ripe": "March",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 75371,
+    "Scientific Name": "Allium vineale",
+    "Common Name": "Onion Grass",
+    "Type": "leaf, root",
+    "Month Ripe": "March",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 52977,
+    "Scientific Name": "Barbarea",
+    "Common Name": "Wintercress",
+    "Type": "leaf",
+    "Month Ripe": "March",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 49389,
+    "Scientific Name": "Stellaria",
+    "Common Name": "Chickweed",
+    "Type": "leaf",
+    "Month Ripe": "March",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 55851,
+    "Scientific Name": "Lamium purpureum",
+    "Common Name": "Purple Dead Nettle",
+    "Type": "leaf",
+    "Month Ripe": "March",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 56061,
+    "Scientific Name": "Alliaria petiolata",
+    "Common Name": "Garlic Mustard",
+    "Type": "leaf",
+    "Month Ripe": "March",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 47602,
+    "Scientific Name": "Taraxacum officinale",
+    "Common Name": "Dandelion",
+    "Type": "leaf, flower, root",
+    "Month Ripe": "March",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 126583,
+    "Scientific Name": "Hemerocallis fulva",
+    "Common Name": "Daylily",
+    "Type": "tuber",
+    "Month Ripe": "March",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 56325,
+    "Scientific Name": "Asarum canadense",
+    "Common Name": "Canadian Wild Ginger",
+    "Type": "root",
+    "Month Ripe": "March",
+    "Notes": "leaves poisonous"
+  },
+  {
+    "iNaturalist ID": 75501,
+    "Scientific Name": "Arctium lappa",
+    "Common Name": "Greater Burdock",
+    "Type": "root",
+    "Month Ripe": "March",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 59570,
+    "Scientific Name": "Arctium minus",
+    "Common Name": "Lesser Burdock",
+    "Type": "root",
+    "Month Ripe": "March",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 48626,
+    "Scientific Name": "Oenothera",
+    "Common Name": "Evening Primrose",
+    "Type": "root",
+    "Month Ripe": "March",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 52543,
+    "Scientific Name": "Acer saccharum",
+    "Common Name": "Sugar Maple",
+    "Type": "sap",
     "Month Ripe": "March",
     "Notes": ""
   },
@@ -72,12 +232,12 @@
     "Notes": ""
   },
   {
-    "iNaturalist ID": 133686,
-    "Scientific Name": "Morchella angusticeps",
-    "Common Name": "Black Morel",
-    "Type": "mushroom",
+    "iNaturalist ID": 56325,
+    "Scientific Name": "Asarum canadense",
+    "Common Name": "Canadian Wild Ginger",
+    "Type": "root",
     "Month Ripe": "April",
-    "Notes": ""
+    "Notes": "leaves poisonous"
   },
   {
     "iNaturalist ID": 55634,
@@ -93,7 +253,7 @@
     "Common Name": "Violet",
     "Type": "leaf, flower",
     "Month Ripe": "April",
-    "Notes": "species?"
+    "Notes": ""
   },
   {
     "iNaturalist ID": 48502,
@@ -125,7 +285,7 @@
     "Common Name": "Greater Burdock",
     "Type": "root",
     "Month Ripe": "April",
-    "Notes": "check leaves"
+    "Notes": ""
   },
   {
     "iNaturalist ID": 59570,
@@ -187,7 +347,7 @@
     "iNaturalist ID": 47602,
     "Scientific Name": "Taraxacum officinale",
     "Common Name": "Dandelion",
-    "Type": "leaf, flower",
+    "Type": "leaf, flower, root",
     "Month Ripe": "April",
     "Notes": ""
   },
@@ -275,17 +435,9 @@
     "iNaturalist ID": 56057,
     "Scientific Name": "Leucanthemum vulgare",
     "Common Name": "Ox-Eye Daisy",
-    "Type": "leaf, flower",
+    "Type": "leaf",
     "Month Ripe": "April",
     "Notes": "stalk has some sort of toxicity"
-  },
-  {
-    "iNaturalist ID": 48494,
-    "Scientific Name": "Pleurotus ostreatus",
-    "Common Name": "Oyster Mushroom",
-    "Type": "mushroom",
-    "Month Ripe": "April",
-    "Notes": ""
   },
   {
     "iNaturalist ID": 117434,
@@ -363,15 +515,295 @@
     "iNaturalist ID": 59921,
     "Scientific Name": "Pinus taeda",
     "Common Name": "Loblolly Pine",
-    "Type": "leaf tea",
+    "Type": "leaf tea, pollen",
     "Month Ripe": "May",
     "Notes": ""
+  },
+  {
+    "iNaturalist ID": 49157,
+    "Scientific Name": "Betula lenta",
+    "Common Name": "Sweet Birch",
+    "Type": "twig tea",
+    "Month Ripe": "May",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 54793,
+    "Scientific Name": "Lindera benzoin",
+    "Common Name": "Northern Spicebush",
+    "Type": "twig tea, leaf",
+    "Month Ripe": "May",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 47602,
+    "Scientific Name": "Taraxacum officinale",
+    "Common Name": "Dandelion",
+    "Type": "leaf, flower, root",
+    "Month Ripe": "May",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 81711,
+    "Scientific Name": "Hydrophyllum virginianum",
+    "Common Name": "Virginia Waterleaf",
+    "Type": "leaf",
+    "Month Ripe": "May",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 50829,
+    "Scientific Name": "Viola",
+    "Common Name": "Violet",
+    "Type": "leaf, flower",
+    "Month Ripe": "May",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 75371,
+    "Scientific Name": "Allium vineale",
+    "Common Name": "Onion Grass",
+    "Type": "leaf, root",
+    "Month Ripe": "May",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 56325,
+    "Scientific Name": "Asarum canadense",
+    "Common Name": "Canadian Wild Ginger",
+    "Type": "root",
+    "Month Ripe": "May",
+    "Notes": "leaves poisonous"
+  },
+  {
+    "iNaturalist ID": 78563,
+    "Scientific Name": "Phyllostachys aurea",
+    "Common Name": "Fishpole Bamboo",
+    "Type": "shoot",
+    "Month Ripe": "May",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 127306,
+    "Scientific Name": "Wisteria sinensis",
+    "Common Name": "Chinese Wisteria",
+    "Type": "flower",
+    "Month Ripe": "May",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 56088,
+    "Scientific Name": "Robinia pseudoacacia",
+    "Common Name": "Black Locust",
+    "Type": "flower",
+    "Month Ripe": "May",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 47911,
+    "Scientific Name": "Asclepias syriaca",
+    "Common Name": "Common Milkweed",
+    "Type": "shoot",
+    "Month Ripe": "May",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 49389,
+    "Scientific Name": "Stellaria",
+    "Common Name": "Chickweed",
+    "Type": "leaf",
+    "Month Ripe": "May",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 51884,
+    "Scientific Name": "Urtica dioica",
+    "Common Name": "Stinging Nettle",
+    "Type": "leaf",
+    "Month Ripe": "May",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 119802,
+    "Scientific Name": "Laportea canadensis",
+    "Common Name": "Wood Nettle",
+    "Type": "leaf",
+    "Month Ripe": "May",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 116735,
+    "Scientific Name": "Rudbeckia laciniata",
+    "Common Name": "Cutleaf Coneflower",
+    "Type": "leaf",
+    "Month Ripe": "May",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 77155,
+    "Scientific Name": "Fragaria virginiana",
+    "Common Name": "Virginia Strawberry",
+    "Type": "berry",
+    "Month Ripe": "May",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 84300,
+    "Scientific Name": "Sambucus canadensis",
+    "Common Name": "American Black Elderberry",
+    "Type": "flower",
+    "Month Ripe": "May",
+    "Notes": "leaves/stems poisonous"
+  },
+  {
+    "iNaturalist ID": 277657,
+    "Scientific Name": "Berberis bealei",
+    "Common Name": "Leatherleaf Mahonia",
+    "Type": "fruit",
+    "Month Ripe": "May",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 54801,
+    "Scientific Name": "Morus rubra",
+    "Common Name": "Red Mulberry",
+    "Type": "fruit",
+    "Month Ripe": "May",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 56090,
+    "Scientific Name": "Morus alba",
+    "Common Name": "White Mulberry",
+    "Type": "fruit",
+    "Month Ripe": "May",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 56057,
+    "Scientific Name": "Leucanthemum vulgare",
+    "Common Name": "Ox-Eye Daisy",
+    "Type": "leaf",
+    "Month Ripe": "May",
+    "Notes": "stalk has some sort of toxicity"
   },
   {
     "iNaturalist ID": 59921,
     "Scientific Name": "Pinus taeda",
     "Common Name": "Loblolly Pine",
     "Type": "leaf tea",
+    "Month Ripe": "June",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 49157,
+    "Scientific Name": "Betula lenta",
+    "Common Name": "Sweet Birch",
+    "Type": "twig tea",
+    "Month Ripe": "June",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 54793,
+    "Scientific Name": "Lindera benzoin",
+    "Common Name": "Northern Spicebush",
+    "Type": "twig tea",
+    "Month Ripe": "June",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 47602,
+    "Scientific Name": "Taraxacum officinale",
+    "Common Name": "Dandelion",
+    "Type": "leaf, flower, root",
+    "Month Ripe": "June",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 54801,
+    "Scientific Name": "Morus rubra",
+    "Common Name": "Red Mulberry",
+    "Type": "fruit",
+    "Month Ripe": "June",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 56090,
+    "Scientific Name": "Morus alba",
+    "Common Name": "White Mulberry",
+    "Type": "fruit",
+    "Month Ripe": "June",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 49226,
+    "Scientific Name": "Amelanchier arborea",
+    "Common Name": "Common Serviceberry",
+    "Type": "berry",
+    "Month Ripe": "June",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 84300,
+    "Scientific Name": "Sambucus canadensis",
+    "Common Name": "American Black Elderberry",
+    "Type": "flower",
+    "Month Ripe": "June",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 126583,
+    "Scientific Name": "Hemerocallis fulva",
+    "Common Name": "Orange Day-Lily",
+    "Type": "flower",
+    "Month Ripe": "June",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 56057,
+    "Scientific Name": "Leucanthemum vulgare",
+    "Common Name": "Ox-Eye Daisy",
+    "Type": "leaf",
+    "Month Ripe": "June",
+    "Notes": "stalk has some sort of toxicity"
+  },
+  {
+    "iNaturalist ID": 77835,
+    "Scientific Name": "Lonicera japonica",
+    "Common Name": "Japanese Honeysuckle",
+    "Type": "flower",
+    "Month Ripe": "June",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 47544,
+    "Scientific Name": "Rubus",
+    "Common Name": "Blackberries/Raspberries",
+    "Type": "berry",
+    "Month Ripe": "June",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 119802,
+    "Scientific Name": "Laportea canadensis",
+    "Common Name": "Wood Nettle",
+    "Type": "leaf",
+    "Month Ripe": "June",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 47911,
+    "Scientific Name": "Asclepias syriaca",
+    "Common Name": "Common Milkweed",
+    "Type": "flower",
+    "Month Ripe": "June",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 54795,
+    "Scientific Name": "Sassafras albidum",
+    "Common Name": "Sassafras",
+    "Type": "leaf",
     "Month Ripe": "June",
     "Notes": ""
   },
@@ -384,10 +816,186 @@
     "Notes": ""
   },
   {
+    "iNaturalist ID": 49157,
+    "Scientific Name": "Betula lenta",
+    "Common Name": "Sweet Birch",
+    "Type": "twig tea",
+    "Month Ripe": "July",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 54793,
+    "Scientific Name": "Lindera benzoin",
+    "Common Name": "Northern Spicebush",
+    "Type": "twig tea",
+    "Month Ripe": "July",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 47602,
+    "Scientific Name": "Taraxacum officinale",
+    "Common Name": "Dandelion",
+    "Type": "leaf, flower, root",
+    "Month Ripe": "July",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 58127,
+    "Scientific Name": "Chenopodium album",
+    "Common Name": "Lambsquarters",
+    "Type": "leaf",
+    "Month Ripe": "July",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 47544,
+    "Scientific Name": "Rubus",
+    "Common Name": "Blackberries/Raspberries",
+    "Type": "berry",
+    "Month Ripe": "July",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 58991,
+    "Scientific Name": "Portulaca oleracea",
+    "Common Name": "Common Purslane",
+    "Type": "leaf",
+    "Month Ripe": "July",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 84300,
+    "Scientific Name": "Sambucus canadensis",
+    "Common Name": "American Black Elderberry",
+    "Type": "berry",
+    "Month Ripe": "July",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 52735,
+    "Scientific Name": "Monarda didyma",
+    "Common Name": "Scarlet Beebalm",
+    "Type": "leaf, flower",
+    "Month Ripe": "July",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 126583,
+    "Scientific Name": "Hemerocallis fulva",
+    "Common Name": "Orange Day-Lily",
+    "Type": "flower",
+    "Month Ripe": "July",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 47911,
+    "Scientific Name": "Asclepias syriaca",
+    "Common Name": "Common Milkweed",
+    "Type": "flower",
+    "Month Ripe": "July",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 126585,
+    "Scientific Name": "Hibiscus syriacus",
+    "Common Name": "Common Hibiscus",
+    "Type": "flower",
+    "Month Ripe": "July",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 48178,
+    "Scientific Name": "Galinsoga parviflora",
+    "Common Name": "Gallant Soldier",
+    "Type": "leaf",
+    "Month Ripe": "July",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 54795,
+    "Scientific Name": "Sassafras albidum",
+    "Common Name": "Sassafras",
+    "Type": "leaf",
+    "Month Ripe": "July",
+    "Notes": ""
+  },
+  {
     "iNaturalist ID": 59921,
     "Scientific Name": "Pinus taeda",
     "Common Name": "Loblolly Pine",
     "Type": "leaf tea",
+    "Month Ripe": "August",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 49157,
+    "Scientific Name": "Betula lenta",
+    "Common Name": "Sweet Birch",
+    "Type": "twig tea",
+    "Month Ripe": "August",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 54793,
+    "Scientific Name": "Lindera benzoin",
+    "Common Name": "Northern Spicebush",
+    "Type": "twig tea",
+    "Month Ripe": "August",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 47602,
+    "Scientific Name": "Taraxacum officinale",
+    "Common Name": "Dandelion",
+    "Type": "leaf, flower, root",
+    "Month Ripe": "August",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 84300,
+    "Scientific Name": "Sambucus canadensis",
+    "Common Name": "American Black Elderberry",
+    "Type": "berry",
+    "Month Ripe": "August",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 48353,
+    "Scientific Name": "Vaccinium",
+    "Common Name": "Blueberries and Related",
+    "Type": "berry",
+    "Month Ripe": "August",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 58127,
+    "Scientific Name": "Chenopodium album",
+    "Common Name": "Lambsquarters",
+    "Type": "leaf",
+    "Month Ripe": "August",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 58991,
+    "Scientific Name": "Portulaca oleracea",
+    "Common Name": "Common Purslane",
+    "Type": "leaf",
+    "Month Ripe": "August",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 47911,
+    "Scientific Name": "Asclepias syriaca",
+    "Common Name": "Common Milkweed",
+    "Type": "pod",
+    "Month Ripe": "August",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 50897,
+    "Scientific Name": "Asimina triloba",
+    "Common Name": "Pawpaw",
+    "Type": "fruit",
     "Month Ripe": "August",
     "Notes": ""
   },
@@ -416,6 +1024,118 @@
     "Notes": ""
   },
   {
+    "iNaturalist ID": 49157,
+    "Scientific Name": "Betula lenta",
+    "Common Name": "Sweet Birch",
+    "Type": "twig tea",
+    "Month Ripe": "September",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 54793,
+    "Scientific Name": "Lindera benzoin",
+    "Common Name": "Northern Spicebush",
+    "Type": "twig tea",
+    "Month Ripe": "September",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 47602,
+    "Scientific Name": "Taraxacum officinale",
+    "Common Name": "Dandelion",
+    "Type": "leaf, flower, root",
+    "Month Ripe": "September",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 119141,
+    "Scientific Name": "Dioscorea polystachya",
+    "Common Name": "Chinese Yam",
+    "Type": "tuber",
+    "Month Ripe": "September",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 64697,
+    "Scientific Name": "Elaeagnus umbellata",
+    "Common Name": "Autumn Olive",
+    "Type": "berry",
+    "Month Ripe": "September",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 52326,
+    "Scientific Name": "Amaranthus",
+    "Common Name": "Amaranth",
+    "Type": "seed",
+    "Month Ripe": "September",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 50897,
+    "Scientific Name": "Asimina triloba",
+    "Common Name": "Pawpaw",
+    "Type": "fruit",
+    "Month Ripe": "September",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 83435,
+    "Scientific Name": "Diospyros virginiana",
+    "Common Name": "American Persimmon",
+    "Type": "fruit",
+    "Month Ripe": "September",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 54834,
+    "Scientific Name": "Prunus serotina",
+    "Common Name": "Wild Black Cherry",
+    "Type": "berry",
+    "Month Ripe": "September",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 49187,
+    "Scientific Name": "Castanea",
+    "Common Name": "Chestnut",
+    "Type": "nut",
+    "Month Ripe": "September",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 128614,
+    "Scientific Name": "Cornus kousa",
+    "Common Name": "Kousa Dogwood",
+    "Type": "fruit",
+    "Month Ripe": "September",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 58736,
+    "Scientific Name": "Pyrus",
+    "Common Name": "Pear",
+    "Type": "fruit",
+    "Month Ripe": "September",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 54500,
+    "Scientific Name": "Malus",
+    "Common Name": "Apple/Crabapple",
+    "Type": "fruit",
+    "Month Ripe": "September",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 58127,
+    "Scientific Name": "Chenopodium album",
+    "Common Name": "Lambsquarters",
+    "Type": "seed",
+    "Month Ripe": "September",
+    "Notes": ""
+  },
+  {
     "iNaturalist ID": 59921,
     "Scientific Name": "Pinus taeda",
     "Common Name": "Loblolly Pine",
@@ -428,22 +1148,6 @@
     "Scientific Name": "Quercus",
     "Common Name": "Acorn (Oak)",
     "Type": "nut",
-    "Month Ripe": "October",
-    "Notes": ""
-  },
-  {
-    "iNaturalist ID": 53714,
-    "Scientific Name": "Grifola frondosa",
-    "Common Name": "Hen of the Woods",
-    "Type": "mushroom",
-    "Month Ripe": "October",
-    "Notes": ""
-  },
-  {
-    "iNaturalist ID": 130203,
-    "Scientific Name": "Hypholoma lateritium",
-    "Common Name": "Brick Cap",
-    "Type": "mushroom",
     "Month Ripe": "October",
     "Notes": ""
   },
@@ -563,7 +1267,7 @@
     "iNaturalist ID": 54793,
     "Scientific Name": "Lindera benzoin",
     "Common Name": "Northern Spicebush",
-    "Type": "berry",
+    "Type": "berry, twig tea",
     "Month Ripe": "October",
     "Notes": ""
   },
@@ -600,6 +1304,22 @@
     "Notes": "tiny spines must be removed"
   },
   {
+    "iNaturalist ID": 49157,
+    "Scientific Name": "Betula lenta",
+    "Common Name": "Sweet Birch",
+    "Type": "twig tea",
+    "Month Ripe": "October",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 47602,
+    "Scientific Name": "Taraxacum officinale",
+    "Common Name": "Dandelion",
+    "Type": "leaf, flower, root",
+    "Month Ripe": "October",
+    "Notes": ""
+  },
+  {
     "iNaturalist ID": 59921,
     "Scientific Name": "Pinus taeda",
     "Common Name": "Loblolly Pine",
@@ -612,14 +1332,6 @@
     "Scientific Name": "Diospyros virginiana",
     "Common Name": "American Persimmon",
     "Type": "fruit",
-    "Month Ripe": "November",
-    "Notes": ""
-  },
-  {
-    "iNaturalist ID": 130203,
-    "Scientific Name": "Hypholoma lateritium",
-    "Common Name": "Brick Cap",
-    "Type": "mushroom",
     "Month Ripe": "November",
     "Notes": ""
   },
@@ -712,6 +1424,30 @@
     "Notes": ""
   },
   {
+    "iNaturalist ID": 49157,
+    "Scientific Name": "Betula lenta",
+    "Common Name": "Sweet Birch",
+    "Type": "twig tea",
+    "Month Ripe": "November",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 54793,
+    "Scientific Name": "Lindera benzoin",
+    "Common Name": "Northern Spicebush",
+    "Type": "twig tea",
+    "Month Ripe": "November",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 861036,
+    "Scientific Name": "Quercus sect. Lobatae",
+    "Common Name": "Red Oak Acorns",
+    "Type": "nut",
+    "Month Ripe": "November",
+    "Notes": ""
+  },
+  {
     "iNaturalist ID": 59921,
     "Scientific Name": "Pinus taeda",
     "Common Name": "Loblolly Pine",
@@ -739,7 +1475,7 @@
     "iNaturalist ID": 47602,
     "Scientific Name": "Taraxacum officinale",
     "Common Name": "Dandelion",
-    "Type": "flower, leaf, root",
+    "Type": "root",
     "Month Ripe": "December",
     "Notes": ""
   },
@@ -768,10 +1504,18 @@
     "Notes": ""
   },
   {
-    "iNaturalist ID": 48494,
-    "Scientific Name": "Pleurotus ostreatus",
-    "Common Name": "Oyster Mushroom",
-    "Type": "mushroom",
+    "iNaturalist ID": 49157,
+    "Scientific Name": "Betula lenta",
+    "Common Name": "Sweet Birch",
+    "Type": "twig tea",
+    "Month Ripe": "December",
+    "Notes": ""
+  },
+  {
+    "iNaturalist ID": 54793,
+    "Scientific Name": "Lindera benzoin",
+    "Common Name": "Northern Spicebush",
+    "Type": "twig tea",
     "Month Ripe": "December",
     "Notes": ""
   }
