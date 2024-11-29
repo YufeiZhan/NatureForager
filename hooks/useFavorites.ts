@@ -27,7 +27,7 @@ export function useFavorites() {
     try {
       const storedPlants = await AsyncStorage.getItem(FAVORITES_KEY);
       const newFavorites = storedPlants ? JSON.parse(storedPlants) : [];
-      console.log("new favorites", newFavorites);
+      // console.log("new favorites", newFavorites);
       setFavorites(newFavorites);
     } catch (error) {
       console.error("Error fetching favorite plants:", error);
@@ -75,7 +75,10 @@ export function useFavorites() {
         return;
       }
       const updatedFavorites = [...favorites];
-      updatedFavorites[plantIndex] = { ...favorites[plantIndex], ...updatedData };
+      updatedFavorites[plantIndex] = {
+        ...favorites[plantIndex],
+        ...updatedData,
+      };
       // Update only the provided fields
       favorites[plantIndex] = { ...favorites[plantIndex], ...updatedData };
       await AsyncStorage.setItem(FAVORITES_KEY, JSON.stringify(favorites));

@@ -1,6 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { SafeAreaView, StyleSheet, Image, ScrollView, Pressable } from "react-native";
-import { ThemedText, ThemedView, ThemedButton, ThemedImage, ThemedIcon } from "../components/Themed";
+import {
+  SafeAreaView,
+  StyleSheet,
+  Image,
+  ScrollView,
+  Pressable,
+} from "react-native";
+import {
+  ThemedText,
+  ThemedView,
+  ThemedButton,
+  ThemedImage,
+  ThemedIcon,
+} from "../components/Themed";
 import { Favorite } from "@/hooks/useFavorites";
 import { useRouter } from "expo-router";
 import { globalStyles } from "@/styles/globalStyles";
@@ -11,33 +23,35 @@ interface FavoriteDetailsProps {
   onClose: () => void;
 }
 
-export default function FavoriteDetails({ favorite, onClose}: FavoriteDetailsProps) {
+export default function FavoriteDetails({
+  favorite,
+  onClose,
+}: FavoriteDetailsProps) {
   const [city, setCity] = useState("Loading...");
   const [state, setState] = useState("");
   const [zipCode, setZipCode] = useState("");
-  console.log(favorite)
 
-  const fetchLocationDetails = async (latitude : number, longitude : number) => {
+  const fetchLocationDetails = async (latitude: number, longitude: number) => {
     const GEO_API_KEY = "0fc7eb37c0ab4842a00ec10e9ec3661a";
     const url = `https://api.opencagedata.com/geocode/v1/json?q=${latitude}+${longitude}&key=${GEO_API_KEY}&language=${"en"}`;
-  
+
     try {
       const response = await fetch(url);
       if (!response.ok) {
-        throw new Error('Failed to fetch location data');
+        throw new Error("Failed to fetch location data");
       }
-  
+
       const data = await response.json();
       if (data.results && data.results.length > 0) {
         const { city, state, postcode } = data.results[0].components;
-  
+
         return {
           city: city || "City not found",
           state: state || "State not found",
-          zipCode: postcode || "Zip code not found"
+          zipCode: postcode || "Zip code not found",
         };
       } else {
-        throw new Error('No results found for the given coordinates');
+        throw new Error("No results found for the given coordinates");
       }
     } catch (error) {
       console.error("Error fetching location details:", error);
@@ -84,15 +98,23 @@ export default function FavoriteDetails({ favorite, onClose}: FavoriteDetailsPro
 
   return (
     <>
-      <BottomSheetScrollView contentContainerStyle={globalStyles.infoPageSubContainer}>
+      <BottomSheetScrollView
+        contentContainerStyle={globalStyles.infoPageSubContainer}
+      >
         {/* Header Section */}
-        <ThemedText style={globalStyles.infoPrimaryTitle}>{favorite.name}</ThemedText>
+        <ThemedText style={globalStyles.infoPrimaryTitle}>
+          {favorite.name}
+        </ThemedText>
         <ThemedView style={globalStyles.divider} />
         <ThemedIcon iconName="edit" onPress={handleEditPress}></ThemedIcon>
 
         {/* Location Section */}
-        <ThemedText style={globalStyles.infoPrimaryTitle}>{`${city}, ${state}`}</ThemedText>
-        <ThemedText style={globalStyles.infoSecondaryTitle}>{`(${zipCode})`}</ThemedText>
+        <ThemedText
+          style={globalStyles.infoPrimaryTitle}
+        >{`${city}, ${state}`}</ThemedText>
+        <ThemedText
+          style={globalStyles.infoSecondaryTitle}
+        >{`(${zipCode})`}</ThemedText>
 
         {/* Note Section */}
         <ThemedView style={globalStyles.note}>
@@ -103,17 +125,19 @@ export default function FavoriteDetails({ favorite, onClose}: FavoriteDetailsPro
         <ThemedView style={styles.photosContainer}>
           {favorite.photos && favorite.photos.length > 0 ? (
             favorite.photos.map((photoUri, index) => (
-              <ThemedImage 
-                key={index}
-                uri = {photoUri}
-              />
+              <ThemedImage key={index} uri={photoUri} />
             ))
           ) : (
             <ThemedText>No photos available</ThemedText>
           )}
         </ThemedView>
       </BottomSheetScrollView>
-      <ThemedButton style={globalStyles.flowingButton} title="Back" onPress={onClose} action="primary" />
+      <ThemedButton
+        style={globalStyles.flowingButton}
+        title="Back"
+        onPress={onClose}
+        action="primary"
+      />
     </>
   );
 }

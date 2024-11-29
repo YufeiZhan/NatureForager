@@ -17,6 +17,7 @@ import {
 import { Favorite } from "@/hooks/useFavorites";
 import EditLocationModal from "@/components/EditLocationModal";
 import * as ImagePicker from "expo-image-picker";
+import * as MediaLibrary from "expo-media-library";
 
 import MapView, { Marker } from "react-native-maps";
 
@@ -86,7 +87,10 @@ export default function EditFavoriteComponent({
     });
 
     if (!result.canceled) {
-      const updatedPhotos = [...(favorite.photos ?? []), result.assets[0].uri];
+      console.log("original uri", result.assets[0].uri);
+      const asset = await MediaLibrary.createAssetAsync(result.assets[0].uri);
+      console.log("asset uri", asset.uri);
+      const updatedPhotos = [...(favorite.photos ?? []), asset.uri];
       setPhotoUrls(updatedPhotos);
     }
   };
