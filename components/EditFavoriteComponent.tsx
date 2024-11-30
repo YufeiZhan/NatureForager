@@ -14,6 +14,7 @@ import {
   ThemedView,
   ThemedButton,
   ThemedIcon,
+  ThemedImage,
 } from "./Themed";
 import { Favorite } from "@/hooks/useFavorites";
 import EditLocationModal from "@/components/EditLocationModal";
@@ -167,8 +168,9 @@ export default function EditFavoriteComponent({
           </Pressable>
           {favorite.photos?.map((photoUri, index) => (
             <View key={index} style={styles.photoWrapper}>
-              <Image
-                source={{ uri: photoUri }}
+              <ThemedImage
+                key={index}
+                uri={photoUri}
                 style={styles.photo}
                 resizeMode="cover"
               />
@@ -287,6 +289,8 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: 5,
+    position: "relative",
+    margin: 0,
   },
   removePhotoButton: {
     position: "absolute",

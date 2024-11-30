@@ -14,6 +14,7 @@ import {
   PressableProps,
   ViewStyle,
   Image,
+  ImageProps,
 } from "react-native";
 import { ivoryWhite, darkGreen, pureWhite } from "@/constants/Colors";
 import DropDownPicker, {
@@ -89,8 +90,8 @@ export function ThemedIcon(
 }
 
 // Image that can be enlarged
-export function ThemedImage(props: { uri: string | undefined }) {
-  const { uri } = props;
+export function ThemedImage(props: { uri: string | undefined } & ImageProps) {
+  const { uri, style, ...otherProps } = props;
   const [enlargeImage, setEnlargeImage] = useState(false);
 
   return (
@@ -98,7 +99,11 @@ export function ThemedImage(props: { uri: string | undefined }) {
       style={{ width: "100%", alignItems: "center" }}
       onPress={() => setEnlargeImage(true)}
     >
-      <Image source={{ uri: uri }} style={globalStyles.image} />
+      <Image
+        source={{ uri: uri }}
+        style={[globalStyles.image, style]}
+        {...otherProps}
+      />
 
       <ImageView
         images={[{ uri: uri }]}
