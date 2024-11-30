@@ -46,9 +46,9 @@ export default function FavoriteDetails({
         const { city, state, postcode } = data.results[0].components;
 
         return {
-          city: city || "City not found",
-          state: state || "State not found",
-          zipCode: postcode || "Zip code not found",
+          city: city || "Unknown city",
+          state: state || "Unknown state",
+          zipCode: postcode || "",
         };
       } else {
         throw new Error("No results found for the given coordinates");
@@ -114,7 +114,8 @@ export default function FavoriteDetails({
         >{`${city}, ${state}`}</ThemedText>
         <ThemedText
           style={globalStyles.infoSecondaryTitle}
-        >{`(${zipCode})`}</ThemedText>
+        >{`${zipCode}`}</ThemedText>
+        <ThemedText>Latitude: {favorite.location.latitude.toFixed(2)}, Longitude: {favorite.location.longitude.toFixed(2)}</ThemedText>
 
         {/* Note Section */}
         <ThemedView style={globalStyles.note}>
