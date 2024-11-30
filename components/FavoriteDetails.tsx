@@ -83,7 +83,7 @@ export default function FavoriteDetails({
   // Function to handle edit button press, redirecting to the EditFavorite screen
   const handleEditPress = () => {
     router.push({
-      pathname: "/(tabs)/favorites/EditFavorite", // Adjust the path based on your file structure
+      pathname: "/(tabs)/favorites/EditFavorite",
       params: {
         id: favorite.id,
         iNaturalistId: favorite.iNaturalistId,
@@ -128,7 +128,7 @@ export default function FavoriteDetails({
               <ThemedImage key={index} uri={photoUri} />
             ))
           ) : (
-            <ThemedText>No photos available</ThemedText>
+            <ThemedText>    No photos available</ThemedText>
           )}
         </ThemedView>
       </BottomSheetScrollView>
@@ -165,9 +165,10 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     padding: 8,
     borderRadius: 8,
-    backgroundColor: "#f0f0f0", // Placeholder for styling
+    backgroundColor: "#f0f0f0",
   },
   photosContainer: {
+    marginTop: 10,
     width: "100%",
     gap: 20,
   },
