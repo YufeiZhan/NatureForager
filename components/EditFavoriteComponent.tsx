@@ -271,9 +271,11 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   addPhotoPlus: {
+    margin: 0,
     fontSize: 72,
     height: 72,
-    margin: 0,
+    // shift upwards a bit to make it appear centered
+    marginTop: -10,
     color: "#fff",
   },
   photoWrapper: {
