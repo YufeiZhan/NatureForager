@@ -94,9 +94,17 @@ export default function EditFavoriteScreen() {
 
       {/* Bottom Buttons */}
       <View style={styles.buttonContainer}>
-        <ThemedButton title="Delete" onPress={handleDelete} />
-        <ThemedButton title="Cancel" onPress={handleCancel} />
-        <ThemedButton title="Update" onPress={handleUpdate} />
+        <ThemedButton
+          title="Delete"
+          action="secondary"
+          onPress={handleDelete}
+        />
+        <ThemedButton
+          title="Cancel"
+          action="secondary"
+          onPress={handleCancel}
+        />
+        <ThemedButton title="Update" action="primary" onPress={handleUpdate} />
       </View>
     </View>
   );

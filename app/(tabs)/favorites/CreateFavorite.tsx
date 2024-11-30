@@ -64,8 +64,12 @@ export default function CreateFavoriteScreen() {
 
       {/* Bottom buttons */}
       <View style={styles.buttonContainer}>
-        <ThemedButton title="Cancel" onPress={handleCancel} />
-        <ThemedButton title="Create" onPress={handleCreate} />
+        <ThemedButton
+          title="Cancel"
+          action="secondary"
+          onPress={handleCancel}
+        />
+        <ThemedButton title="Create" action="primary" onPress={handleCreate} />
       </View>
     </View>
   );

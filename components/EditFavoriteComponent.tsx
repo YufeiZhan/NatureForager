@@ -143,6 +143,7 @@ export default function EditFavoriteComponent({
           <View style={styles.editLocationButtonContainer}>
             <ThemedButton
               title="Edit"
+              action="secondary"
               onPress={() => setEditLocationModalVisible(true)}
             />
           </View>
