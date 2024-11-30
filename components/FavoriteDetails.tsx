@@ -169,6 +169,7 @@ const styles = StyleSheet.create({
   },
   photosContainer: {
     width: "100%",
+    gap: 20,
   },
   photo: {
     width: "100%",
