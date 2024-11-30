@@ -13,15 +13,17 @@ import {
   TextInput,
   PressableProps,
   ViewStyle,
-  Image
+  Image,
+  ImageProps,
 } from "react-native";
 import { ivoryWhite, darkGreen, pureWhite } from "@/constants/Colors";
-import DropDownPicker, { DropDownPickerProps } from "react-native-dropdown-picker";
+import DropDownPicker, {
+  DropDownPickerProps,
+} from "react-native-dropdown-picker";
 import { Month } from "@/app/(tabs)/home/HomeScreen";
 import { globalStyles } from "@/styles/globalStyles";
 import ImageView from "react-native-image-viewing";
 import { useState } from "react";
-
 
 // Apply the default styling to the common components unless othersie defined to overwrite
 // Should not need to apply additional styles normally
@@ -38,18 +40,26 @@ export function ThemedText(props: TextProps) {
 
 // Provide 1) title, 2) onPress behavior, 3) action (primary or secondary)
 // Optional: style
-export function ThemedButton(props: PressableProps & { title: string, action?: "primary" | "secondary"}) {
+export function ThemedButton(
+  props: PressableProps & { title: string; action?: "primary" | "secondary" }
+) {
   const { action = "primary", title, onPress, style } = props;
 
   if (action === "primary") {
     return (
-      <Pressable style={[styles.primaryButton, style as ViewStyle]} onPress={onPress}>
+      <Pressable
+        style={[styles.primaryButton, style as ViewStyle]}
+        onPress={onPress}
+      >
         <ThemedText style={[styles.primaryButtonText]}>{title}</ThemedText>
       </Pressable>
     );
   } else {
     return (
-      <Pressable style={[styles.secondaryButton, style as ViewStyle]} onPress={onPress}>
+      <Pressable
+        style={[styles.secondaryButton, style as ViewStyle]}
+        onPress={onPress}
+      >
         <ThemedText style={styles.secondaryButtonText}>{title}</ThemedText>
       </Pressable>
     );
@@ -61,57 +71,86 @@ const iconMapping = {
   unreminded: require("../assets/icons/reminder-off.png"),
   fav: require("../assets/icons/favorite-on.png"),
   unfav: require("../assets/icons/favorite-off.png"),
-  edit: require("../assets/icons/edit-icon.png")
+  edit: require("../assets/icons/edit-icon.png"),
+  x: require("../assets/icons/x.png"),
 };
-export function ThemedIcon(props: PressableProps & {iconName: keyof typeof iconMapping}){
-  const { iconName, onPress } = props;
-  return (<Pressable onPress={onPress}>
-            <Image resizeMode="contain" source={iconMapping[iconName]} style={globalStyles.icon} />
-         </Pressable>)
+export function ThemedIcon(
+  props: PressableProps & { iconName: keyof typeof iconMapping }
+) {
+  const { iconName, onPress, ...otherProps } = props;
+  return (
+    <Pressable onPress={onPress} {...otherProps}>
+      <Image
+        resizeMode="contain"
+        source={iconMapping[iconName]}
+        style={globalStyles.icon}
+      />
+    </Pressable>
+  );
 }
 
 // Image that can be enlarged
-export function ThemedImage(props: {uri: string | undefined}){
-  const {uri} = props
-  const [enlargeImage, setEnlargeImage] = useState(false)
+export function ThemedImage(props: { uri: string | undefined } & ImageProps) {
+  const { uri, style, ...otherProps } = props;
+  const [enlargeImage, setEnlargeImage] = useState(false);
 
   return (
-    <Pressable style={{width: '100%', alignItems: 'center'}} onPress={()=>setEnlargeImage(true)}>
+    <Pressable
+      style={{ width: "100%", alignItems: "center" }}
+      onPress={() => setEnlargeImage(true)}
+    >
       <Image
-            source={{ uri: uri }}
-            style={globalStyles.image}
+        source={{ uri: uri }}
+        style={[globalStyles.image, style]}
+        {...otherProps}
       />
 
       <ImageView
-        images={[{uri: uri}]}
+        images={[{ uri: uri }]}
         imageIndex={0}
         visible={enlargeImage}
         onRequestClose={() => setEnlargeImage(false)}
       />
     </Pressable>
-  )
+  );
 }
 
-export function ThemedTextInput(props: TextInputProps){
+export function ThemedTextInput(props: TextInputProps) {
   const { style, ...otherProps } = props;
-  return <TextInput style={[styles.text, styles.textInput, style]} {...otherProps} /> // use same styling as text
+  return (
+    <TextInput style={[styles.text, styles.textInput, style]} {...otherProps} />
+  ); // use same styling as text
 }
 
-export function ThemedDropDownPicker(props: DropDownPickerProps<Month>){
-  const { style, textStyle, containerStyle, dropDownContainerStyle, renderListItem, ...otherProps } = props;
-  return <DropDownPicker style={[styles.dropDown, style]}  //main dropdown box when collapsed
-                         containerStyle={[styles.dropDownContainer,containerStyle]} //outer dropdown container
-                         dropDownContainerStyle={[styles.dropDownDropDownContainer, dropDownContainerStyle]} //dropdown container
-                         textStyle={[, styles.text, styles.dropDownText, textStyle]} 
-                        //  renderListItem={(props) => {
-                        //   const { item, listItemContainerStyle, listItemLabelStyle } = props;
-                        //   return (
-                        //     <View style={[listItemContainerStyle]}>
-                        //       <Text style={[listItemLabelStyle, styles.text]}>{item.label}</Text>
-                        //     </View>
-                        //   );
-                        //  }}
-                         {...otherProps}/>
+export function ThemedDropDownPicker(props: DropDownPickerProps<Month>) {
+  const {
+    style,
+    textStyle,
+    containerStyle,
+    dropDownContainerStyle,
+    renderListItem,
+    ...otherProps
+  } = props;
+  return (
+    <DropDownPicker
+      style={[styles.dropDown, style]} //main dropdown box when collapsed
+      containerStyle={[styles.dropDownContainer, containerStyle]} //outer dropdown container
+      dropDownContainerStyle={[
+        styles.dropDownDropDownContainer,
+        dropDownContainerStyle,
+      ]} //dropdown container
+      textStyle={[, styles.text, styles.dropDownText, textStyle]}
+      //  renderListItem={(props) => {
+      //   const { item, listItemContainerStyle, listItemLabelStyle } = props;
+      //   return (
+      //     <View style={[listItemContainerStyle]}>
+      //       <Text style={[listItemLabelStyle, styles.text]}>{item.label}</Text>
+      //     </View>
+      //   );
+      //  }}
+      {...otherProps}
+    />
+  );
 }
 
 export function ThemedScrollView(props: ScrollViewProps) {
@@ -160,10 +199,10 @@ const styles = StyleSheet.create({
     fontFamily: "Hubballi_400Regular",
   },
   textInput: {
-    opacity: 0.8
+    opacity: 0.8,
   },
   dropDown: {
-    alignSelf: 'center',
+    alignSelf: "center",
     borderWidth: 0,
     // backgroundColor: "transparent",
     opacity: 0.95,
@@ -179,7 +218,7 @@ const styles = StyleSheet.create({
   },
   dropDownText: {
     // fontSize: 25,
-    textAlign: 'center',
+    textAlign: "center",
   },
   scrollView: {},
   flatList: {},

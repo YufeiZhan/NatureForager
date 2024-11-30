@@ -4,7 +4,7 @@ import { useRouter } from "expo-router";
 import { ThemedButton } from "@/components/Themed";
 import { FavoritesContext } from "@/hooks/FavoritesContext";
 import { Favorite } from "@/hooks/useFavorites";
-import EditFavorite from "@/components/CreateEditFavorite";
+import EditFavoriteComponent from "@/components/EditFavoriteComponent";
 
 export default function CreateFavoriteScreen() {
   const router = useRouter();
@@ -52,8 +52,8 @@ export default function CreateFavoriteScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Reusing EditFavorite component for input */}
-      <EditFavorite
+      {/* Reusing EditFavoriteComponent component for input */}
+      <EditFavoriteComponent
         favorite={newFavorite}
         setName={setName}
         setLatitude={setLatitude}
@@ -64,8 +64,12 @@ export default function CreateFavoriteScreen() {
 
       {/* Bottom buttons */}
       <View style={styles.buttonContainer}>
-        <ThemedButton title="Cancel" onPress={handleCancel}/>
-        <ThemedButton title="Create" onPress={handleCreate}/>
+        <ThemedButton
+          title="Cancel"
+          action="secondary"
+          onPress={handleCancel}
+        />
+        <ThemedButton title="Create" action="primary" onPress={handleCreate} />
       </View>
     </View>
   );

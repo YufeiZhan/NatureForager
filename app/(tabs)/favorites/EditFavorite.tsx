@@ -3,7 +3,7 @@ import { StyleSheet, View } from "react-native";
 import { useRouter } from "expo-router";
 import { ThemedButton } from "@/components/Themed";
 import { useNonArraySearchParams } from "@/hooks/useNonArraySearchParams";
-import EditFavorite from "@/components/CreateEditFavorite";
+import EditFavoriteComponent from "@/components/EditFavoriteComponent";
 import { Favorite } from "@/hooks/useFavorites";
 import { FavoritesContext } from "@/hooks/FavoritesContext";
 
@@ -83,7 +83,7 @@ export default function EditFavoriteScreen() {
 
   return (
     <View style={styles.container}>
-      <EditFavorite
+      <EditFavoriteComponent
         favorite={favorite}
         setName={setName}
         setLatitude={setLatitude}
@@ -94,9 +94,17 @@ export default function EditFavoriteScreen() {
 
       {/* Bottom Buttons */}
       <View style={styles.buttonContainer}>
-        <ThemedButton title="Delete" onPress={handleDelete} />
-        <ThemedButton title="Cancel" onPress={handleCancel} />
-        <ThemedButton title="Update" onPress={handleUpdate} />
+        <ThemedButton
+          title="Delete"
+          action="secondary"
+          onPress={handleDelete}
+        />
+        <ThemedButton
+          title="Cancel"
+          action="secondary"
+          onPress={handleCancel}
+        />
+        <ThemedButton title="Update" action="primary" onPress={handleUpdate} />
       </View>
     </View>
   );
