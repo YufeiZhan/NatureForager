@@ -13,6 +13,7 @@ import {
   ThemedTextInput,
   ThemedView,
   ThemedButton,
+  ThemedIcon,
 } from "./Themed";
 import { Favorite } from "@/hooks/useFavorites";
 import EditLocationModal from "@/components/EditLocationModal";
@@ -20,6 +21,7 @@ import * as ImagePicker from "expo-image-picker";
 import * as MediaLibrary from "expo-media-library";
 
 import MapView, { Marker } from "react-native-maps";
+import { ivoryWhite } from "@/constants/Colors";
 
 interface EditFavoriteProps {
   favorite: Favorite;
@@ -114,6 +116,7 @@ export default function EditFavoriteComponent({
           value={favorite.name}
           onChangeText={setName}
           placeholder="Favorite Name"
+          placeholderTextColor="#fffa"
         />
 
         {/* Map Section with Editable Location */}
@@ -151,16 +154,17 @@ export default function EditFavoriteComponent({
         <ThemedTextInput
           style={styles.noteInput}
           placeholder="Tap to add some note about this plant..."
-          placeholderTextColor="white"
+          placeholderTextColor="#fffa"
           multiline
           value={favorite.note}
           onChangeText={setNote}
         />
 
         {/* Photos Section */}
+        <ThemedText style={styles.photosTitle}>Photos</ThemedText>
         <ThemedView style={styles.photosContainer}>
           <Pressable style={styles.addPhotoButton} onPress={handleAddPhoto}>
-            <ThemedText style={styles.addPhotoText}>+</ThemedText>
+            <ThemedText style={styles.addPhotoPlus}>+</ThemedText>
           </Pressable>
           {favorite.photos?.map((photoUri, index) => (
             <View key={index} style={styles.photoWrapper}>
@@ -169,12 +173,11 @@ export default function EditFavoriteComponent({
                 style={styles.photo}
                 resizeMode="cover"
               />
-              <Pressable
-                style={styles.removePhotoButton}
+              <ThemedIcon
+                iconName="x"
                 onPress={() => handleRemovePhoto(index)}
-              >
-                <ThemedText style={styles.removePhotoText}>X</ThemedText>
-              </Pressable>
+                style={styles.removePhotoButton}
+              />
             </View>
           ))}
         </ThemedView>
@@ -199,10 +202,11 @@ const styles = StyleSheet.create({
   nameInput: {
     textAlign: "center",
     paddingVertical: 8,
-    fontSize: 18,
+    fontSize: 36,
     borderBottomWidth: 1,
     borderColor: "#ccc",
     marginBottom: 16,
+    color: ivoryWhite,
   },
   mapContainer: {
     height: 200,
@@ -236,7 +240,6 @@ const styles = StyleSheet.create({
   noLocationText: {
     textAlign: "center",
     color: "gray",
-    fontSize: 16,
     padding: 20,
   },
   noteInput: {
@@ -248,7 +251,10 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     marginBottom: 16,
     textAlignVertical: "top",
-    color: "white",
+    color: ivoryWhite,
+  },
+  photosTitle: {
+    color: ivoryWhite,
   },
   photosContainer: {
     flexDirection: "row",
@@ -265,8 +271,10 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginRight: 8,
   },
-  addPhotoText: {
-    fontSize: 24,
+  addPhotoPlus: {
+    fontSize: 72,
+    height: 72,
+    margin: 0,
     color: "#fff",
   },
   photoWrapper: {
@@ -281,18 +289,12 @@ const styles = StyleSheet.create({
   },
   removePhotoButton: {
     position: "absolute",
-    top: -8,
-    right: -8,
-    backgroundColor: "white",
-    borderRadius: 10,
-    width: 20,
-    height: 20,
+    top: -12,
+    right: -12,
+    width: 32,
+    height: 32,
     justifyContent: "center",
     alignItems: "center",
-  },
-  removePhotoText: {
-    color: "black",
-    fontSize: 12,
   },
   buttonContainer: {
     flexDirection: "row",
