@@ -89,9 +89,7 @@ export default function EditFavoriteComponent({
     });
 
     if (!result.canceled) {
-      console.log("original uri", result.assets[0].uri);
       const asset = await MediaLibrary.createAssetAsync(result.assets[0].uri);
-      console.log("asset uri", asset.uri);
       const updatedPhotos = [...(favorite.photos ?? []), asset.uri];
       setPhotoUrls(updatedPhotos);
     }
