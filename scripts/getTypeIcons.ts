@@ -25,9 +25,9 @@ export const getTypeIcons = (type: string): any[] => {
 
   // Check each type word against the keys in the typeIconMap and aliases
   typeWords.forEach((word) => {
-    if (typeIconMap[word]) {
+    if (typeIconMap[word] && !icons.includes(typeIconMap[word])) {
       icons.push(typeIconMap[word]);
-    } else if (aliases[word]) {
+    } else if (aliases[word] && !icons.includes(typeIconMap[aliases[word]])) {
       icons.push(typeIconMap[aliases[word]]);
     }
   });

@@ -24,7 +24,6 @@ export default function SuggestionListItem(item: ReminderSpecies) {
       <Pressable onPress={handleSelectSpecies} style={styles.container}>
         <ThemedView style={styles.subContainer}>
           <ThemedText> {item.name} </ThemedText>
-          {/* <Image source={require("@/assets/plant/fruit.png")} style={styles.icon} /> */}
           <ThemedView style={styles.iconContainer}>
             {getTypeIcons(item.type).map((icon, index) => (
               <Image key={index} source={icon} style={styles.icon} />
