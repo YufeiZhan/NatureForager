@@ -42,7 +42,7 @@ export default function SuggestionListItem(item: ReminderSpecies) {
 
     {isModalVisible && (
       <FrequencySelection
-        species={{ ...item, frequency: "" }}
+        species={{ ...item, frequency: "", imageURL: ""}}
         ifBack={true}
         onClose={handleCloseModal}
       />

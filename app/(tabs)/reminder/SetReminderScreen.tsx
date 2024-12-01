@@ -50,8 +50,7 @@ export default function SetReminderScreen() {
       );
       setSuggestions(filteredSuggestions);
     } else {
-      // set it to the first 100 cuz rendering everything gives a warning
-      setSuggestions(aggregatedData.slice(0, 100));
+      setSuggestions(aggregatedData);
     }
   }, [searchQuery]);
 
