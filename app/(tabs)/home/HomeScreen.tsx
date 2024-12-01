@@ -33,7 +33,7 @@ const allMonths = [
 export type Month = (typeof allMonths)[number];
 
 type TaxaByMonth = {
-  [key in Month]?: { [taxonId: number]: string };
+  [key in Month]?: { [taxonId: number]: { commonName: string; type: string } };
 };
 
 export default function HomeScreen() {
@@ -61,10 +61,11 @@ export default function HomeScreen() {
       const month = record["Month Ripe"] as Month;
       const taxonId = record["iNaturalist ID"];
       const commonName = record["Common Name"];
+      const type = record["Type"];
       if (!organizedData[month]) {
         organizedData[month] = {};
       }
-      organizedData[month][taxonId] = commonName;
+      organizedData[month][taxonId] = { commonName, type };
     });
 
     setSpeciesData(organizedData);
@@ -77,8 +78,15 @@ export default function HomeScreen() {
       setShown(false);
       if (location && Object.keys(speciesThisMonth).length > 0) {
         setLoading(true);
+
+        const speciesNamesOnly: { [taxonId: number]: string } = Object.fromEntries(
+          Object.entries(speciesThisMonth).map(([taxonId, { commonName }]) => [
+            Number(taxonId),
+            commonName,
+          ])
+        );
         const newSpeciesDistances = await fetchMinimumDistancesForSpecies(
-          speciesThisMonth,
+          speciesNamesOnly,
           location.latitude,
           location.longitude,
           (taxonId, distance) => {
@@ -106,14 +114,15 @@ export default function HomeScreen() {
     if (searchQuery) {
       taxaIdsMatchingSearchQuery = taxaIdsMatchingSearchQuery.filter(
         (taxonId) =>
-          speciesThisMonth[Number(taxonId)]
+          speciesThisMonth[Number(taxonId)].commonName
             .toLowerCase()
             .includes(searchQuery.toLowerCase())
       );
     }
     const items = taxaIdsMatchingSearchQuery.map((taxonId) => ({
       taxonId: Number(taxonId),
-      name: speciesThisMonth[Number(taxonId)],
+      name: speciesThisMonth[Number(taxonId)].commonName,
+      type: speciesThisMonth[Number(taxonId)].type,
       distance: speciesDistances[Number(taxonId)],
     }));
     const filteredItems = loading

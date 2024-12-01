@@ -39,13 +39,18 @@ LogBox.ignoreLogs([
 console.error = (error) => error.apply;
 
 const aggregateSpecies = (data: any[]): TempReminderSpecies[] => {
-  const speciesMap: { [key: number]: TempReminderSpecies & { monthsSet: Set<string> } } = {};
+  const speciesMap: { [key: number]: TempReminderSpecies & { 
+    monthsSet: Set<string>;
+    typesSet: Set<string>;  
+  } } = {};
 
   data.forEach((item) => {
     const id = item["iNaturalist ID"];
     const month = item["Month Ripe"];
     const name = item["Common Name"];
     const type = item.Type;
+
+    const typeArray = type.split(",").map((t: string) => t.trim());
 
     if (!speciesMap[id]) {
       speciesMap[id] = {
@@ -54,16 +59,19 @@ const aggregateSpecies = (data: any[]): TempReminderSpecies[] => {
         type,
         monthRipe: month,
         monthsSet: new Set([month]),
+        typesSet: new Set([type]),
         months: [],
       };
     } else {
       speciesMap[id].monthsSet.add(month);
+      typeArray.forEach((t: string) => speciesMap[id].typesSet.add(t));
     }
   });
 
-  return Object.values(speciesMap).map(({ monthsSet, ...species }) => ({
+  return Object.values(speciesMap).map(({ monthsSet, typesSet, ...species }) => ({
     ...species,
     months: Array.from(monthsSet),
+    type: Array.from(typesSet).join(", "),
   }));
 };
 
@@ -178,7 +186,7 @@ export default function SpeciesInfo({ taxonId }: { taxonId: string }) {
           </ThemedView>
           <ThemedView style={globalStyles.secondaryGroup}>
             <ThemedText style={globalStyles.infoUnderlinedTitle}>PartsEdible</ThemedText>
-            <ThemedText style={globalStyles.infoSecondaryTitle}>TBA</ThemedText>
+            <ThemedText style={globalStyles.infoSecondaryTitle}>{edibleInfo?.type}</ThemedText>
           </ThemedView>
           
           <ThemedImage uri={taxonData?.photo_url}/>
