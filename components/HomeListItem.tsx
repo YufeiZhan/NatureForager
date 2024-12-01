@@ -25,6 +25,7 @@ export default function HomeListItem(item: ItemData) {
       pod: require("@/assets/plant/pod.png"),
       pollen: require("@/assets/plant/pollen.png"),
       root: require("@/assets/plant/root.png"),
+      seed: require("@/assets/plant/seed.png"),
       shoot: require("@/assets/plant/shoot.png"),
       tea: require("@/assets/plant/tea.png"),
       tuber: require("@/assets/plant/tuber.png"),
@@ -33,7 +34,6 @@ export default function HomeListItem(item: ItemData) {
     // For types that share icons with other types
     const aliases: { [key: string]: string } = {
       berry: "fruit",
-      seed: "pollen",
       sap: "tea",
     };
   
