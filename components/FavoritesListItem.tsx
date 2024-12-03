@@ -43,7 +43,10 @@ export default function FavoritesListItem({
       {/* distance from me to favorite */}
       {userLocation && (
         <ThemedView style={styles.subContainerRight}>
-          <Image source={require("@/assets/pin/home.png")}></Image>
+          <Image
+            style={styles.distancePin}
+            source={require("@/assets/pin/normal.png")}
+          ></Image>
           <ThemedText style={styles.distance}>{distanceString}</ThemedText>
         </ThemedView>
       )}
@@ -79,5 +82,9 @@ const styles = StyleSheet.create({
   distance: {
     textAlign: "right",
     minWidth: 2,
+  },
+  distancePin: {
+    height: 36,
+    width: 24,
   },
 });
