@@ -14,7 +14,7 @@ Link: https://www.figma.com/design/ldIUpXGM6ZjS1f6w5jtszy/Nature-App?node-id=25-
 
 2. **Install Project Dependencies**
 
-   - Open the terminal and navigate to your project directory.
+   - Open the terminal and navigate to the project directory.
 
    ```bash
    cd plant-forager
@@ -45,7 +45,7 @@ Link: https://www.figma.com/design/ldIUpXGM6ZjS1f6w5jtszy/Nature-App?node-id=25-
 
 - Download the Android Emulator
 
-  - Set up an Android Virtual Device:
+  - Set up an Android Virtual Device in Android Studio:
     - Device: **Pixel 8 Pro**
     - System Image: Select the API level **VanillaIcecream**.
 
