@@ -58,8 +58,13 @@ export default function EditLocationModal({
         style={styles.pin}
       />
       <ThemedView style={styles.bottomButtons}>
-        <ThemedButton title="Cancel" onPress={onClose}></ThemedButton>
         <ThemedButton
+          title="Cancel"
+          action="secondary"
+          onPress={onClose}
+        ></ThemedButton>
+        <ThemedButton
+          action="primary"
           title="Confirm Location"
           onPress={() => onConfirmLocation(centerLat, centerLng)}
         ></ThemedButton>
