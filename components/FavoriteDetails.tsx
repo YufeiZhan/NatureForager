@@ -1,11 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  SafeAreaView,
-  StyleSheet,
-  Image,
-  ScrollView,
-  Pressable,
-} from "react-native";
+import { StyleSheet } from "react-native";
 import {
   ThemedText,
   ThemedView,

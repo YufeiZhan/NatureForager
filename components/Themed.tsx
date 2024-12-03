@@ -4,8 +4,6 @@ import {
   ViewProps,
   Text,
   TextProps,
-  ScrollView,
-  ScrollViewProps,
   FlatList,
   FlatListProps,
   Pressable,
@@ -48,19 +46,23 @@ export function ThemedButton(
   if (action === "primary") {
     return (
       <Pressable
-        style={[styles.primaryButton, style as ViewStyle]}
+        style={[styles.button, styles.primaryButton, style as ViewStyle]}
         onPress={onPress}
       >
-        <ThemedText style={[styles.primaryButtonText]}>{title}</ThemedText>
+        <ThemedText style={[styles.buttonText, styles.primaryButtonText]}>
+          {title}
+        </ThemedText>
       </Pressable>
     );
   } else {
     return (
       <Pressable
-        style={[styles.secondaryButton, style as ViewStyle]}
+        style={[styles.button, styles.secondaryButton, style as ViewStyle]}
         onPress={onPress}
       >
-        <ThemedText style={styles.secondaryButtonText}>{title}</ThemedText>
+        <ThemedText style={[styles.buttonText, styles.secondaryButtonText]}>
+          {title}
+        </ThemedText>
       </Pressable>
     );
   }
@@ -165,44 +167,43 @@ export function ThemedDropDownPicker(props: DropDownPickerProps<Month>) {
   );
 }
 
-export function ThemedScrollView(props: ScrollViewProps) {
-  const { style, ...otherProps } = props;
-  return (
-    <ScrollView style={[styles.scrollView, style]} {...otherProps}></ScrollView>
-  );
-}
-
 export function ThemedFlatList<T>(props: FlatListProps<T>) {
   const { style, ...otherProps } = props;
   return <FlatList style={[styles.flatList, style]} {...otherProps}></FlatList>;
 }
 
 const styles = StyleSheet.create({
-  primaryButton: {
-    backgroundColor: pureWhite,
-    alignSelf: "center",
+  button: {
+    alignItems: "center",
     justifyContent: "center",
-    paddingVertical: 13,
+    paddingVertical: 8,
     paddingHorizontal: 25,
     borderRadius: 20,
+    // iOS Shadow
+    shadowColor: "#000",
+    shadowOpacity: 0.5,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 2,
+
+    // Android Shadow
+    elevation: 5,
   },
-  primaryButtonText: {
-    color: darkGreen,
-    fontSize: 18,
-    alignItems: "center",
+  primaryButton: {
+    backgroundColor: pureWhite,
   },
   secondaryButton: {
     backgroundColor: darkGreen,
-    alignSelf: "center",
-    justifyContent: "center",
-    paddingVertical: 13,
-    paddingHorizontal: 25,
-    borderRadius: 20,
+  },
+  buttonText: {
+    fontSize: 24,
+    alignItems: "center",
+    margin: 0,
+  },
+  primaryButtonText: {
+    color: darkGreen,
   },
   secondaryButtonText: {
     color: ivoryWhite,
-    fontSize: 18,
-    alignItems: "center",
   },
   view: {},
   text: {
@@ -232,6 +233,5 @@ const styles = StyleSheet.create({
     // fontSize: 25,
     textAlign: "center",
   },
-  scrollView: {},
   flatList: {},
 });
