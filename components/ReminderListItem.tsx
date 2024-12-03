@@ -83,6 +83,7 @@ const styles = StyleSheet.create({
     gap: 10,
     justifyContent: "center",
     alignItems: "center",
+    maxHeight: 60,
   },
   container: {
     flexGrow: 1,
