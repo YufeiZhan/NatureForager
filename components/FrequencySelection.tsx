@@ -109,7 +109,8 @@ export default function FrequencySelection({
       onRequestClose={onClose}
     >
       <ThemedView style={styles.container}>
-        <ThemedText>Select Frequency for {species.name}</ThemedText>
+        <ThemedText style={styles.header}>Edit Reminder</ThemedText>
+        <ThemedText style={styles.subtitle}>Select Frequency for {species.name}</ThemedText>
         
         <View style={styles.pickerContainer}>
           <DropDownPicker
@@ -160,5 +161,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
     marginVertical: 20,
     zIndex: 1,
-  }
+  },
+  header: {
+    fontSize: 28,
+    fontWeight: "bold",
+    color: pureWhite,
+    marginBottom: 80,
+  },
+  subtitle: {
+    fontSize: 18,
+    color: pureWhite,
+    textAlign: "center",
+    marginBottom: 10,
+  },
 });
