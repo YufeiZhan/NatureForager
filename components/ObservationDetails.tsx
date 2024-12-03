@@ -21,7 +21,7 @@ export default function ObservationDetails({
   onClose,
 }: ObservationDetailsProps) {
   // keep track of whether this observation is favorited
-  const { favorites, addFavorite } = useContext(FavoritesContext);
+  const { favorites, addFavorite, removeFavorite } = useContext(FavoritesContext);
   const [isFavorited, setIsFavorited] = useState(false);
   useEffect(() => {
     const isInFavorites = Boolean(
@@ -57,6 +57,16 @@ export default function ObservationDetails({
     setIsFavorited(true);
   };
 
+  const handleRemoveFavorites = async() => {
+    const target_id = favorites?.filter((fav) => fav.iNaturalistId === observation.id)[0].id
+    if (target_id) {
+      await removeFavorite(target_id);
+      setIsFavorited(false);
+    } else {
+      console.warn("No ID available to delete the favorite.");
+    }
+  }
+
   return (
     <>
       <ThemedView style={globalStyles.closeBottomSheetButton}>
@@ -78,7 +88,7 @@ export default function ObservationDetails({
           onPress={handleAddToFavorites}
         ></ThemedIcon>
       ) : (
-        <ThemedIcon iconName="fav"></ThemedIcon> //Q: allow user to unfav here?
+        <ThemedIcon iconName="fav" onPress={handleRemoveFavorites}></ThemedIcon> //Q: allow user to unfav here?
       )}
 
       <ThemedText style={globalStyles.infoUnderlinedTitle}>
