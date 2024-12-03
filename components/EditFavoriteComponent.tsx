@@ -83,18 +83,30 @@ export default function EditFavoriteComponent({
     if (status !== "granted") {
       return;
     }
-
+  
     const result = await ImagePicker.launchImageLibraryAsync({
       allowsMultipleSelection: false,
       quality: 1,
     });
-
+  
     if (!result.canceled) {
-      const asset = await MediaLibrary.createAssetAsync(result.assets[0].uri);
-      const updatedPhotos = [...(favorite.photos ?? []), asset.uri];
-      setPhotoUrls(updatedPhotos);
+      const newPhotoUri = result.assets[0].uri;
+  
+      if (Platform.OS === "android") {
+        try {
+          const asset = await MediaLibrary.createAssetAsync(newPhotoUri);
+          const updatedPhotos = [...(favorite.photos ?? []), asset.uri];
+          setPhotoUrls(updatedPhotos);
+        } catch (error) {
+          console.error("Error saving photo to Media Library on Android:", error);
+        }
+      } else if (Platform.OS === "ios") {
+        const updatedPhotos = [...(favorite.photos ?? []), newPhotoUri];
+        setPhotoUrls(updatedPhotos);
+      }
     }
   };
+  
 
   const hasValidLocation =
     markerLocation.latitude !== 0 && markerLocation.longitude !== 0;

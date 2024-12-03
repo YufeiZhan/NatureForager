@@ -4,16 +4,18 @@ import { useContext } from "react";
 import { LocationContext } from "@/hooks/LocationContext";
 import { useRouter } from "expo-router";
 import { pureWhite } from "@/constants/Colors";
+import { getTypeIcons } from "@/scripts/getTypeIcons";
 
 interface ItemData {
   taxonId: number;
   name: string;
+  type: string;
   distance: number | null;
 }
 
 export default function HomeListItem(item: ItemData) {
   const { location, setLocation } = useContext(LocationContext);
-  const router = useRouter();
+  const router = useRouter();  
 
   return (
     <Pressable
@@ -32,12 +34,20 @@ export default function HomeListItem(item: ItemData) {
       style={styles.container}
     >
       <ThemedView style={styles.subContainerLeft}>
-        <Image source={require("@/assets/plant/fruit.png")}></Image>
         <ThemedText style={styles.title}>{item.name}</ThemedText>
+        <ThemedView style={styles.iconContainer}>
+          {getTypeIcons(item.type).map((icon, index) => (
+            <Image
+              key={index}
+              source={icon}
+              style={styles.icon}
+            />
+          ))}
+      </ThemedView>
       </ThemedView>
 
       <ThemedView style={styles.subContainerRight}>
-        <Image source={require("@/assets/pin/home.png")}></Image>
+        <Image source={require("@/assets/pin/home.png") }></Image>
         <ThemedText style={styles.distance}>
           {item.distance ? `${Number(item.distance).toFixed(2)} km` : "None"}
         </ThemedText>
@@ -61,8 +71,8 @@ export const styles = StyleSheet.create({
     padding: 10,
   },
   subContainerLeft: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: "column",
+    alignItems: "flex-start",
     gap: 10,
     flex: 1, // Allows the title to take up remaining space
   },
@@ -79,4 +89,14 @@ export const styles = StyleSheet.create({
     textAlign: "right",
     minWidth: 2,
   },
+  icon: {
+    width: 30,
+    height: 30,
+  },
+  iconContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    flexWrap: "wrap",
+    gap: 5,
+  }
 });

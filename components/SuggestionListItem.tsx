@@ -1,9 +1,10 @@
 import { Pressable, StyleSheet, Image, Dimensions } from "react-native";
 import { ThemedView, ThemedText } from "@/components/Themed";
 import { oliveGreen, pureWhite } from "@/constants/Colors";
-import { ReminderSpecies } from '@/backend/Reminder';
+import { ReminderSpecies } from "@/backend/Reminder";
 import FrequencySelection from "@/components/FrequencySelection";
 import { useState } from "react";
+import { getTypeIcons } from "@/scripts/getTypeIcons";
 
 export default function SuggestionListItem(item: ReminderSpecies) {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -20,33 +21,31 @@ export default function SuggestionListItem(item: ReminderSpecies) {
 
   return (
     <>
-    <Pressable
-      onPress={handleSelectSpecies}
-      style={styles.container}
-    >
-      <ThemedView style={styles.subContainer}>
-        <Image source={require("@/assets/plant/fruit.png")} style={styles.icon} />
-        <ThemedText style={styles.title}> {item.name} </ThemedText>
-      </ThemedView>
+      <Pressable onPress={handleSelectSpecies} style={styles.container}>
+        <ThemedView style={styles.subContainer}>
+          <ThemedText> {item.name} </ThemedText>
+          <ThemedView style={styles.iconContainer}>
+            {getTypeIcons(item.type).map((icon, index) => (
+              <Image key={index} source={icon} style={styles.icon} />
+            ))}
+          </ThemedView>
+          <ThemedText
+            style={{ color: oliveGreen, flexShrink: 1 }}
+            numberOfLines={1}
+            ellipsizeMode="tail"
+          >
+            Ripe in: {abbreviatedMonths.join(", ")}
+          </ThemedText>
+        </ThemedView>
+      </Pressable>
 
-      <ThemedView style={styles.subContainer}>
-        <ThemedText 
-        style={{color: oliveGreen, flexShrink: 1}}
-        numberOfLines={1}
-        ellipsizeMode="tail"
-        >
-          Ripe in: {abbreviatedMonths.join(", ")}
-        </ThemedText>
-      </ThemedView>
-    </Pressable>
-
-    {isModalVisible && (
-      <FrequencySelection
-        species={{ ...item, frequency: "" }}
-        ifBack={true}
-        onClose={handleCloseModal}
-      />
-    )}
+      {isModalVisible && (
+        <FrequencySelection
+          species={{ ...item, frequency: "", imageURL: "" }}
+          ifBack={true}
+          onClose={handleCloseModal}
+        />
+      )}
     </>
   );
 }
@@ -64,15 +63,20 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   subContainer: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: "column",
+    alignItems: "flex-start",
     marginHorizontal: 10,
+    marginVertical: 5,
   },
   icon: {
-    margin: 10,
+    margin: 5,
+    height: 30,
+    width: 30,
   },
-  title: {
-    fontSize: 16,
-    fontWeight: "bold",
-  },
+  iconContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    flexWrap: "wrap",
+
+  }
 });
