@@ -93,7 +93,7 @@ export default function PlantLocation() {
         {observationDetail ? (
           <ObservationDetails
             observation={observationDetail}
-            updateBottomSheet={() => setObservationDetail(null)}
+            onClose={() => setObservationDetail(null)}
           ></ObservationDetails>
         ) : (
           <SpeciesInfo taxonId={iNaturalistTaxonId} />

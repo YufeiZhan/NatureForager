@@ -15,15 +15,13 @@ import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 
 interface ObservationDetailsProps {
   observation: Observation;
-  updateBottomSheet: () => void;
-  // onClose: () => void;
+  onClose: () => void;
 }
 
 export default function ObservationDetails({
   observation,
-  updateBottomSheet,
-}: // onClose,
-ObservationDetailsProps) {
+  onClose,
+}: ObservationDetailsProps) {
   // keep track of whether this observation is favorited
   const { favorites, addFavorite } = useContext(FavoritesContext);
   const [isFavorited, setIsFavorited] = useState(false);
@@ -66,6 +64,10 @@ ObservationDetailsProps) {
       <BottomSheetScrollView
         contentContainerStyle={globalStyles.infoPageSubContainer}
       >
+        <ThemedView style={globalStyles.closeBottomSheetButton}>
+          <ThemedIcon iconName="x" onPress={onClose} />
+        </ThemedView>
+
         <ThemedText style={globalStyles.infoPrimaryTitle}>
           {observation.taxon?.preferred_common_name}
         </ThemedText>
@@ -104,12 +106,6 @@ ObservationDetailsProps) {
           )}
         </ThemedView>
       </BottomSheetScrollView>
-      <ThemedButton
-        style={globalStyles.flowingButton}
-        title="Back to Map"
-        onPress={updateBottomSheet}
-        action="primary"
-      />
     </>
   );
 }
