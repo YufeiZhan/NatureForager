@@ -36,15 +36,6 @@ export default function AppLayout() {
           ),
         }}
       />
-      <Tabs.Screen
-        name="recognition"
-        options={{
-          tabBarIcon: ({ focused, color, size }) => (
-            focused ? <Image source={require("@/assets/tab/reminder-tab-selected.png")} style={styles.icon}/>
-                    : <Image source={require("@/assets/tab/reminder-tab-unselected.png")} style={styles.icon}/>
-          ),
-        }}
-      />
     </Tabs>
   );
 }
