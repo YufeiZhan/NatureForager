@@ -183,8 +183,8 @@ const styles = StyleSheet.create({
     backgroundColor: darkGreen,
     alignSelf: "center",
     justifyContent: "center",
-    paddingVertical: 18,
-    paddingHorizontal: 40,
+    paddingVertical: 13,
+    paddingHorizontal: 25,
     borderRadius: 20,
   },
   secondaryButtonText: {
