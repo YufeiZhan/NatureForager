@@ -1,13 +1,11 @@
 // app/(tabs)/favorites/Favorites.tsx
 import FavoriteDetails from "@/components/FavoriteDetails";
 import FavoritesListItem from "@/components/FavoritesListItem";
-import FavoritesMap from "@/components/FavoritesMap";
 import { ThemedButton, ThemedText } from "@/components/Themed";
 import { yellowSand } from "@/constants/Colors";
 import { FavoritesContext } from "@/hooks/FavoritesContext";
 import { LocationContext } from "@/hooks/LocationContext";
 import { Favorite } from "@/hooks/useFavorites";
-import { useNonArraySearchParams } from "@/hooks/useNonArraySearchParams";
 import { calculateDistance } from "@/scripts/minSpeciesDistances";
 import BottomSheet, {
   BottomSheetFlatList,
@@ -16,11 +14,14 @@ import BottomSheet, {
 import { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { StyleSheet } from "react-native";
 import { useRouter } from "expo-router";
+import Map, { Markers } from "@/components/Map";
 import { globalStyles } from "@/styles/globalStyles";
 
 export default function Favorites() {
   const { location } = useContext(LocationContext);
   const { favorites } = useContext(FavoritesContext);
+  const bottomSheetRef = useRef<BottomSheet>(null);
+  const favListRef = useRef<BottomSheetFlatListMethods>(null);
 
   const sortedFavorites = useMemo(() => {
     // sort favorites by location
@@ -50,35 +51,34 @@ export default function Favorites() {
     if (!selectedId || !favorites) return undefined;
     return favorites.find((fav) => fav.id === selectedId);
   }, [selectedId, favorites]);
-  // this second "selected favorite" state is for most recently selected favorite BY THE LIST
-  // the map only responds to this one (NOT selectedFavorite), to avoid circular selection logic loops
-  // this one is allowed to be out of date, since the map only responds to changes in this
-  const [markerIdToSelect, setMarkerIdToSelect] = useState("");
 
-  const bottomSheetRef = useRef<BottomSheet>(null);
-  const favListRef = useRef<BottomSheetFlatListMethods>(null);
+  // markers object for the map
+  const markers = useMemo(() => {
+    const newMarkers: Markers = {};
+    favorites?.forEach((fav) => {
+      newMarkers[fav.id] = {
+        coordinate: {
+          latitude: fav.location.latitude,
+          longitude: fav.location.longitude,
+        },
+        onSelect: () => {
+          handleSelectFavorite(fav);
+        },
+      };
+    });
+    return newMarkers;
+  }, [favorites]);
 
-  // if search param passed to show a favorite, select it
-  const { favoriteIdToShow } = useNonArraySearchParams();
-  useEffect(() => {
-    const fav = favorites?.find((fav) => fav.id === favoriteIdToShow);
-    if (fav) {
-      setSelectedId(fav.id);
-    }
-  }, [favoriteIdToShow]);
+  // event handlers ------------------------------------------
 
-  const handleSelectFavorite = (fav: Favorite, mapTriggered = false) => {
+  const handleSelectFavorite = (fav: Favorite) => {
     setSelectedId(fav.id);
-    if (!mapTriggered) {
-      setMarkerIdToSelect(fav.id);
-    }
     // snap bottom sheet to mid position so we can see the map and where the marker is
     bottomSheetRef.current?.snapToIndex(1);
   };
 
   const handleDeselectFavorite = () => {
     setSelectedId("");
-    setMarkerIdToSelect("");
   };
 
   const router = useRouter();
@@ -91,12 +91,13 @@ export default function Favorites() {
       {!location && <ThemedText>Loading location...</ThemedText>}
       {location && (
         <>
-          <FavoritesMap
+          <Map
             initialLat={Number(location.latitude)}
             initialLng={Number(location.longitude)}
-            selectedFavoriteId={markerIdToSelect}
-            onSelectFavorite={(fav) => handleSelectFavorite(fav, true)}
-            onDeselectFavorites={() => handleDeselectFavorite()}
+            markers={markers}
+            selectedMarkerId={selectedId}
+            panToMarkerEnabled={true}
+            onPress={() => handleDeselectFavorite()}
           />
 
           <BottomSheet
