@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import * as Location from "expo-location";
-import { Alert } from "react-native";
 
 export interface UserLocation {
   latitude: number;
