@@ -11,7 +11,14 @@ import { useEffect, useState } from "react";
 import { useRouter } from "expo-router";
 import { Modal, StyleSheet, View } from "react-native";
 import { ThemedButton, ThemedText, ThemedView } from "@/components/Themed";
-import { Reminder, saveReminder, deleteReminder, loadReminders, cancelNotification, scheduleNotification } from '@/backend/Reminder';
+import {
+  Reminder,
+  saveReminder,
+  deleteReminder,
+  loadReminders,
+  cancelNotification,
+  scheduleNotification,
+} from "@/backend/Reminder";
 import { oliveGreen, pureWhite } from "@/constants/Colors";
 import DropDownPicker from "react-native-dropdown-picker";
 
@@ -21,12 +28,11 @@ interface FrequencySelectionProps {
   onClose: () => void;
 }
 
-
 export default function FrequencySelection({
   species,
   ifBack,
   onClose,
-}: FrequencySelectionProps){
+}: FrequencySelectionProps) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [frequency, setFrequency] = useState("monthly");
@@ -40,7 +46,9 @@ export default function FrequencySelection({
   useEffect(() => {
     const loadSpeciesReminder = async () => {
       const reminders = await loadReminders();
-      const existingReminder = reminders.find(reminder => reminder.id === species.id);
+      const existingReminder = reminders.find(
+        (reminder) => reminder.id === species.id
+      );
 
       if (existingReminder) {
         setFrequency(existingReminder.frequency);
@@ -51,42 +59,49 @@ export default function FrequencySelection({
     loadSpeciesReminder();
   }, [species.id]);
 
-
-
   const rescheduleNotifications = async () => {
     for (const month of species.months) {
       const allReminders = await loadReminders();
       await cancelNotification(month, "monthly");
-      const inSeasonSpecies = allReminders.filter(reminder => reminder.months.includes(month));
+      const inSeasonSpecies = allReminders.filter((reminder) =>
+        reminder.months.includes(month)
+      );
       if (inSeasonSpecies.length > 0) {
         await scheduleNotification(inSeasonSpecies, month, "monthly");
       }
 
-      if (species.frequency == "biweekly" || species.frequency == "weekly"){
+      if (species.frequency == "biweekly" || species.frequency == "weekly") {
         await cancelNotification(month, "biweekly");
-        const biweeklySpecies = allReminders.filter(reminder => reminder.months.includes(month) && (reminder.frequency == "biweekly" || reminder.frequency == "weekly"));
+        const biweeklySpecies = allReminders.filter(
+          (reminder) =>
+            reminder.months.includes(month) &&
+            (reminder.frequency == "biweekly" || reminder.frequency == "weekly")
+        );
         console.log("biweekly: ", biweeklySpecies);
         if (biweeklySpecies.length > 0) {
           await scheduleNotification(biweeklySpecies, month, "biweekly");
         }
       }
-      if (species.frequency == "weekly"){
+      if (species.frequency == "weekly") {
         await cancelNotification(month, "weekly");
-        const weeklySpecies = allReminders.filter(reminder => reminder.months.includes(month) && reminder.frequency == "weekly");
+        const weeklySpecies = allReminders.filter(
+          (reminder) =>
+            reminder.months.includes(month) && reminder.frequency == "weekly"
+        );
         console.log("weekly: ", weeklySpecies);
         if (weeklySpecies.length > 0) {
           await scheduleNotification(weeklySpecies, month, "weekly");
         }
       }
     }
-  }
+  };
 
   const handleSaveReminder = async () => {
     await saveReminder(species, frequency);
     await rescheduleNotifications();
 
     onClose();
-    if(ifBack){
+    if (ifBack) {
       router.back();
     }
   };
@@ -96,7 +111,7 @@ export default function FrequencySelection({
     await rescheduleNotifications();
 
     onClose();
-    if(ifBack){
+    if (ifBack) {
       router.back();
     }
   };
@@ -110,8 +125,10 @@ export default function FrequencySelection({
     >
       <ThemedView style={styles.container}>
         <ThemedText style={styles.header}>Edit Reminder</ThemedText>
-        <ThemedText style={styles.subtitle}>Select Frequency for {species.name}</ThemedText>
-        
+        <ThemedText style={styles.subtitle}>
+          Select Frequency for {species.name}
+        </ThemedText>
+
         <View style={styles.pickerContainer}>
           <DropDownPicker
             open={open}
@@ -136,13 +153,22 @@ export default function FrequencySelection({
             dropDownDirection="AUTO"
           />
         </View>
-        
 
-        <ThemedButton title="Save Reminder" onPress={handleSaveReminder} />
-        {isExistingReminder && (
-          <ThemedButton title="Delete Reminder" onPress={handleDeleteReminder} />
-        )}
-        <ThemedButton title="Cancel" onPress={() => onClose()} />
+        <ThemedView style={styles.buttons}>
+          <ThemedButton title="Save Reminder" onPress={handleSaveReminder} />
+          {isExistingReminder && (
+            <ThemedButton
+              title="Delete Reminder"
+              action="secondary"
+              onPress={handleDeleteReminder}
+            />
+          )}
+          <ThemedButton
+            title="Cancel"
+            action="secondary"
+            onPress={() => onClose()}
+          />
+        </ThemedView>
       </ThemedView>
     </Modal>
   );
@@ -173,5 +199,10 @@ const styles = StyleSheet.create({
     color: pureWhite,
     textAlign: "center",
     marginBottom: 10,
+  },
+  buttons: {
+    flex: 1,
+    height: 300,
+    gap: 20,
   },
 });
