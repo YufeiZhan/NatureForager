@@ -28,6 +28,7 @@ export const globalStyles = StyleSheet.create({
     backgroundColor: ivoryWhite,
     borderRadius: 20,
     opacity: 0.9,
+    minHeight: 400,
   },
   infoPrimaryTitle: {
     fontSize: 30,

@@ -3,7 +3,6 @@ import {
   ThemedScrollView,
   ThemedView,
   ThemedText,
-  ThemedButton,
   ThemedIcon,
   ThemedImage,
 } from "./Themed";
@@ -11,7 +10,6 @@ import { Observation } from "../iNaturalistTypes";
 import { useContext, useEffect, useState } from "react";
 import { FavoritesContext } from "@/hooks/FavoritesContext";
 import { globalStyles } from "@/styles/globalStyles";
-import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 
 interface ObservationDetailsProps {
   observation: Observation;
@@ -61,29 +59,45 @@ export default function ObservationDetails({
 
   return (
     <>
-      <BottomSheetScrollView
-        contentContainerStyle={globalStyles.infoPageSubContainer}
-      >
-        <ThemedView style={globalStyles.closeBottomSheetButton}>
-          <ThemedIcon iconName="x" onPress={onClose} />
-        </ThemedView>
+      <ThemedView style={globalStyles.closeBottomSheetButton}>
+        <ThemedIcon iconName="x" onPress={onClose} />
+      </ThemedView>
 
-        <ThemedText style={globalStyles.infoPrimaryTitle}>
-          {observation.taxon?.preferred_common_name}
-        </ThemedText>
-        <ThemedText style={globalStyles.infoSecondaryTitle}>
-          {observation.taxon?.name}
-        </ThemedText>
-        <ThemedView style={globalStyles.divider} />
+      <ThemedText style={globalStyles.infoPrimaryTitle}>
+        {observation.taxon?.preferred_common_name}
+      </ThemedText>
+      <ThemedText style={globalStyles.infoSecondaryTitle}>
+        {observation.taxon?.name}
+      </ThemedText>
+      <ThemedView style={globalStyles.divider} />
 
-        {/* Add to Favorite Button or Favorited Text */}
-        {!isFavorited ? (
-          <ThemedIcon
-            iconName="unfav"
-            onPress={handleAddToFavorites}
-          ></ThemedIcon>
+      {/* Add to Favorite Button or Favorited Text */}
+      {!isFavorited ? (
+        <ThemedIcon
+          iconName="unfav"
+          onPress={handleAddToFavorites}
+        ></ThemedIcon>
+      ) : (
+        <ThemedIcon iconName="fav"></ThemedIcon> //Q: allow user to unfav here?
+      )}
+
+      <ThemedText style={globalStyles.infoUnderlinedTitle}>
+        Observed on
+      </ThemedText>
+      <ThemedText style={globalStyles.infoSecondaryTitle}>
+        {observation.observed_on || "Date Not Available"}
+      </ThemedText>
+
+      <ThemedView style={styles.photosContainer}>
+        {observation.photos && observation.photos.length > 0 ? (
+          observation.photos.map((photo, index) => (
+            <ThemedImage
+              key={index}
+              uri={photo.url?.replace("square", "medium")}
+            />
+          ))
         ) : (
-          <ThemedIcon iconName="fav"></ThemedIcon> //Q: allow user to unfav here?
+          <ThemedText>No photos available</ThemedText>
         )}
 
         <ThemedText style={globalStyles.infoUnderlinedTitle}>
@@ -105,7 +119,7 @@ export default function ObservationDetails({
             <ThemedText>No photos available</ThemedText>
           )}
         </ThemedView>
-      </BottomSheetScrollView>
+      </ThemedView>
     </>
   );
 }

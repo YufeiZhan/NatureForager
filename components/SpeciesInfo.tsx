@@ -1,11 +1,6 @@
 import { useEffect, useState } from "react";
+import { useWindowDimensions, LogBox, ActivityIndicator } from "react-native";
 import {
-  Image,
-  useWindowDimensions,
-  LogBox,
-} from "react-native";
-import {
-  ThemedScrollView,
   ThemedView,
   ThemedText,
   ThemedIcon,
@@ -13,13 +8,15 @@ import {
 } from "../components/Themed";
 import RenderHTML from "react-native-render-html";
 import plantData from "@/data/edible_plants.json";
-import { loadReminders, ReminderSpecies, TempReminderSpecies } from "@/backend/Reminder";
+import {
+  loadReminders,
+  ReminderSpecies,
+  TempReminderSpecies,
+} from "@/backend/Reminder";
 import speciesData from "@/data/edible_plants.json";
 import FrequencySelection from "./FrequencySelection";
-import { View } from "react-native";
 import { globalStyles } from "@/styles/globalStyles";
-import { BottomSheetScrollView } from "@gorhom/bottom-sheet";
-import ImageView from "react-native-image-viewing";
+import { darkGreen } from "@/constants/Colors";
 
 type Plant = (typeof plantData)[number];
 
@@ -39,10 +36,12 @@ LogBox.ignoreLogs([
 console.error = (error) => error.apply;
 
 const aggregateSpecies = (data: any[]): TempReminderSpecies[] => {
-  const speciesMap: { [key: number]: TempReminderSpecies & { 
-    monthsSet: Set<string>;
-    typesSet: Set<string>;  
-  } } = {};
+  const speciesMap: {
+    [key: number]: TempReminderSpecies & {
+      monthsSet: Set<string>;
+      typesSet: Set<string>;
+    };
+  } = {};
 
   data.forEach((item) => {
     const id = item["iNaturalist ID"];
@@ -68,14 +67,25 @@ const aggregateSpecies = (data: any[]): TempReminderSpecies[] => {
     }
   });
 
-  return Object.values(speciesMap).map(({ monthsSet, typesSet, ...species }) => ({
-    ...species,
-    months: Array.from(monthsSet),
-    type: Array.from(typesSet).join(", "),
-  }));
+  return Object.values(speciesMap).map(
+    ({ monthsSet, typesSet, ...species }) => ({
+      ...species,
+      months: Array.from(monthsSet),
+      type: Array.from(typesSet).join(", "),
+    })
+  );
 };
 
-export default function SpeciesInfo({ taxonId }: { taxonId: string }) {
+export default function SpeciesInfo({
+  taxonId,
+  hide = false,
+}: {
+  taxonId: string;
+  hide?: boolean;
+}) {
+  // note "hide" is for not displaying this component while not unmounting it
+  // this avoids needing to re-fetch iNaturalist data / show an activity indicator
+
   const [plantInfo, setPlantInfo] = useState<Plant | null>(null);
   const [taxonData, setTaxonData] = useState<TaxonData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -83,7 +93,6 @@ export default function SpeciesInfo({ taxonId }: { taxonId: string }) {
   const [edibleInfo, setEdibleInfo] = useState<ReminderSpecies | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isReminded, setIsReminded] = useState(false);
-  
 
   useEffect(() => {
     const aggregatedData = aggregateSpecies(speciesData);
@@ -102,13 +111,13 @@ export default function SpeciesInfo({ taxonId }: { taxonId: string }) {
     const ediblePlant = aggregatedData.find((plant) => {
       return String(plant.id) === String(taxonId);
     });
-    
+
     if (ediblePlant) {
       setEdibleInfo(ediblePlant);
     } else {
       console.error("No edible plant data found for this taxon.");
     }
-    
+
     // Fetch taxon details from iNaturalist API
     const fetchTaxonData = async () => {
       try {
@@ -143,22 +152,16 @@ export default function SpeciesInfo({ taxonId }: { taxonId: string }) {
   }, [taxonId]);
 
   useEffect(() => {
-    async function getReminder(){
+    async function getReminder() {
       const result = await loadReminders();
-      const reminded = result.filter(item => item.name === plantInfo?.["Common Name"]).length > 0
-      setIsReminded(reminded)
+      const reminded =
+        result.filter((item) => item.name === plantInfo?.["Common Name"])
+          .length > 0;
+      setIsReminded(reminded);
     }
 
-    getReminder()
-  })
-
-  if (loading) {
-    return (
-      <ThemedScrollView contentContainerStyle={globalStyles.infoPageContainer}>
-        <ThemedText>Loading plant information...</ThemedText>
-      </ThemedScrollView>
-    );
-  }
+    getReminder();
+  });
 
   const handleReminded = (species: ReminderSpecies) => {
     setIsModalVisible(true);
@@ -168,43 +171,74 @@ export default function SpeciesInfo({ taxonId }: { taxonId: string }) {
     setIsModalVisible(false);
   }
 
-  
+  // if just hiding this component, don't unmount it (so don't have to refetch)
+  if (hide) {
+    return <></>;
+  }
+
+  if (loading) {
+    return (
+      <ActivityIndicator
+        color={darkGreen}
+        size="large"
+        style={{ marginTop: 50 }}
+      />
+    );
+  }
 
   return (
-        <BottomSheetScrollView contentContainerStyle={globalStyles.infoPageSubContainer}>
-          <ThemedText style={globalStyles.infoPrimaryTitle}>{taxonData?.common_name}</ThemedText>
-          <ThemedText style={globalStyles.infoSecondaryTitle}>{taxonData?.scientific_name}</ThemedText>
-          <View style={globalStyles.divider}></View>
+    <>
+      <ThemedText style={globalStyles.infoPrimaryTitle}>
+        {taxonData?.common_name}
+      </ThemedText>
+      <ThemedText
+        style={[globalStyles.infoSecondaryTitle, { fontStyle: "italic" }]}
+      >
+        {taxonData?.scientific_name}
+      </ThemedText>
+      <ThemedView style={globalStyles.divider}></ThemedView>
+      {isReminded ? (
+        <ThemedIcon iconName="reminded"></ThemedIcon>
+      ) : (
+        <ThemedIcon
+          iconName="unreminded"
+          onPress={() => handleReminded(edibleInfo!)}
+        ></ThemedIcon>
+      )}
 
-          { isReminded ? <ThemedIcon iconName="reminded"></ThemedIcon>
-                       : <ThemedIcon iconName="unreminded" onPress={() => handleReminded(edibleInfo!)}></ThemedIcon>
-          }
-          
-          <ThemedView style={globalStyles.secondaryGroup}>
-            <ThemedText style={globalStyles.infoUnderlinedTitle}>Months Ripe</ThemedText>
-            <ThemedText style={globalStyles.infoSecondaryTitle}>{edibleInfo?.months.join(", ")}</ThemedText>
-          </ThemedView>
-          <ThemedView style={globalStyles.secondaryGroup}>
-            <ThemedText style={globalStyles.infoUnderlinedTitle}>PartsEdible</ThemedText>
-            <ThemedText style={globalStyles.infoSecondaryTitle}>{edibleInfo?.type}</ThemedText>
-          </ThemedView>
-          
-          <ThemedImage uri={taxonData?.photo_url}/>
-          
-          <ThemedView style = {globalStyles.html}>
-            <RenderHTML
-                    contentWidth={width}
-                    source={{ html: taxonData?.wikipedia_summary || "" }}
-              />
-          </ThemedView>
+      <ThemedView style={globalStyles.secondaryGroup}>
+        <ThemedText style={globalStyles.infoUnderlinedTitle}>
+          Months Ripe
+        </ThemedText>
+        <ThemedText style={globalStyles.infoSecondaryTitle}>
+          {edibleInfo?.months.join(", ")}
+        </ThemedText>
+      </ThemedView>
+      <ThemedView style={globalStyles.secondaryGroup}>
+        <ThemedText style={globalStyles.infoUnderlinedTitle}>
+          Parts Edible
+        </ThemedText>
+        <ThemedText style={globalStyles.infoSecondaryTitle}>
+          {edibleInfo?.type}
+        </ThemedText>
+      </ThemedView>
 
-          {isModalVisible && edibleInfo &&
-            (<FrequencySelection
-              species={{ ...edibleInfo, frequency: "", imageURL: ""}}
-              ifBack={false}
-              onClose={handleCloseModal}
-            />)
-          } 
-        </BottomSheetScrollView>
+      <ThemedImage uri={taxonData?.photo_url} />
+
+      <ThemedView style={globalStyles.html}>
+        <RenderHTML
+          contentWidth={width}
+          source={{ html: taxonData?.wikipedia_summary || "" }}
+        />
+      </ThemedView>
+
+      {isModalVisible && edibleInfo && (
+        <FrequencySelection
+          species={{ ...edibleInfo, frequency: "", imageURL: "" }}
+          ifBack={false}
+          onClose={handleCloseModal}
+        />
+      )}
+    </>
   );
 }
