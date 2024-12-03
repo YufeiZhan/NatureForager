@@ -87,7 +87,6 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     flexDirection: "row",
-    justifyContent: "flex-start",
     alignItems: "center",
     gap: 10,
     backgroundColor: pureWhite,
@@ -97,7 +96,7 @@ const styles = StyleSheet.create({
   subContainer: {
     // styling relative to flex-determined width was v hard
     // so just set fixed width
-    maxWidth: 225,
+    maxWidth: 150,
   },
   icon: {
     width: 60,
