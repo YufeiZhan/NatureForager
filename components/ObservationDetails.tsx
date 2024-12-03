@@ -1,6 +1,5 @@
 import { Image, StyleSheet } from "react-native";
 import {
-  ThemedScrollView,
   ThemedView,
   ThemedText,
   ThemedButton,

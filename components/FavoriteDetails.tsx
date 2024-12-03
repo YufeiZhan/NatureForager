@@ -1,11 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  SafeAreaView,
-  StyleSheet,
-  Image,
-  ScrollView,
-  Pressable,
-} from "react-native";
+import { StyleSheet } from "react-native";
 import {
   ThemedText,
   ThemedView,
@@ -115,7 +109,10 @@ export default function FavoriteDetails({
         <ThemedText
           style={globalStyles.infoSecondaryTitle}
         >{`${zipCode}`}</ThemedText>
-        <ThemedText>Latitude: {favorite.location.latitude.toFixed(2)}, Longitude: {favorite.location.longitude.toFixed(2)}</ThemedText>
+        <ThemedText>
+          Latitude: {favorite.location.latitude.toFixed(2)}, Longitude:{" "}
+          {favorite.location.longitude.toFixed(2)}
+        </ThemedText>
 
         {/* Note Section */}
         <ThemedView style={globalStyles.note}>
@@ -129,7 +126,7 @@ export default function FavoriteDetails({
               <ThemedImage key={index} uri={photoUri} />
             ))
           ) : (
-            <ThemedText>    No photos available</ThemedText>
+            <ThemedText> No photos available</ThemedText>
           )}
         </ThemedView>
       </BottomSheetScrollView>
