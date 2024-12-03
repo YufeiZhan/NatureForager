@@ -73,6 +73,9 @@ export default function PlantLocation() {
     setSelectedId("");
   };
 
+  // close bottom sheet if taxon changed, don't want old observation details to remain
+  useEffect(deselectObservation, [iNaturalistTaxonId]);
+
   return (
     <>
       <INaturalistMap
