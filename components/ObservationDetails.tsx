@@ -99,26 +99,6 @@ export default function ObservationDetails({
         ) : (
           <ThemedText>No photos available</ThemedText>
         )}
-
-        <ThemedText style={globalStyles.infoUnderlinedTitle}>
-          Observed on
-        </ThemedText>
-        <ThemedText style={globalStyles.infoSecondaryTitle}>
-          {observation.observed_on || "Date Not Available"}
-        </ThemedText>
-
-        <ThemedView style={styles.photosContainer}>
-          {observation.photos && observation.photos.length > 0 ? (
-            observation.photos.map((photo, index) => (
-              <ThemedImage
-                key={index}
-                uri={photo.url?.replace("square", "medium")}
-              />
-            ))
-          ) : (
-            <ThemedText>No photos available</ThemedText>
-          )}
-        </ThemedView>
       </ThemedView>
     </>
   );
