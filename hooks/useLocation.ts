@@ -15,7 +15,7 @@ const getCurrentLocation = async (): Promise<UserLocation> => {
   try {
     let { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== "granted") {
-      console.warn("Location permission not granted");
+      console.log("Location permission not granted: Location default to Duke Chapel.");
       return DEFAULT_LOCATION;
     }
 
