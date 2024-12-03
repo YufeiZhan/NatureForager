@@ -15,7 +15,7 @@ export default function AppLayout() {
           tabBarIcon: ({ focused, color, size }) => (
             focused ? <Image source={require("@/assets/tab/home-tab-selected.png")} style={styles.icon}/>
                     : <Image source={require("@/assets/tab/home-tab-unselected.png")} style={styles.icon}/>
-          ),
+          )
         }}
       />
       <Tabs.Screen
