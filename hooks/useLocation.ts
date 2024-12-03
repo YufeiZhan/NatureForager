@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import * as Location from "expo-location";
+import { Alert } from "react-native";
 
 export interface UserLocation {
   latitude: number;
@@ -15,7 +16,8 @@ const getCurrentLocation = async (): Promise<UserLocation> => {
   try {
     let { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== "granted") {
-      console.warn("Location permission not granted");
+      console.log("Location permission not granted");
+      Alert.alert("Permission required", "Location default to Duke Chapel.");
       return DEFAULT_LOCATION;
     }
 
