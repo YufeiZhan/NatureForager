@@ -27,27 +27,36 @@ Link: https://www.figma.com/design/ldIUpXGM6ZjS1f6w5jtszy/Nature-App?node-id=25-
    ```
 
 3. **Running on iOS Simulator**
+
    - Download the iPhone Simulator
+
      - Open Xcode and navigate to `Preferences > Platforms`.
      - Download the **iPhone 15 Pro - iOS 17.0 Simulator**.
 
    - In the terminal, run:
+
+   ```bash
+    npm start
+   ```
+
+   - After the Metro Bundler starts, press 'i'
+
+4. **Running on Android Emulator**
+
+- Download the Android Emulator
+
+  - Set up an Android Virtual Device:
+    - Device: **Pixel 8 Pro**
+    - System Image: Select the API level **VanillaIcecream**.
+
+- Make sure the Android Emulator is open and running, then in the terminal, run:
+
+
     ```bash
      npm start
     ```
-   - After the Metro Bundler starts, press 'i' 
 
-4.  **Running on Android Emulator**
-   - Download the Android Emulator
-     - Set up an Android Virtual Device:
-        - Device: **Pixel 8 Pro**
-        - System Image: Select the API level **VanillaIcecream**.
-
-   - Make sure the Android Emulator is open and running, then in the terminal, run:
-    ```bash
-     npm start
-    ```
-   - After the Metro Bundler starts, press 'a' 
+- After the Metro Bundler starts, press 'a'
 
 ## Team Workflow
 
