@@ -105,7 +105,7 @@ export default function PlantLocation() {
           {observationDetail && (
             <ObservationDetails
               observation={observationDetail}
-              onCloseDetails={deselectObservation}
+              onClose={deselectObservation}
             ></ObservationDetails>
           )}
         </BottomSheetScrollView>
