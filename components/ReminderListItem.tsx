@@ -50,7 +50,11 @@ export default function ReminderListItem(item: Reminder) {
         <ThemedView style={styles.subContainer}>
           <ThemedText style={styles.title}> {item.name} </ThemedText>
           <ThemedText
-            style={{ color: oliveGreen, flexShrink: 1 }}
+            style={{
+              color: oliveGreen,
+              flex: 1,
+              width: "100%",
+            }}
             numberOfLines={1}
             ellipsizeMode="tail"
           >
@@ -79,7 +83,6 @@ const styles = StyleSheet.create({
     gap: 10,
     justifyContent: "center",
     alignItems: "center",
-    width: "100%",
   },
   container: {
     flexGrow: 1,
@@ -92,8 +95,9 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   subContainer: {
-    flexDirection: "column",
-    alignItems: "flex-start",
+    // styling relative to flex-determined width was v hard
+    // so just set fixed width
+    maxWidth: 225,
   },
   icon: {
     width: 60,
