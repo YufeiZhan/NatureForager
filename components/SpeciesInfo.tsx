@@ -15,7 +15,6 @@ import {
 } from "@/backend/Reminder";
 import speciesData from "@/data/edible_plants.json";
 import FrequencySelection from "./FrequencySelection";
-import { View } from "react-native";
 import { globalStyles } from "@/styles/globalStyles";
 import { darkGreen } from "@/constants/Colors";
 
@@ -38,7 +37,10 @@ console.error = (error) => error.apply;
 
 const aggregateSpecies = (data: any[]): TempReminderSpecies[] => {
   const speciesMap: {
-    [key: number]: TempReminderSpecies & { monthsSet: Set<string> };
+    [key: number]: TempReminderSpecies & {
+      monthsSet: Set<string>;
+      typesSet: Set<string>;
+    };
   } = {};
 
   data.forEach((item) => {
@@ -47,6 +49,8 @@ const aggregateSpecies = (data: any[]): TempReminderSpecies[] => {
     const name = item["Common Name"];
     const type = item.Type;
 
+    const typeArray = type.split(",").map((t: string) => t.trim());
+
     if (!speciesMap[id]) {
       speciesMap[id] = {
         id,
@@ -54,17 +58,22 @@ const aggregateSpecies = (data: any[]): TempReminderSpecies[] => {
         type,
         monthRipe: month,
         monthsSet: new Set([month]),
+        typesSet: new Set([type]),
         months: [],
       };
     } else {
       speciesMap[id].monthsSet.add(month);
+      typeArray.forEach((t: string) => speciesMap[id].typesSet.add(t));
     }
   });
 
-  return Object.values(speciesMap).map(({ monthsSet, ...species }) => ({
-    ...species,
-    months: Array.from(monthsSet),
-  }));
+  return Object.values(speciesMap).map(
+    ({ monthsSet, typesSet, ...species }) => ({
+      ...species,
+      months: Array.from(monthsSet),
+      type: Array.from(typesSet).join(", "),
+    })
+  );
 };
 
 export default function SpeciesInfo({
@@ -187,8 +196,7 @@ export default function SpeciesInfo({
       >
         {taxonData?.scientific_name}
       </ThemedText>
-      <View style={globalStyles.divider}></View>
-
+      <ThemedView style={globalStyles.divider}></ThemedView>
       {isReminded ? (
         <ThemedIcon iconName="reminded"></ThemedIcon>
       ) : (
@@ -210,7 +218,9 @@ export default function SpeciesInfo({
         <ThemedText style={globalStyles.infoUnderlinedTitle}>
           Parts Edible
         </ThemedText>
-        <ThemedText style={globalStyles.infoSecondaryTitle}>TBA</ThemedText>
+        <ThemedText style={globalStyles.infoSecondaryTitle}>
+          {edibleInfo?.type}
+        </ThemedText>
       </ThemedView>
 
       <ThemedImage uri={taxonData?.photo_url} />

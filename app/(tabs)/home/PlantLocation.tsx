@@ -45,6 +45,10 @@ export default function PlantLocation() {
     const kmPerDegLng = circumKmAtLatitude / 360;
     const degLngToNearest = Number(distanceKmToNearest) / kmPerDegLng;
     initialLngExtent = 4 * degLngToNearest;
+
+    // don't zoom in too much
+    initialLatExtent = Math.max(0.001, initialLatExtent);
+    initialLngExtent = Math.max(0.001, initialLngExtent);
   }
 
   // selected observation id

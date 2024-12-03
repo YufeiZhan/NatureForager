@@ -63,7 +63,6 @@ export const globalStyles = StyleSheet.create({
     width: "90%",
     height: 220,
     borderRadius: 10,
-    marginTop: 20,
   } as ImageStyle,
   html: {
     marginHorizontal: 20,

@@ -11,7 +11,6 @@ import { emitter } from "@/scripts/EventEmitter";
 
 export default function SaveForLater() {
   const router = useRouter();
-  const [reminders, setReminders] = useState<Reminder[]>([]);
   const [currentSeasonReminders, setCurrentSeasonReminders] = useState<Reminder[]>([]);
   const [otherSeasonReminders, setOtherSeasonReminders] = useState<Reminder[]>([]);
 
@@ -31,10 +30,9 @@ export default function SaveForLater() {
 
       setCurrentSeasonReminders(currentSeason);
       setOtherSeasonReminders(otherSeason);
-      setReminders(remindersData)
     };
 
-    // move to home screen
+    // ask for notification permission
     const requestNotificationPermission = async () => {
       const { status } = await Notifications.requestPermissionsAsync();
       if (status !== 'granted') {
@@ -108,6 +106,5 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     color: pureWhite
-    // marginVertical: 10,
   }
 });

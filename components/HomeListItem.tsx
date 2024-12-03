@@ -4,10 +4,12 @@ import { useContext } from "react";
 import { LocationContext } from "@/hooks/LocationContext";
 import { useRouter } from "expo-router";
 import { pureWhite } from "@/constants/Colors";
+import { getTypeIcons } from "@/scripts/getTypeIcons";
 
 interface ItemData {
   taxonId: number;
   name: string;
+  type: string;
   distance: number | null;
 }
 
@@ -32,8 +34,12 @@ export default function HomeListItem(item: ItemData) {
       style={styles.container}
     >
       <ThemedView style={styles.subContainerLeft}>
-        <Image source={require("@/assets/plant/fruit.png")}></Image>
         <ThemedText style={styles.title}>{item.name}</ThemedText>
+        <ThemedView style={styles.iconContainer}>
+          {getTypeIcons(item.type).map((icon, index) => (
+            <Image key={index} source={icon} style={styles.icon} />
+          ))}
+        </ThemedView>
       </ThemedView>
 
       <ThemedView style={styles.subContainerRight}>
@@ -64,8 +70,8 @@ export const styles = StyleSheet.create({
     padding: 10,
   },
   subContainerLeft: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: "column",
+    alignItems: "flex-start",
     gap: 10,
     flex: 1, // Allows the title to take up remaining space
   },
@@ -85,5 +91,15 @@ export const styles = StyleSheet.create({
   imagePin: {
     height: 36,
     width: 24,
+  },
+  icon: {
+    width: 30,
+    height: 30,
+  },
+  iconContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    flexWrap: "wrap",
+    gap: 5,
   },
 });

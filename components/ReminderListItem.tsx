@@ -39,7 +39,6 @@ export default function ReminderListItem(item: Reminder) {
       style={styles.container}
     >
       <ThemedView style={styles.subContainer}>
-        {/* <Image source={require("@/assets/plant/fruit.png")} style={styles.icon} /> */}
         <Image
           source={{ uri: item.imageURL }}
           style={styles.icon}

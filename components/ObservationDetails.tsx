@@ -1,4 +1,6 @@
+import { Image, StyleSheet } from "react-native";
 import {
+  ThemedScrollView,
   ThemedView,
   ThemedText,
   ThemedButton,
@@ -84,16 +86,18 @@ ObservationDetailsProps) {
         {observation.observed_on || "Date Not Available"}
       </ThemedText>
 
-      {observation.photos && observation.photos.length > 0 ? (
-        observation.photos.map((photo, index) => (
-          <ThemedImage
-            key={index}
-            uri={photo.url?.replace("square", "medium")}
-          />
-        ))
-      ) : (
-        <ThemedText>No photos available</ThemedText>
-      )}
+      <ThemedView style={styles.photosContainer}>
+        {observation.photos && observation.photos.length > 0 ? (
+          observation.photos.map((photo, index) => (
+            <ThemedImage
+              key={index}
+              uri={photo.url?.replace("square", "medium")}
+            />
+          ))
+        ) : (
+          <ThemedText>No photos available</ThemedText>
+        )}
+      </ThemedView>
       <ThemedButton
         style={globalStyles.flowingButton}
         title="Back to Map"
@@ -103,3 +107,10 @@ ObservationDetailsProps) {
     </>
   );
 }
+
+const styles = StyleSheet.create({
+  photosContainer: {
+    width: "100%",
+    gap: 20,
+  },
+});

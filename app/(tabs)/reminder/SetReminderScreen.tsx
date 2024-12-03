@@ -9,7 +9,10 @@ import { pureWhite } from "@/constants/Colors";
 import { TempReminderSpecies } from '@/backend/Reminder';
 
 const aggregateSpecies = (data: any[]): TempReminderSpecies[] => {
-  const speciesMap: { [key: number]: TempReminderSpecies & { monthsSet: Set<string> } } = {};
+  const speciesMap: { [key: number]: TempReminderSpecies & { 
+    monthsSet: Set<string>;
+    typesSet: Set<string>;  
+  } } = {};
 
   data.forEach((item) => {
     const id = item["iNaturalist ID"];
@@ -24,16 +27,19 @@ const aggregateSpecies = (data: any[]): TempReminderSpecies[] => {
         type,
         monthRipe: month,
         monthsSet: new Set([month]),
+        typesSet: new Set([type]),
         months: [],
       };
     } else {
       speciesMap[id].monthsSet.add(month);
+      speciesMap[id].typesSet.add(type);
     }
   });
 
-  return Object.values(speciesMap).map(({ monthsSet, ...species }) => ({
+  return Object.values(speciesMap).map(({ monthsSet, typesSet, ...species }) => ({
     ...species,
     months: Array.from(monthsSet),
+    type: Array.from(typesSet).join(", "),
   }));
 };
 
@@ -50,8 +56,7 @@ export default function SetReminderScreen() {
       );
       setSuggestions(filteredSuggestions);
     } else {
-      // set it to the first 100 cuz rendering everything gives a warning
-      setSuggestions(aggregatedData.slice(0, 100));
+      setSuggestions(aggregatedData);
     }
   }, [searchQuery]);
 
