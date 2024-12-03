@@ -1,7 +1,7 @@
 import { Pressable, StyleSheet, Image, Dimensions } from "react-native";
-import { ThemedView, ThemedText } from "@/components/Themed";
+import { ThemedView, ThemedText, ThemedButton } from "@/components/Themed";
 import { darkGreen, oliveGreen, pureWhite } from "@/constants/Colors";
-import { Reminder } from '@/backend/Reminder';
+import { Reminder } from "@/backend/Reminder";
 import FrequencySelection from "@/components/FrequencySelection";
 import { useContext, useState } from "react";
 import { useRouter } from "expo-router";
@@ -24,54 +24,54 @@ export default function ReminderListItem(item: Reminder) {
 
   return (
     <ThemedView style={styles.rowContainer}>
-    <Pressable
-      onPress={() => {
-        router.push({
-          pathname: "/home/PlantLocation",
-          params: {
-            iNaturalistTaxonId: item.id,
-            commonName: item.name,
-            initialLat: location?.latitude,
-            initialLng: location?.longitude,
-          },
-        });
-      }}
-      style={styles.container}
-    >
-      <ThemedView style={styles.subContainer}>
-        <Image
-          source={{ uri: item.imageURL }}
-          style={styles.icon}
-          resizeMode="cover"
-          onError={(error) => console.error("Image Load Error:", error)}
+      <Pressable
+        onPress={() => {
+          router.push({
+            pathname: "/home/PlantLocation",
+            params: {
+              iNaturalistTaxonId: item.id,
+              commonName: item.name,
+              initialLat: location?.latitude,
+              initialLng: location?.longitude,
+            },
+          });
+        }}
+        style={styles.container}
+      >
+        <ThemedView style={styles.subContainer}>
+          <Image
+            source={{ uri: item.imageURL }}
+            style={styles.icon}
+            resizeMode="cover"
+            onError={(error) => console.error("Image Load Error:", error)}
+          />
+        </ThemedView>
+
+        <ThemedView style={styles.subContainer}>
+          <ThemedText style={styles.title}> {item.name} </ThemedText>
+          <ThemedText
+            style={{
+              color: oliveGreen,
+              flex: 1,
+              width: "100%",
+            }}
+            numberOfLines={1}
+            ellipsizeMode="tail"
+          >
+            {abbreviatedMonths.join(", ")}
+          </ThemedText>
+        </ThemedView>
+      </Pressable>
+
+      <ThemedButton title="Edit" onPress={handleSelectSpecies} />
+
+      {isModalVisible && (
+        <FrequencySelection
+          species={{ ...item, frequency: "" }}
+          ifBack={false}
+          onClose={handleCloseModal}
         />
-      </ThemedView>
-
-      <ThemedView style={styles.subContainer}>
-      <ThemedText style={styles.title}> {item.name} </ThemedText>
-        <ThemedText 
-        style={{color: oliveGreen, flexShrink: 1}}
-        numberOfLines={1}
-        ellipsizeMode="tail"
-        >
-          {abbreviatedMonths.join(", ")}
-        </ThemedText>
-      </ThemedView>
-    </Pressable>
-
-    <Pressable 
-      onPress={handleSelectSpecies} 
-      style={styles.button}>
-        <ThemedText>Edit</ThemedText>
-    </Pressable>
-
-    {isModalVisible && (
-      <FrequencySelection
-        species={{ ...item, frequency: "" }}
-        ifBack={false}
-        onClose={handleCloseModal}
-      />
-    )}
+      )}
     </ThemedView>
   );
 }
@@ -80,37 +80,29 @@ const styles = StyleSheet.create({
   rowContainer: {
     flex: 1,
     flexDirection: "row",
+    gap: 10,
     justifyContent: "center",
     alignItems: "center",
-    marginHorizontal: 10,
+    maxHeight: 60,
   },
   container: {
+    flexGrow: 1,
     flexDirection: "row",
-    justifyContent: "flex-start",
     alignItems: "center",
-    width: Dimensions.get("window").width * 0.8,
+    gap: 10,
     backgroundColor: pureWhite,
     opacity: 0.8,
-    marginVertical: 5,
     borderRadius: 10,
   },
   subContainer: {
-    flexDirection: "column",
-    alignItems: "flex-start",
-    marginRight: 10
-  },
-  button: {
-    backgroundColor: pureWhite,
-    alignItems: "center",
-    marginLeft: 10,
-    padding: 10,
-    borderRadius: 15,
-    color: darkGreen
+    // styling relative to flex-determined width was v hard
+    // so just set fixed width
+    maxWidth: 150,
   },
   icon: {
     width: 60,
     height: 60,
-    borderRadius: 10 
+    borderRadius: 10,
   },
   title: {
     fontSize: 16,

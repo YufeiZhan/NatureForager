@@ -4,8 +4,6 @@ import {
   ViewProps,
   Text,
   TextProps,
-  ScrollView,
-  ScrollViewProps,
   FlatList,
   FlatListProps,
   Pressable,
@@ -157,13 +155,6 @@ export function ThemedDropDownPicker(props: DropDownPickerProps<Month>) {
   );
 }
 
-export function ThemedScrollView(props: ScrollViewProps) {
-  const { style, ...otherProps } = props;
-  return (
-    <ScrollView style={[styles.scrollView, style]} {...otherProps}></ScrollView>
-  );
-}
-
 export function ThemedFlatList<T>(props: FlatListProps<T>) {
   const { style, ...otherProps } = props;
   return <FlatList style={[styles.flatList, style]} {...otherProps}></FlatList>;
@@ -230,6 +221,5 @@ const styles = StyleSheet.create({
     // fontSize: 25,
     textAlign: "center",
   },
-  scrollView: {},
   flatList: {},
 });
