@@ -3,7 +3,6 @@ import {
   ThemedScrollView,
   ThemedView,
   ThemedText,
-  ThemedButton,
   ThemedIcon,
   ThemedImage,
 } from "./Themed";
@@ -14,14 +13,13 @@ import { globalStyles } from "@/styles/globalStyles";
 
 interface ObservationDetailsProps {
   observation: Observation;
-  onCloseDetails: () => void;
+  onClose: () => void;
 }
 
 export default function ObservationDetails({
   observation,
-  onCloseDetails,
-}: // onClose,
-ObservationDetailsProps) {
+  onClose,
+}: ObservationDetailsProps) {
   // keep track of whether this observation is favorited
   const { favorites, addFavorite } = useContext(FavoritesContext);
   const [isFavorited, setIsFavorited] = useState(false);
@@ -61,6 +59,10 @@ ObservationDetailsProps) {
 
   return (
     <>
+      <ThemedView style={globalStyles.closeBottomSheetButton}>
+        <ThemedIcon iconName="x" onPress={onClose} />
+      </ThemedView>
+
       <ThemedText style={globalStyles.infoPrimaryTitle}>
         {observation.taxon?.preferred_common_name}
       </ThemedText>
@@ -98,12 +100,6 @@ ObservationDetailsProps) {
           <ThemedText>No photos available</ThemedText>
         )}
       </ThemedView>
-      <ThemedButton
-        style={globalStyles.flowingButton}
-        title="Back to Map"
-        onPress={onCloseDetails}
-        action="primary"
-      />
     </>
   );
 }

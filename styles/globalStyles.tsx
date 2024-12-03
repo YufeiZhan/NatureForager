@@ -75,10 +75,13 @@ export const globalStyles = StyleSheet.create({
     borderWidth: 1,
     borderStyle: "dashed",
   },
-  flowingButton: {
+  closeBottomSheetButton: {
     position: "absolute",
-    bottom: 20,
+    top: 8,
+    right: 8,
     zIndex: 2,
+    // backgroundColor: "red",
+    borderRadius: 50,
     // iOS Shadow
     shadowColor: "#000",
     shadowOpacity: 0.5,
