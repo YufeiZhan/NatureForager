@@ -75,6 +75,18 @@ const iconMapping = {
   unfav: require("../assets/icons/favorite-off.png"),
   edit: require("../assets/icons/edit-icon.png"),
   x: require("../assets/icons/x.png"),
+  iconInfo: require("../assets/icons/info-icon.png"),
+  flower: require("../assets/plant/flower.png"),
+  fruit: require("../assets/plant/fruit.png"),
+  leaf: require("../assets/plant/leaf.png"),
+  nut: require("../assets/plant/nut.png"),
+  pod: require("../assets/plant/pod.png"),
+  pollen: require("../assets/plant/pollen.png"),
+  root: require("../assets/plant/root.png"),
+  seed: require("../assets/plant/seed.png"),
+  shoot: require("../assets/plant/shoot.png"),
+  tea: require("../assets/plant/tea.png"),
+  tuber: require("../assets/plant/tuber.png"),
 };
 export function ThemedIcon(
   props: PressableProps & { iconName: keyof typeof iconMapping }
