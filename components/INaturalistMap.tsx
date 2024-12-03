@@ -5,18 +5,22 @@ import { BoundingBox } from "react-native-maps";
 
 interface iNaturalistMapProps extends MapProps {
   iNaturalistTaxonId?: string;
-  updateBottomSheet: (obs:Observation|null)=>void;
+  selectedMarkerId?: string;
+  onPressObservation: (obs: Observation) => void;
+  onPressMapBackground?: () => void;
 }
 
 export default function INaturalistMap({
-  iNaturalistTaxonId, updateBottomSheet,
+  iNaturalistTaxonId,
+  selectedMarkerId,
+  onPressObservation,
+  onPressMapBackground,
   ...mapProps
 }: iNaturalistMapProps) {
   const [markers, setMarkers] = useState<Markers>({});
   const [mapBounds, setMapBounds] = useState<BoundingBox | undefined>(
     undefined
   );
-
 
   // when taxon id changes, reset markers
   useEffect(() => {
@@ -53,7 +57,7 @@ export default function INaturalistMap({
         if (observation.id !== undefined) {
           newMarkers[observation.id] = {
             coordinate: { latitude: latlng[0], longitude: latlng[1] },
-            onPress: () => updateBottomSheet(observation),
+            onPress: () => onPressObservation(observation),
           };
         }
       });
@@ -63,10 +67,13 @@ export default function INaturalistMap({
   }, [iNaturalistTaxonId, mapBounds]);
 
   return (
-      <Map
-        markers={markers}
-        onBoundsChangeComplete={setMapBounds}
-        {...mapProps}
-      ></Map>
+    <Map
+      markers={markers}
+      selectedMarkerId={selectedMarkerId}
+      panToMarkerEnabled
+      onBoundsChangeComplete={setMapBounds}
+      onPress={onPressMapBackground}
+      {...mapProps}
+    ></Map>
   );
 }

@@ -15,7 +15,7 @@ interface ItemData {
 
 export default function HomeListItem(item: ItemData) {
   const { location, setLocation } = useContext(LocationContext);
-  const router = useRouter();  
+  const router = useRouter();
 
   return (
     <Pressable
@@ -37,17 +37,16 @@ export default function HomeListItem(item: ItemData) {
         <ThemedText style={styles.title}>{item.name}</ThemedText>
         <ThemedView style={styles.iconContainer}>
           {getTypeIcons(item.type).map((icon, index) => (
-            <Image
-              key={index}
-              source={icon}
-              style={styles.icon}
-            />
+            <Image key={index} source={icon} style={styles.icon} />
           ))}
-      </ThemedView>
+        </ThemedView>
       </ThemedView>
 
       <ThemedView style={styles.subContainerRight}>
-        <Image source={require("@/assets/pin/home.png") }></Image>
+        <Image
+          style={styles.imagePin}
+          source={require("@/assets/pin/normal.png")}
+        ></Image>
         <ThemedText style={styles.distance}>
           {item.distance ? `${Number(item.distance).toFixed(2)} km` : "None"}
         </ThemedText>
@@ -89,6 +88,10 @@ export const styles = StyleSheet.create({
     textAlign: "right",
     minWidth: 2,
   },
+  imagePin: {
+    height: 36,
+    width: 24,
+  },
   icon: {
     width: 30,
     height: 30,
@@ -98,5 +101,5 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     flexWrap: "wrap",
     gap: 5,
-  }
+  },
 });

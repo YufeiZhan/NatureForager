@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useContext, useEffect, useMemo, useRef } from "react";
 import { View, StyleSheet } from "react-native";
 import MapView, {
   UrlTile,
@@ -9,6 +9,7 @@ import MapView, {
   MapPressEvent,
   Region,
 } from "react-native-maps";
+import { FavoritesContext } from "@/hooks/FavoritesContext";
 
 export interface MapProps {
   initialLat: number;
@@ -17,15 +18,13 @@ export interface MapProps {
   initialLngExtent?: number;
   selectedMarkerId?: string;
   markers?: Markers;
+  panToMarkerEnabled?: boolean;
   onBoundsChangeComplete?: (bounds: BoundingBox) => void;
   onRegionChange?: (region: Region) => void;
   onPress?: (e: MapPressEvent) => void;
 }
-interface MarkerProps extends MapMarkerProps {
-  callout?: JSX.Element;
-}
 // string is the key/id of a marker
-export type Markers = Record<string, MarkerProps>;
+export type Markers = Record<string, MapMarkerProps>;
 
 const PAN_ANIMATION_DURATION = 300; //ms
 
@@ -37,6 +36,7 @@ export default function Map({
   initialLngExtent = 0.05,
   selectedMarkerId,
   markers = {},
+  panToMarkerEnabled = false,
   onBoundsChangeComplete,
   onRegionChange,
   onPress,
@@ -59,6 +59,7 @@ export default function Map({
   };
 
   const panToMarker = (markerId: string, duration: number) => {
+    if (!panToMarkerEnabled) return;
     const { latitude, longitude } = markers[markerId].coordinate;
     map.current?.animateCamera(
       {
@@ -68,7 +69,7 @@ export default function Map({
     );
   };
 
-  // when new marker should be selected, pan the map and show a callout
+  // when new marker should be selected, pan the map
   useEffect(() => {
     if (!map.current) return;
     if (!selectedMarkerId) {
@@ -77,11 +78,30 @@ export default function Map({
       return;
     }
     panToMarker(selectedMarkerId, PAN_ANIMATION_DURATION);
-    // also show its callout (only after the animation finishes, to prevent weirdness)
-    setTimeout(() => {
-      markerRefs.current?.[selectedMarkerId].showCallout();
-    }, PAN_ANIMATION_DURATION + 50);
   }, [selectedMarkerId]);
+
+  // map pin logic -----------------------
+
+  // include favorites so we can show the favorited version of map pins
+  const { favorites } = useContext(FavoritesContext);
+  const favoriteIds = useMemo(() => {
+    if (!favorites) return new Set<string>();
+    const ids = new Set<string>();
+    favorites.forEach((f) => {
+      ids.add(f.id);
+      if (f.iNaturalistId) ids.add(String(f.iNaturalistId));
+    });
+    return ids;
+  }, [favorites]);
+
+  const getMarkerImage = (key: string) => {
+    const isFavorite = favoriteIds.has(key);
+    const selected = key === selectedMarkerId;
+    if (isFavorite && selected) return require("@/assets/pin/fav-selected.png");
+    if (isFavorite && !selected) return require("@/assets/pin/fav-normal.png");
+    if (!isFavorite && selected) return require("@/assets/pin/selected.png");
+    return require("@/assets/pin/normal.png");
+  };
 
   return (
     <MapView
@@ -92,12 +112,13 @@ export default function Map({
       onRegionChangeComplete={updateMapBounds}
       onRegionChange={onRegionChange}
       showsUserLocation={true}
+      moveOnMarkerPress={false}
       onPress={onPress}
       onMarkerPress={(e) =>
         panToMarker(e.nativeEvent.id, PAN_ANIMATION_DURATION)
       }
     >
-      {Object.entries(markers).map(([key, { callout, ...props }]) => (
+      {Object.entries(markers).map(([key, props]) => (
         <Marker
           key={key} // for the .map()
           identifier={key} // for MapView event handling
@@ -105,6 +126,7 @@ export default function Map({
             m ? (markerRefs.current[key] = m) : delete markerRefs.current[key]
           }
           stopPropagation // so we can detect if just pressing on the map background, not a marker
+          image={getMarkerImage(key)}
           {...props}
         />
       ))}
