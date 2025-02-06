@@ -10,22 +10,16 @@ Nature Forager has 3 main functions where users can search for plants, favourite
 
 1. **Search Plant**
 Users can search for plants in different months, view species details, and observation details through map interaction.
-<img src="screenshots/search_main.png" width="200" height="450">
-<img src="screenshots/plant_type.png" width="200" height="450">
-<img src="screenshots/search_map.png" width="200" height="450">
-<img src="screenshots/search_plant.png" width="200" height="450">
-<img src="screenshots/search_observation.png" width="200" height="450">
+<img src="screenshots/search_main.png" width="300" height="450"> <img src="screenshots/plant_type.png" width="300" height="450">
+<img src="screenshots/search_map.png" width="300" height="450"> <img src="screenshots/search_plant.png" width="300" height="450"> <img src="screenshots/search_observation.png" width="300" height="450">
 
 3. **Favourite Plant**
-Users can favourite plants of their interest through the search function above, or add plants on their own. They are also free to change details afterwards.
-<img src="screenshots/favorite_main.png" width="200" height="450">
-<img src="screenshots/favorite_detail.png" width="200" height="450">
-<img src="screenshots/favorite_edit.png" width="200" height="450">
+Users can favourite plants of interest through the search function above, or add self-configured plants. They are also free to change details afterwards.
+<img src="screenshots/favorite_main.png" width="300" height="450"> <img src="screenshots/favorite_detail.png" width="300" height="450"> <img src="screenshots/favorite_edit.png" width="300" height="450">
 
 5. **Plant Reminder**
 Users can set up reminders for plants so that they will get reminded through push notifications on the phone. The frequency of the reminder can be set to monthly, biweekly or weekly. The reminder tab was divided into "Current Season" and "Other Season" so that users can quickly locate current-season reminded plants.
-![Reminder](screenshots/reminder_main.png){width=200 height=450}
-<img src="screenshots/reminder_main.png" width="200" height="450">
+<img src="screenshots/reminder_main.png" width="300" height="450">
 
 
 ## Instructions for running
