@@ -9,22 +9,23 @@ Link: https://www.figma.com/design/ldIUpXGM6ZjS1f6w5jtszy/Nature-App?node-id=25-
 Nature Forager has 3 main functions where users can search for plants, favourite plants, and set up reminders for upcoming plants.
 
 1. **Search Plant**
-Users can search for plants in different months, view specie details, and observation details through map interaction.
-![Search](screenshots/search_main.png){width=200 height=450}
-![Plant_Type](screenshots/plant_type.png){width=200 height=450}
-![Map](screenshots/search_map.png){width=200 height=450}
-![Plant](screenshots/search_plant.png){width=200 height=450}
-![Observation](screenshots/search_observation.png){width=200 height=450}
+Users can search for plants in different months, view species details, and observation details through map interaction.
+<img src="screenshots/search_main.png" width="200" height="450">
+<img src="screenshots/plant_type.png" width="200" height="450">
+<img src="screenshots/search_map.png" width="200" height="450">
+<img src="screenshots/search_plant.png" width="200" height="450">
+<img src="screenshots/search_observation.png" width="200" height="450">
 
-2. **Favourite Plant**
-Users can favourite plants of their interests through the search function above, or add plant on their own. They are also free to change details afterwards.
-![Favorite](screenshots/favorite_main.png){width=200 height=450}
-![Fav_Detail](screenshots/favorite_detail.png){width=200 height=450}
-![Fav_Edit](screenshots/favorite_edit.png){width=200 height=450}
+3. **Favourite Plant**
+Users can favourite plants of their interest through the search function above, or add plants on their own. They are also free to change details afterwards.
+<img src="screenshots/favorite_main.png" width="200" height="450">
+<img src="screenshots/favorite_detail.png" width="200" height="450">
+<img src="screenshots/favorite_edit.png" width="200" height="450">
 
-3. **Plant Reminder**
-Users can set up reminders for plants so that they will get reminded through push notification on phone. The frequency of the reminder can be set to monthly, biweekly or weekly. The reminder tab was divided into "Current Season" and "Other Season" so that users can quickly locate current season's reminded plants.
+5. **Plant Reminder**
+Users can set up reminders for plants so that they will get reminded through push notifications on the phone. The frequency of the reminder can be set to monthly, biweekly or weekly. The reminder tab was divided into "Current Season" and "Other Season" so that users can quickly locate current-season reminded plants.
 ![Reminder](screenshots/reminder_main.png){width=200 height=450}
+<img src="screenshots/reminder_main.png" width="200" height="450">
 
 
 ## Instructions for running
