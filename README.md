@@ -10,7 +10,7 @@ Nature Forager has 3 main functions where users can search for plants, favourite
 
 1. **Search Plant**
 Users can search for plants in different months, view species details, and observation details through map interaction.
-<img src="screenshots/search_main.png" width="250" height="450"> <img src="screenshots/plant_type.png" width="250" height="450">
+<img src="screenshots/search_main.png" width="250" height="450"> <img src="screenshots/plant_type.png" width="250" height="450"> <br>
 <img src="screenshots/search_map.png" width="250" height="450"> <img src="screenshots/search_plant.png" width="250" height="450"> <img src="screenshots/search_observation.png" width="250" height="450">
 
 3. **Favourite Plant**
